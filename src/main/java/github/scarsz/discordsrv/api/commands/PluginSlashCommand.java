@@ -86,6 +86,7 @@ public class PluginSlashCommand {
      * @return whether the guild is applicable for this command
      */
     public boolean isApplicable(Guild guild) {
+        if (guild == null) return false;
         return this.guilds.isEmpty() || this.guilds.contains(guild.getId());
     }
     /**
