@@ -25,7 +25,6 @@ import lombok.Getter;
 import lombok.Setter;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
 /**

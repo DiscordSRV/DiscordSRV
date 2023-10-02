@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -97,7 +98,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     private void handle(UUID user) {
         if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(user);
-        Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
+        SchedulerUtil.runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
                 () -> DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
                         player,
                         GroupSynchronizationManager.SyncDirection.TO_DISCORD,

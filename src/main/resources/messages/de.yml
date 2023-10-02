@@ -412,8 +412,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, der Server hat in %timeo
 # Diese Nachrichten werden genutzt, wenn die Accounts verbunden werden
 #
 # Verfügbare Platzhalter:
-# CodeGenerated:                %code%:         der generierte Code für den Spieler, um seine Accounts zu verbinden
-#                               %botname%:      der Name des Bots in Discord
 # UnknownCode/InvalidCode:      %code%:         der generierte Code für den Spieler, um seine Accounts zu verbinden
 #                               %mention%:      die Erwähnung des Discord-Kontos
 # DiscordAccountLinked:         %name%:         der Name des Minecraft-Spielers, dessen Discord-Account verbunden wurde
@@ -424,6 +422,8 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, der Server hat in %timeo
 #                               %username%:     der Minecraft-Benutzername des verknüpften Minecraft-Kontos des Benutzers
 #                               %mention%:      Erwähnungen an Discord-Konten
 # DiscordLinkedAccountRequired  %message%:      die Nachricht, die der Benutzer nicht senden konnte, weil sie nicht verknüpft waren
+# CodeGenerated:                %code%:         der generierte Code für den Spieler, um seine Accounts zu verbinden
+#                               %botname%:      der Name des Bots in Discord
 # MinecraftAccountLinked:       %id%:           die Discord-ID des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
 #                               %username%:     der Discord-Name des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
 # LinkedCommandSuccess:         %name%:         der Discord-Benutzername des Discord-Benutzers, mit dem das Minecraft-Konto des Benutzers verknüpft ist
@@ -431,7 +431,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, der Server hat in %timeo
 # MinecraftNobodyFound:         %target%:       die Eingabe, die dazu führte, dass keine Ergebnisse gefunden wurden
 #
 # Discord
-CodeGenerated: "Dein Verbindungscode ist %code%. Schreibe dem Bot (%botname%) eine private Nachricht auf Discord, die nur diesen Code beinhaltet, um deine Accounts zu verbinden."
 UnknownCode: "Diesen Code kenne ich nicht, bitte versuche es erneut."
 InvalidCode: "Bist du sicher, dass dies dein Code ist? Link-Codes bestehen aus 4 Zahlen."
 DiscordAccountLinked: "Dein Discord-Account wurde verbunden mit %name% (%uuid%)"
@@ -439,6 +438,7 @@ DiscordAccountAlreadyLinked: "Sie sind bereits mit %username% (%uuid%) verknüpf
 DiscordLinkedAccountRequired: "Du hast versucht die folgende Nachricht im Spielchat zu senden aber dieser Server verlangt, dass du deinen Minecraft-Account mit deinem Discord-Account verbinden musst. Verbinde sie, indem du im Spiel den Befehl `/discord link` eingibst. \n```%message%```"
 DiscordLinkedAccountCheckFailed: "Sie können nicht überprüfen, ob Ihr Konto verknüpft ist. Versuchen Sie es später erneut"
 # Minecraft
+CodeGenerated: "Dein Verbindungscode ist %code%. Schreibe dem Bot (%botname%) eine private Nachricht auf Discord, die nur diesen Code beinhaltet, um deine Accounts zu verbinden."
 ClickToCopyCode: "Klicken Sie zum Kopieren"
 MinecraftAccountLinked: "&bDeine UUID wurde verbunden mit dem Discord Nutzer %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&bIhr Minecraft-Konto ist bereits mit einem Discord-Konto verknüpft. Sollten Sie die Erlaubnis haben, können Sie Ihre Konto-Verknüpfung mit /discord unlink aufheben."

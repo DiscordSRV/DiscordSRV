@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -109,7 +110,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
 
             String finalCommand = command;
             DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Final command to be run: /" + finalCommand);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
+            SchedulerUtil.runTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
         }
 
         // group sync using the authoritative side
@@ -123,7 +124,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         } else {
             String roleName = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
             try {
-                Role roleToAdd = DiscordUtil.getJda().getRolesByName(roleName, true).stream().findFirst().orElse(null);
+                Role roleToAdd = DiscordUtil.resolveRole(roleName);
                 if (roleToAdd != null) {
                     Member member = roleToAdd.getGuild().getMemberById(discordId);
                     if (member != null) {
@@ -151,7 +152,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         } else {
             try {
                 // remove user from linked role
-                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
+                Role role = DiscordUtil.resolveRole(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
                 if (role != null) {
                     Member member = role.getGuild().getMemberById(discordId);
                     if (member != null) {
@@ -188,7 +189,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
 
             String finalCommand = command;
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
+            SchedulerUtil.runTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
         }
 
         if (member != null && DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
