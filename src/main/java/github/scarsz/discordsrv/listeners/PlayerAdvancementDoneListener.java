@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class PlayerAdvancementDoneListener implements Listener {
 
@@ -201,11 +202,34 @@ public class PlayerAdvancementDoneListener implements Listener {
         return ADVANCEMENT_TITLE_CACHE.computeIfAbsent(advancement, v -> {
             try {
                 Object handle = advancement.getClass().getMethod("getHandle").invoke(advancement);
-                Object advancementDisplay = Arrays.stream(handle.getClass().getMethods())
-                        .filter(method -> method.getReturnType().getSimpleName().equals("AdvancementDisplay"))
-                        .filter(method -> method.getParameterCount() == 0)
-                        .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
-                        .invoke(handle);
+
+                Object advancementDisplay = null;
+                if (handle.getClass().getSimpleName().equals("AdvancementHolder")) {
+                    Method getAdvancementMethod = Arrays.stream(handle.getClass().getMethods())
+                            .filter(method -> method.getReturnType().getName().equals("net.minecraft.advancements.Advancement"))
+                            .filter(method -> method.getParameterCount() == 0)
+                            .findFirst()
+                            .orElse(null);
+
+                    if (getAdvancementMethod != null) {
+                        Object holder = getAdvancementMethod.invoke(handle);
+
+                        Optional<?> optionalAdvancementDisplay = (Optional<?>) Arrays.stream(holder.getClass().getMethods())
+                                .filter(method -> method.getReturnType().getSimpleName().equals("Optional"))
+                                .filter(method -> method.getGenericReturnType().getTypeName().contains("AdvancementDisplay"))
+                                .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
+                                .invoke(holder);
+
+                        advancementDisplay = optionalAdvancementDisplay.get();
+                    }
+                } else {
+                    advancementDisplay = Arrays.stream(handle.getClass().getMethods())
+                            .filter(method -> method.getReturnType().getSimpleName().equals("AdvancementDisplay"))
+                            .filter(method -> method.getParameterCount() == 0)
+                            .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
+                            .invoke(handle);
+                }
+
                 if (advancementDisplay == null) throw new RuntimeException("Advancement doesn't have display properties");
 
                 try {
