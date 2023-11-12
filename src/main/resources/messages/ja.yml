@@ -48,7 +48,7 @@
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " (に返信する %name%)"
+DiscordToMinecraftMessageReplyFormat: " (%name% への返信)"
 
 # Minecraft -> Discord メッセージ
 #
