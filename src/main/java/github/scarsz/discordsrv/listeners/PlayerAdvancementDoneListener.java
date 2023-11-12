@@ -89,7 +89,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         Player player = event.getPlayer();
         Advancement advancement = event.getAdvancement();
 
-        if (advancementIsHiddenInChat(event.getAdvancement(), player.getWorld())) return;
+        if (advancementIsHiddenInChat(advancement, player.getWorld())) return;
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
 
