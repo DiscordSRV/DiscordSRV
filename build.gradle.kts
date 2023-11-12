@@ -10,6 +10,7 @@ plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("net.kyori.indra.git") version "2.1.1"
     id("net.researchgate.release") version "3.0.2"
+    id("xyz.jpenilla.run-paper") version "2.2.0"
 }
 
 group = "com.discordsrv"
@@ -210,13 +211,13 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-core:2.0-beta9")
 
     // adventure, adventure-platform, MCDiscordReserializer
-    val adventureVersion = "4.10.1"
+    val adventureVersion = "4.14.0"
     api("net.kyori:adventure-api:${adventureVersion}")
     api("net.kyori:adventure-text-minimessage:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.1")
     api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
@@ -293,6 +294,15 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
+}
+
+tasks {
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion("1.20.2")
+    }
 }
 
 var generatedPaths: FileCollection = sourceSets.main.get().output.generatedSourcesDirs
