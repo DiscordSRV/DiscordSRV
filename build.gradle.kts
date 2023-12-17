@@ -105,7 +105,7 @@ tasks {
         mustRunAfter("build")
         minimize {
             exclude(dependency("github.scarsz:configuralize:.*"))
-            exclude(dependency("me.scarsz:jdaappender:.*"))
+            exclude(dependency("me.scarsz.jdaappender:jda4:.*"))
             exclude(dependency("com.fasterxml.jackson.core:jackson-databind:.*"))
         }
 
