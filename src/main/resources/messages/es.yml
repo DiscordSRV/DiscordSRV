@@ -275,7 +275,7 @@ MinecraftPlayerLeaveMessage:
       IconUrl: ""
     Timestamp: false
 #
-# Marcadores de posición disponibles mensajes  para PlayerDeath:
+# Marcadores de posición disponibles mensajes para PlayerDeath:
 # %deathmessage%: mensaje de muerte original
 # %world%:        nombre del mundo en que el usuario murió
 #

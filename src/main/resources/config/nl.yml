@@ -265,7 +265,7 @@ ChannelTopicUpdaterRateInMinutes: 10
 # Opties:
 #   ChannelId: de ID van het te wijzigen kanaal (vereist)
 #   Format: Het formaat voor het kanaal (vereist). Beschikbare tijdelijke aanduidingen:
-#     %playercount%:    huidig ​​aantal spelers
+#     %playercount%:    huidig aantal spelers
 #     %playermax%:      maximaal aantal spelers
 #     %date%:           huidige datum en tijd
 #     %totalplayers%:   totaal aantal spelers dat ooit lid zal worden van de hoofdwereld
