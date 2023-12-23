@@ -479,6 +479,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
 
         String prefix = DiscordSRV.config().getString("DiscordChatChannelConsoleCommandPrefix");
+        if (prefix.isEmpty()) return false;
         if (!StringUtils.startsWithIgnoreCase(message, prefix)) return false;
         String command = message.substring(prefix.length()).trim();
 
