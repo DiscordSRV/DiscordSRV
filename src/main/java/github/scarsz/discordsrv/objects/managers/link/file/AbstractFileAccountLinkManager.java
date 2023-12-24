@@ -46,7 +46,7 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
     public AbstractFileAccountLinkManager() {
         try {
             load();
-            DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Loaded " + linkedAccounts.size() + " linked accounts");
+            DiscordSRV.debug(Debug.ACCOUNT_LINKING, getClass().getSimpleName() + " loaded " + linkedAccounts.size() + " linked accounts");
         } catch (IOException e) {
             DiscordSRV.error("Failed to load linked accounts", e);
         }
