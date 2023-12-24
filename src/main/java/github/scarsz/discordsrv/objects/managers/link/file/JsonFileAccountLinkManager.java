@@ -42,6 +42,7 @@ public class JsonFileAccountLinkManager extends AbstractFileAccountLinkManager {
 
     void load() throws IOException {
         File file = getFile();
+        if (!file.exists()) return;
         String fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         if (fileContent == null || StringUtils.isBlank(fileContent)) fileContent = "{}";
         JsonObject jsonObject;
