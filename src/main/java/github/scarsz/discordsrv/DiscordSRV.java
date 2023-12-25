@@ -73,10 +73,15 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.kyori.adventure.text.Component;
+import okhttp3.Authenticator;
 import okhttp3.ConnectionPool;
+import okhttp3.Credentials;
 import okhttp3.Dispatcher;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Route;
 import okhttp3.internal.Util;
 import okhttp3.internal.tls.OkHostnameVerifier;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -721,19 +726,42 @@ public class DiscordSRV extends JavaPlugin {
         dispatcher.setMaxRequestsPerHost(20); // most requests are to discord.com
         ConnectionPool connectionPool = new ConnectionPool(5, 10, TimeUnit.SECONDS);
 
-        OkHttpClient httpClient = new OkHttpClient.Builder()
+        String proxyHost = config.getString("ProxyHost").trim();
+        String proxyPort = config.getString("ProxyPort").trim();
+        final String authUser = config.getString("ProxyUser").trim();
+        final String authPassword = config.getString("ProxyPassword").trim();
+
+        OkHttpClient httpClient; // Initialized below
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
                 .dns(dns)
-                // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .hostnameVerifier(noopHostnameVerifier.isPresent() && noopHostnameVerifier.get()
                         ? (hostname, sslSession) -> true
-                        : OkHostnameVerifier.INSTANCE
-                )
-                .build();
+                        : OkHostnameVerifier.INSTANCE);
+
+        // Reduce proxy username and password logic duplication
+        if (proxyHost != null && !proxyHost.isEmpty()) {
+            // This had to be set to empty string to avoid issue with basic auth
+            System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort)));
+            httpClientBuilder = httpClientBuilder.proxy(proxy);
+
+            if (authPassword != null && !authPassword.isEmpty()) {
+                httpClientBuilder = httpClientBuilder.proxyAuthenticator(new Authenticator() {
+                    @Override
+                    public Request authenticate(Route route, Response response) throws IOException {
+                        String credential = Credentials.basic(authUser, authPassword);
+                        return response.request().newBuilder().header("Proxy-Authorization", credential).build();
+                    }
+                });
+            }
+        } 
+
+        httpClient = httpClientBuilder.build();
 
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();

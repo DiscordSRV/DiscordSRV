@@ -8,6 +8,11 @@ ConfigVersion: ${version}
 # You must restart your server after changing this option
 BotToken: "BOTTOKEN"
 
+ProxyHost: "Proxy Host"
+ProxyPort: 1234 # Proxy Port
+ProxyUser: "Your username"
+ProxyPassword: "SomePassword"
+
 # Channel links from game to Discord
 # syntax is Channels: {"in-game channel name from Minecraft": "numerical channel ID from Discord", "another in-game channel name from Minecraft": "another numerical channel ID from Discord"}
 #
