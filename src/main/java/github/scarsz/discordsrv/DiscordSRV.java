@@ -727,15 +727,15 @@ public class DiscordSRV extends JavaPlugin {
         ConnectionPool connectionPool = new ConnectionPool(5, 10, TimeUnit.SECONDS);
 
         String proxyHost = config.getString("ProxyHost").trim();
-        String proxyPort = config.getString("ProxyPort").trim();
-        final String authUser = config.getString("ProxyUser").trim();
-        final String authPassword = config.getString("ProxyPassword").trim();
+        String proxyPort = config.getInt("ProxyPort").trim();
+        String authUser = config.getString("ProxyUser").trim();
+        String authPassword = config.getString("ProxyPassword").trim();
 
-        OkHttpClient httpClient; // Initialized below
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
                 .dns(dns)
+                // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
@@ -743,14 +743,14 @@ public class DiscordSRV extends JavaPlugin {
                         ? (hostname, sslSession) -> true
                         : OkHostnameVerifier.INSTANCE);
 
-        // Reduce proxy username and password logic duplication
-        if (proxyHost != null && !proxyHost.isEmpty()) {
+        if (proxyHost != "https://example.com") {
             // This had to be set to empty string to avoid issue with basic auth
+            // Ref: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111
             System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort)));
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
             httpClientBuilder = httpClientBuilder.proxy(proxy);
 
-            if (authPassword != null && !authPassword.isEmpty()) {
+            if (!authPassword.isEmpty()) {
                 httpClientBuilder = httpClientBuilder.proxyAuthenticator(new Authenticator() {
                     @Override
                     public Request authenticate(Route route, Response response) throws IOException {
@@ -761,7 +761,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         } 
 
-        httpClient = httpClientBuilder.build();
+        OkHttpClient httpClient = httpClientBuilder.build(); 
 
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
