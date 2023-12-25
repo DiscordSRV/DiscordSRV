@@ -21,7 +21,7 @@ body:
   id: logs
   attributes:
     label: Link to your latest.log file
-    description: "You can use https://mclo.gs/ to hide sensitive information in your log."
+    description: "You can use [mclo.gs](https://mclo.gs) to hide sensitive information in your log."
     placeholder: "https://mclo.gs/#####"
   validations:
     required: true

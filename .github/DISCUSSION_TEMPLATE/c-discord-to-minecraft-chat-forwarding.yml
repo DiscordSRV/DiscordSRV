@@ -34,7 +34,7 @@ body:
 - type: input
   id: bin
   attributes:
-    label: Your https://bin.scarsz.me/ link
+    label: Your bin.scarsz.me link from the debugger command
     placeholder: "https://bin.scarsz.me/<UUID>#<KEY>"
   validations:
     required: true

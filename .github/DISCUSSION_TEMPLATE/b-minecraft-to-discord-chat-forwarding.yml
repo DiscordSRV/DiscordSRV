@@ -9,11 +9,11 @@ body:
       1. Run `/discordsrv debugger start minecraft_to_discord` to enable the debugger
       2. Send messages in minecraft
       3. Run `/discordsrv debugger upload` command in-game or through console
-      4. Send the link that you're given into this chat.
+      4. Paste the link you're given into the field below
 - type: input
   id: bin
   attributes:
-    label: Your https://bin.scarsz.me/ link
+    label: Your bin.scarsz.me link from the debugger command
     placeholder: "https://bin.scarsz.me/<UUID>#<KEY>"
   validations:
     required: true
