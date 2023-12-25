@@ -30,7 +30,6 @@ import net.dv8tion.jda.internal.utils.BufferedRequestBody;
 import okhttp3.*;
 import okio.Okio;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -117,7 +116,7 @@ public class WebhookUtil {
     }
 
     public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             String avatarUrl;
             if (player instanceof Player) {
                 avatarUrl = DiscordSRV.getAvatarUrl((Player) player);
@@ -408,7 +407,7 @@ public class WebhookUtil {
         };
 
         if (scheduleAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), task);
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), task);
         } else {
             task.run();
         }
