@@ -48,8 +48,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings("SqlResolve")
 public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
-    // https://regex101.com/r/wLkyos
-    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+?)(:(?<port>[0-9]{1,5}|PORT))?/(?<name>\\w+)\\??(?<params>.+)$");
+    // https://regex101.com/r/EuPRjG
+    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+?)(:(?<port>\\d{1,5}|PORT))?/(?<name>\\w+)\\??(?<params>.+)$");
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
 
     private final Connection connection;
