@@ -1,0 +1,17 @@
+title: "[Console Error/Warning] "
+labels: ["waiting for support"]
+body:
+- type: markdown
+  attributes:
+    value: |
+      Please check your log (`logs/latest.log`) for errors from DiscordSRV, during startup. If you cannot find your errors please post your log here. If you were able to find errors regarding the plugin enabling, please post them here.
+
+      If you haven't yet gotten to the step of installing the plugin, please explain what step you're stuck on
+- type: input
+  id: logs
+  attributes:
+    label: Link to your latest.log file
+    description: "You can use https://mclo.gs/ to hide sensitive information in your log."
+    placeholder: "https://mclo.gs/#####"
+  validations:
+    required: true

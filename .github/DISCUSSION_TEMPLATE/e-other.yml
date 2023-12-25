@@ -1,0 +1,28 @@
+title: "[Other] "
+labels: ["waiting for support"]
+body:
+- type: textarea
+  id: repro
+  attributes:
+    label: What issue(s) are you having? Please explain in detail
+    render: bash
+  validations:
+    required: true
+- type: markdown
+  attributes:
+    value: |
+      __Please create a debug report__
+
+      1. Run `/discordsrv debugger start all` to enable the debugger
+      2. Reproduce whatever issue you have with the plugin.
+      3. Run `/discordsrv debugger upload` command in-game or through console
+      4. Send the link that you're given into this chat.
+
+      If you can't create a debug report, send your log (`logs/latest.log`) instead as a mclo.gs link
+- type: input
+  id: bin
+  attributes:
+    label: Your https://bin.scarsz.me/ or or https://mclo.gs/#### link
+    placeholder: "https://bin.scarsz.me/<UUID>#<KEY> or https://mclo.gs/####"
+  validations:
+    required: true

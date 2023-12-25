@@ -1,0 +1,40 @@
+title: "[DC -> MC] "
+labels: ["waiting for support"]
+body:
+- type: markdown
+  attributes:
+    value: |
+      __Ensure that the Message Content Intent is enabled__
+
+      **Even if you think this is done, refresh the page and make sure it saved correctly!** If messages are only being passed when they reply to/mention the bot then this is the solution.
+
+      1. Go to https://discord.com/developers/applications
+      2. Choose your bot (the bot is only visible to the Discord user that created it!)
+      3. Go to the "Bot" tab on the left
+      4. Check that the "MESSAGE CONTENT INTENT" is enabled (you may need to scroll down to see the option)
+          Note: After enabling the option you will need to restart your server
+- type: input
+  id: confirmation
+  attributes:
+    label: Please confirm below.
+    options:
+      - label: The intent is enabled and messages still are not passed
+        required: true
+      - label: I ticked all the boxes without actually reading them
+        required: false
+- type: markdown
+  attributes:
+    value: |
+      __Please create a debug report (ONLY DO SO AFTER DOING THE PREVIOUS STEP)__
+
+      1. Run `/discordsrv debugger start minecraft_to_discord` to enable the debugger
+      2. Send messages in minecraft
+      3. Run `/discordsrv debugger upload` command in-game or through console
+      4. Send the link that you're given into this chat.
+- type: input
+  id: bin
+  attributes:
+    label: Your https://bin.scarsz.me/ link
+    placeholder: "https://bin.scarsz.me/<UUID>#<KEY>"
+  validations:
+    required: true

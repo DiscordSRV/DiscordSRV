@@ -1,0 +1,19 @@
+title: "[MC -> DC] "
+labels: ["waiting for support"]
+body:
+- type: markdown
+  attributes:
+    value: |
+      __Please create a debug report__
+
+      1. Run `/discordsrv debugger start minecraft_to_discord` to enable the debugger
+      2. Send messages in minecraft
+      3. Run `/discordsrv debugger upload` command in-game or through console
+      4. Send the link that you're given into this chat.
+- type: input
+  id: bin
+  attributes:
+    label: Your https://bin.scarsz.me/ link
+    placeholder: "https://bin.scarsz.me/<UUID>#<KEY>"
+  validations:
+    required: true
