@@ -4,14 +4,10 @@ body:
 - type: markdown
   attributes:
     value: |
-      Please check your log (`logs/latest.log`) for errors from DiscordSRV, during startup. If you cannot find your errors please upload your log to [mclo.gs](https://mclo.gs) and put it in the field below. If you were able to find errors regarding the plugin enabling, please put them in the field below.
-
-      If you haven't yet gotten to the step of installing the plugin, please explain what step you're stuck on
-- type: input
-  id: logs
+      Please attach the entire error/warning, including any lines starting with `at` or `Caused by:` below the message. If you are not sure what parts to copy, please attach your log (`logs/latest.log`) via a [mclo.gs](https://mclo.gs) link
+- type: textarea
+  id: error
   attributes:
-    label: Link to your latest.log file
-    description: "You can use [mclo.gs](https://mclo.gs) to hide sensitive information in your log."
-    placeholder: "https://mclo.gs/#####"
+    label: The error or logs in a mclo.gs link
   validations:
     required: true
