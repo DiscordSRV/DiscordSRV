@@ -143,7 +143,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: den maksimale længde af beskeder fra Discord, der skal sendes til Minecraft
 # DiscordChatChannelTranslateMentions: om man skal oversætte omtaler som @Person for Minecraft til Discord-meddelelser
 # DiscordChatChannelAllowedMentions: typer af omtaler tilladt i Minecraft for at discord-beskeder; typer, der mangler fra standardværdien, er "rolle", "her" og "alle"
-# DiscordChatChannelEmoji Behavior: hvordan emojis skal sendes til Minecraft. Kan være "show", "name", eller "hide"
+# DiscordChatChannelEmojiBehavior: hvordan emojis skal sendes til Minecraft. Kan være "show", "name", eller "hide"
+
 # DiscordChatChannelEmoteBehavior: hvordan følelser skal sendes til Minecraft. Kan være "name" eller "hide"
 # DiscordChatChannelPrefixRequiredToProcessMessage: det eller de tegn, der kræves for at præfikse en besked, for at den kan sendes fra Minecraft til Discord (eksempel "!")
 # DiscordChatChannelPrefixActsAsBlacklist: Om præfikset skal fungere som en sortliste
@@ -250,7 +251,8 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: regex-filtre, der skal anvendes på chatbeskeder, der sendes til Minecraft, hvis resultatet er tomt, vil beskeden slet ikke blive sendt
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online spillere \\(.*": "", ".*\\*\\*Ingen online spillere\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+
 
 # Indstillinger for opdatering af kanalemne
 #

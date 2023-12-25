@@ -175,9 +175,10 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 #
 #
 # Integrer oplysninger:
-#  Farve:       accepterer en hex-farvekode (f.eks. "#ffffff") eller et rgb-heltal (f.eks. 0)
-#  Felter:      formatet er "title;value;inline" (f.eks. "Who joined?;%displayname%;true") eller "blank" for at tilføje et tomt felt
-#  Tidsstempel: Indstil til sand for at bruge det tidspunkt, meddelelsen blev sendt, eller brug et epoketidsstempel for et bestemt tidspunkt (https://www.epochconverter.com/)
+#  Color:       accepterer en hex-farvekode (f.eks. "#ffffff") eller et rgb-heltal (f.eks. 0)
+#  Fields:      formatet er "title;value;inline" (f.eks. "Who joined?;%displayname%;true") eller "blank" for at tilføje et tomt felt
+#  Timestamp: Indstil til sand for at bruge det tidspunkt, meddelelsen blev sendt, eller brug et epoketidsstempel for et bestemt tidspunkt (https://www.epochconverter.com/)
+
 #
 # Tilgængelige pladsholdere for PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:          Vis navn fra ting som kaldenavne
