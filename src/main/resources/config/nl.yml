@@ -8,6 +8,8 @@ ConfigVersion: ${version}
 # U moet uw server opnieuw opstarten nadat u deze optie hebt gewijzigd
 BotToken: "BOTTOKEN"
 
+# The proxy to be used for Discord  
+# Leave this alone if you don't understand what it does  
 ProxyHost: "https://example.com"  
 ProxyPort: 1234  
 ProxyUser: "USERNAME"  

@@ -8,6 +8,8 @@ ConfigVersion: ${version}
 # 更改此選項後必須重新啟動服務器
 BotToken: "BOTTOKEN"
 
+# 使用代理服务器连接到Discord 
+# 如果你不知道它的功能，请不要修改参数
 ProxyHost: "https://example.com"  
 ProxyPort: 1234  
 ProxyUser: "USERNAME"  
