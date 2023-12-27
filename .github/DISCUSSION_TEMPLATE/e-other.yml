@@ -18,6 +18,8 @@ body:
       4. Send the link that you're given into this chat.
 
       If you can't create a debug report, send your log (`logs/latest.log`) as a [mclo.gs](https://mclo.gs) link instead
+
+      ---
 - type: input
   id: bin
   attributes:

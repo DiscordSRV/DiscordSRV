@@ -13,7 +13,9 @@ body:
       3. Go to the "Bot" tab on the left
       4. Check that the "MESSAGE CONTENT INTENT" is enabled (you may need to scroll down to see the option)
           Note: After enabling the option you will need to restart your server
-- type: input
+
+      ---
+- type: checkboxes
   id: confirmation
   attributes:
     label: Please confirm below.

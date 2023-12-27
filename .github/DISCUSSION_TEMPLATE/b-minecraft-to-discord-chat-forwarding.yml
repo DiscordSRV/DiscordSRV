@@ -7,7 +7,7 @@ body:
       __Please create a debug report__
 
       1. Run `/discordsrv debugger start minecraft_to_discord` to enable the debugger
-      2. Send messages in minecraft
+      2. Send messages in Minecraft
       3. Run `/discordsrv debugger upload` command in-game or through console
       4. Paste the link you're given into the field below
 - type: input
