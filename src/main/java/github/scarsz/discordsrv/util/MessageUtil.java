@@ -30,13 +30,10 @@ import dev.vankka.simpleast.core.simple.SimpleMarkdownRules;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.DiscordSRVMinecraftRenderer;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -79,7 +76,7 @@ public class MessageUtil {
      * Pattern for capturing both ampersand and the legacy section sign color codes.
      * @see #LEGACY_SECTION
      */
-    public static final Pattern STRIP_PATTERN = Pattern.compile("(?<!<@)[&§\u007F](?i)[0-9a-fklmnorx]");
+    public static final Pattern STRIP_PATTERN = Pattern.compile("(?:(?<!<@)&|[§\u007F])(?i)[0-9a-fklmnorx]");
 
     /**
      * Pattern for capturing section sign color codes.
@@ -171,11 +168,7 @@ public class MessageUtil {
      */
     public static Component toComponent(String message, boolean useLegacy) {
         if (useLegacy) {
-            TextComponent component = LEGACY_SERIALIZER.deserialize(message);
-            List<Component> children = new ArrayList<>(component.children());
-            children.add(0, Component.text(component.content()).style(component.style()));
-            component = component.content("").style(Style.empty()).children(children);
-            return component;
+            return LEGACY_SERIALIZER.deserialize(message);
         } else {
             Component component = MiniMessage.miniMessage().deserialize(message);
             component = component.replaceText(
@@ -350,13 +343,13 @@ public class MessageUtil {
 
         try {
             if (!audiences.isEmpty()) {
-                Audience.audience(audiences).sendMessage(Identity.nil(), adventureMessage);
+                Audience.audience(audiences).sendMessage(adventureMessage);
             }
 
             if (!degradedAudiences.isEmpty()) {
                 // Put it through legacy serializer for degraded audiences
                 Component degraded = LEGACY_SERIALIZER.deserialize(LEGACY_SERIALIZER.serialize(adventureMessage));
-                Audience.audience(degradedAudiences).sendMessage(Identity.nil(), degraded);
+                Audience.audience(degradedAudiences).sendMessage(degraded);
             }
         } catch (NoClassDefFoundError e) {
             // might happen with 1.7

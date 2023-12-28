@@ -10,6 +10,7 @@ plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("net.kyori.indra.git") version "2.1.1"
     id("net.researchgate.release") version "3.0.2"
+    id("xyz.jpenilla.run-paper") version "2.2.0"
 }
 
 group = "com.discordsrv"
@@ -20,6 +21,8 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
+
+    disableAutoTargetJvm() // required because paper-api uses Java 17 (w/ gradle metadata)
 }
 
 license {
@@ -30,28 +33,6 @@ license {
 release {
     git {
         requireBranch.set("master")
-    }
-}
-
-publishing {
-    repositories {
-        maven {
-            val repository = "https://nexus.scarsz.me/content/repositories/"
-            val releasesRepoUrl = repository + "releases"
-            val snapshotsRepoUrl = repository + "snapshots"
-            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
-
-            credentials {
-                username = System.getenv("REPO_USERNAME") ?: "ci"
-                password = (System.getenv("REPO_PASSWORD") ?: project.property("repoPassword")).toString()
-            }
-        }
-    }
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifactId = "discordsrv"
-        }
     }
 }
 
@@ -87,7 +68,11 @@ tasks {
         doLast {
             val v = "v$version"
             println("Commit: $v")
-            indraGit.git()!!.commit().setMessage(v).call()
+            val git = indraGit.git()!!
+            git.add().addFilepattern("gradle.properties").call()
+            git.commit()
+                .setAuthor("Scarsz", "truescarsz@gmail.com")
+                .setMessage(v).call()
         }
     }
 
@@ -120,7 +105,7 @@ tasks {
         mustRunAfter("build")
         minimize {
             exclude(dependency("github.scarsz:configuralize:.*"))
-            exclude(dependency("me.scarsz:jdaappender:.*"))
+            exclude(dependency("me.scarsz.jdaappender:jda4:.*"))
             exclude(dependency("com.fasterxml.jackson.core:jackson-databind:.*"))
         }
 
@@ -160,6 +145,33 @@ tasks {
     }
 }
 
+publishing {
+    repositories {
+        maven {
+            val repository = "https://nexus.scarsz.me/content/repositories/"
+            val releasesRepoUrl = repository + "releases"
+            val snapshotsRepoUrl = repository + "snapshots"
+            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+
+            credentials {
+                username = System.getenv("REPO_USERNAME") ?: "ci"
+                password = (System.getenv("REPO_PASSWORD") ?: project.property("repoPassword")).toString()
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            // Publish the shaded jar as the main jar, sources & javadoc and an empty pom (no dependencies)
+            artifact(tasks["shadowJar"]) {
+                classifier = null
+            }
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+            artifactId = "discordsrv"
+        }
+    }
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -172,12 +184,12 @@ repositories {
 
 dependencies {
     // Paper API
-    compileOnly("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
+    compileOnly("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
         exclude("commons-lang") // Exclude lang in favor of our own lang3
     }
     
     // JDA
-    api("net.dv8tion:JDA:4.4.0_352.fix-2") {
+    api("net.dv8tion:JDA:4.4.0_352.fix-5") {
         exclude(module = "opus-java") // we don't use voice features
     }
     
@@ -189,7 +201,7 @@ dependencies {
     }
     
     // Logging
-    implementation("me.scarsz:jdaappender:1.0.3")
+    implementation("me.scarsz.jdaappender:jda4:1.2.0-SNAPSHOT")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9
@@ -199,14 +211,14 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-core:2.0-beta9")
 
     // adventure, adventure-platform, MCDiscordReserializer
-    val adventureVersion = "4.10.1"
+    val adventureVersion = "4.14.0"
     api("net.kyori:adventure-api:${adventureVersion}")
     api("net.kyori:adventure-text-minimessage:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.1.2")
-    api("dev.vankka:MCDiscordReserializer:4.2.2")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.1")
+    api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
     compileOnlyApi("org.jetbrains:annotations:23.0.0")
@@ -223,9 +235,11 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     // DynamicProxy
-    runtimeOnly("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT:runtime")
-    compileOnly("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
-    annotationProcessor("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
+    runtimeOnly("dev.vankka:dynamicproxy:1.0.0:runtime") {
+        exclude(module = "javaparser-symbol-solver-core")
+    }
+    compileOnly("dev.vankka:dynamicproxy:1.0.0")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.0")
     
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
@@ -253,6 +267,7 @@ dependencies {
     compileOnly("com.dthielke.herochat:Herochat:5.6.5")
     compileOnly("br.com.devpaulo:legendchat:1.1.5")
     compileOnly("com.github.ucchyocean.lc:LunaChat:3.0.16")
+    compileOnly("com.nickuc.chat:nchat-api:5.6")
     compileOnly("com.palmergames.bukkit:TownyChat:0.45")
     compileOnly("mineverse.aust1n46:venturechat:2.20.1")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
@@ -278,7 +293,16 @@ dependencies {
     // JUnit
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
-    testImplementation("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
+}
+
+tasks {
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion("1.20.2")
+    }
 }
 
 var generatedPaths: FileCollection = sourceSets.main.get().output.generatedSourcesDirs

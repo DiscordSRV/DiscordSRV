@@ -406,8 +406,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, le serveur n'a pas répo
 # Ce sont des messages utilisés lorsque les comptes sont liés
 #
 # Placeholders disponibles :
-# CodeGenerated:                %code%:         code généré pour les joueurs voulant lier leur compte
-#                               %botname%:      nom du bot sur Discord
 # UnknownCode/InvalidCode:      %code%:         code généré pour les joueurs voulant lier leur compte
 #                               %mention%:      la mention au compte Discord
 # DiscordAccountLinked:         %name%:         le nom du joueur de Minecraft sur lequel le compte Discord est lié
@@ -418,6 +416,8 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, le serveur n'a pas répo
 #                               %username%:     le nom d'utilisateur Minecraft du compte Minecraft lié de l'utilisateur
 #                               %mention%:      la mention au compte Discord
 # DiscordLinkedAccountRequired  %message%:      le message que l'utilisateur n'a pas pu envoyer car il n'était pas lié
+# CodeGenerated:                %code%:         code généré pour les joueurs voulant lier leur compte
+#                               %botname%:      nom du bot sur Discord
 # MinecraftAccountLinked:       %id%:           l'ID Discord de l'utilisateur auquel le compte Minecraft est lié
 #                               %username%:     le nom Discord de l'utilisateur auquel le compte Minecraft est lié
 # LinkedCommandSuccess:         %name%:         le nom d'utilisateur Discord de l'utilisateur Discord auquel le compte Minecraft de l'utilisateur est lié
@@ -425,7 +425,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, le serveur n'a pas répo
 # MinecraftNobodyFound:         %target%:       l'entrée qui n'a conduit à aucun résultat
 #
 # Discord
-CodeGenerated: "Votre code est : %code%. Envoyez ce code en message privé à (%botname%) pour lier votre compte Discord à Minecraft."
 UnknownCode: "Je ne connais pas un tel code, réessayez"
 InvalidCode: "Êtes vous sûr qu'il s'agit du bon code ? Les codes possèdent quatre chiffres."
 DiscordAccountLinked: "Votre compte Discord est désormais lié à %name% (%uuid%)"
@@ -433,6 +432,7 @@ DiscordAccountAlreadyLinked: "Vous êtes déjà lié à %username% (%uuid%)"
 DiscordLinkedAccountRequired: "Le message suivant n'a pas pu être envoyé sur le jeu car votre compte Minecraft doit être lié à votre compte Discord. Liez votre compte depuis Minecraft en tapant `/discord link`. \n```%message%```"
 DiscordLinkedAccountCheckFailed: "Impossible de vérifier si votre compte est lié, veuillez réessayer plus tard"
 # Minecraft
+CodeGenerated: "Votre code est : %code%. Envoyez ce code en message privé à (%botname%) pour lier votre compte Discord à Minecraft."
 ClickToCopyCode: "Cliquez pour copier"
 MinecraftAccountLinked: "&bVotre UUID est désormais lié à %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&bVotre compte Minecraft est déjà associé à un compte Discord. Si vous avez la permission vous pouvez utiliser la commande /discord unlink pour retirer votre compte Discord."
