@@ -4,14 +4,14 @@ body:
 - type: markdown
   attributes:
     value: |
-      __Ensure that the Message Content Intent is enabled__
+      ### Ensure that the Message Content Intent is enabled
 
-      **Even if you think this is done, refresh the page and make sure it saved correctly!** If messages are only being passed when they reply to/mention the bot then this is the solution.
+      **Even if you think this is done, refresh the applications page and make sure it saved correctly!** If messages are only being passed when they reply to/mention the bot then this is the solution.
 
       1. Go to https://discord.com/developers/applications
       2. Choose your bot (the bot is only visible to the Discord user that created it!)
-      3. Go to the "Bot" tab on the left
-      4. Check that the "MESSAGE CONTENT INTENT" is enabled (you may need to scroll down to see the option)
+      3. Go to the `Bot` tab on the left
+      4. Check that the **`MESSAGE CONTENT INTENT`** is enabled (you may need to scroll down to see the option)
           Note: After enabling the option you will need to restart your server
 
       ---
@@ -20,9 +20,9 @@ body:
   attributes:
     label: Please confirm below.
     options:
-      - label: The intent is enabled and messages still are not passed
+      - label: I enabled the **`MESSAGE CONTENT INTENT``** and the bot still won't send any messages
         required: true
-      - label: I ticked all the boxes without actually reading them
+      - label: I ticked these boxes without actually reading them
         required: false
 - type: markdown
   attributes:
