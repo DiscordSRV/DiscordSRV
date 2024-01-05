@@ -100,4 +100,5 @@ public class ChattyChatHook implements ChatHook {
         }
         return true;
     }
+
 }

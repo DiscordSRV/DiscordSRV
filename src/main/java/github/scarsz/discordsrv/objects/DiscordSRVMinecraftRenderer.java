@@ -81,4 +81,5 @@ public class DiscordSRVMinecraftRenderer extends DefaultMinecraftRenderer {
         if (role != null) component = component.append(Component.text("@" + role.getName()));
         return component;
     }
+
 }

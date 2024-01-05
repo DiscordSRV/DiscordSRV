@@ -485,7 +485,6 @@ public class DiscordSRV extends JavaPlugin {
         });
         initThread.start();
 
-
         if (Bukkit.getWorlds().size() > 0) {
             playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
         }
@@ -1737,8 +1736,6 @@ public class DiscordSRV extends JavaPlugin {
                     .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
             // Replace the PAPI placeholders in the message pattern
             discordMessagePattern = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessagePattern, player);
-
-
 
             /*
             // Reserialize the message pattern, in the case the placeholders added more color codes.

@@ -84,4 +84,5 @@ public class CommandDebugger {
 
         sender.sendMessage(ChatColor.RED + "Invalid subcommand " + ChatColor.DARK_RED + subCommand);
     }
+
 }

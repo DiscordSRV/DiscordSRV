@@ -60,4 +60,5 @@ public class ChannelTopicUpdater extends Thread {
             }
         }
     }
+
 }

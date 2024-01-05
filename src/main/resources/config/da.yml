@@ -253,7 +253,6 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 DiscordChatChannelGameFilters: {}
 DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
-
 # Indstillinger for opdatering af kanalemne
 #
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: om kanalemnerne overhovedet skal ændres ved serverlukning

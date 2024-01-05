@@ -92,4 +92,5 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), true));
     }
+
 }

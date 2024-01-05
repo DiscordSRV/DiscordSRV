@@ -150,4 +150,5 @@ public class MessageFormatResolver {
 
         return messageFormat.isAnyContent() ? messageFormat : null;
     }
+
 }

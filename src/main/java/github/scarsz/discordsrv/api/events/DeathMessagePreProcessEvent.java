@@ -74,4 +74,5 @@ public class DeathMessagePreProcessEvent extends GameEvent<PlayerDeathEvent> imp
         messageFormat.setContent(message);
         this.messageFormat = messageFormat;
     }
+
 }

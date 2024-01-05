@@ -495,7 +495,6 @@ public class DebugUtil {
         return String.join("\n", output);
     }
 
-
     private static String getThreads() {
         Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
         Set<Thread> alreadyLoggedThreads = new HashSet<>();

@@ -179,4 +179,5 @@ public class ChannelUpdater extends Thread {
             DiscordUtil.setChannelName(discordChannel, newName, blockThread);
         }
     }
+
 }

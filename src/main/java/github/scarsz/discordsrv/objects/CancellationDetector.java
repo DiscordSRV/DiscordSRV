@@ -218,4 +218,5 @@ public class CancellationDetector<E extends Cancellable> {
             }
         }
     }
+
 }

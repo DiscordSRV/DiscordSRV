@@ -205,4 +205,5 @@ public abstract class AbstractAccountLinkManager implements AccountLinkManager {
             DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
         }
     }
+
 }

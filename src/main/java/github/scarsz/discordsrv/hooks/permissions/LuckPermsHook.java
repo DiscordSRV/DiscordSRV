@@ -108,7 +108,6 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         );
     }
 
-
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPluginDisable(PluginDisableEvent event) {
         if (event.getPlugin() instanceof DiscordSRV) {

@@ -23,7 +23,6 @@ package github.scarsz.discordsrv.api.events;
 import lombok.Getter;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-
 /**
  * <p>Called directly after a command was sent to the minecraft server from discord</p>
  *
@@ -47,4 +46,5 @@ public class DiscordConsoleCommandPostProcessEvent extends DiscordEvent<GuildMes
         this.command = command;
         this.sentInConsoleChannel = sentInConsoleChannel;
     }
+
 }

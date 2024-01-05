@@ -62,4 +62,5 @@ public class DynmapHook implements PluginHook {
     public Plugin getPlugin() {
         return PluginUtil.getPlugin("dynmap");
     }
+
 }

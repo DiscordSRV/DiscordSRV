@@ -202,4 +202,5 @@ public abstract class CommandSenderDynamic implements CommandSender {
         original.sendMessage(component);
         doSend(BungeeComponentSerializer.get().deserialize(new BaseComponent[] {component}));
     }
+
 }

@@ -172,4 +172,5 @@ public class Network {
     public boolean isInitialized() {
         return initialized;
     }
+
 }

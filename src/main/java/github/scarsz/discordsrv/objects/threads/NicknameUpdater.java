@@ -153,4 +153,5 @@ public class NicknameUpdater extends Thread {
         }
         DiscordUtil.setNickname(member, nickname);
     }
+
 }

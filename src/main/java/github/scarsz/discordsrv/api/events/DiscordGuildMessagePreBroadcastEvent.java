@@ -44,4 +44,5 @@ public class DiscordGuildMessagePreBroadcastEvent extends Event {
         this.message = message;
         this.recipients = recipients;
     }
+
 }

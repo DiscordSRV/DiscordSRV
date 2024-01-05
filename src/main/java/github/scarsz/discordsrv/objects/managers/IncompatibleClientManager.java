@@ -120,4 +120,5 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
     public void onPlayerQuit(PlayerQuitEvent event) {
         incompatibleClients.remove(event.getPlayer().getUniqueId());
     }
+
 }

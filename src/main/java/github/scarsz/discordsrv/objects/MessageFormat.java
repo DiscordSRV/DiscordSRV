@@ -83,4 +83,5 @@ public class MessageFormat {
     public void setColor(java.awt.Color color) {
         this.colorRaw = color.getRGB();
     }
+
 }

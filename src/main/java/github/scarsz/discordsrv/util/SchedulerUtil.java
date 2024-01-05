@@ -108,7 +108,6 @@ public class SchedulerUtil {
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, initialDelayTicks, periodTicks);
     }
 
-
     public static void runTaskLater(Plugin plugin, Runnable runnable, long delayedTicks) {
         if (isFolia()) {
             Object globalRegionScheduler = getGlobalRegionScheduler();
@@ -149,4 +148,5 @@ public class SchedulerUtil {
         }
         Bukkit.getScheduler().cancelTasks(plugin);
     }
+
 }

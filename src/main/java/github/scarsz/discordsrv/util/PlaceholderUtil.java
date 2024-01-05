@@ -114,4 +114,5 @@ public class PlaceholderUtil {
     public static String notNull(Object object) {
         return object != null ? object.toString() : "";
     }
+
 }

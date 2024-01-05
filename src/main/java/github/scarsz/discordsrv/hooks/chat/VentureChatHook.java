@@ -275,4 +275,5 @@ public class VentureChatHook implements ChatHook {
     public Plugin getPlugin() {
         return PluginUtil.getPlugin("VentureChat");
     }
+
 }
