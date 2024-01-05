@@ -35,8 +35,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -246,7 +244,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        formatMessage = replacePlaceholders(formatMessage, event, selectedRoles);
+        formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, message);
 
         // translate color codes
         formatMessage = MessageUtil.translateLegacy(formatMessage);
@@ -266,14 +264,9 @@ public class DiscordChatListener extends ListenerAdapter {
         if (authorLinkedUuid != null) authorPlayer = Bukkit.getOfflinePlayer(authorLinkedUuid);
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
-        if (!MessageUtil.isLegacy(formatMessage)) {
-            // A hack that'll hold over until rewrite
-            formatMessage = formatMessage.replace("%toprolecolor%", "<white>%toprolecolor%");
-        }
 
         Component component = MessageUtil.toComponent(formatMessage);
         String finalMessage = message;
-        component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
         if (postEvent.isCancelled()) {
@@ -285,10 +278,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 .filter(pluginHook -> pluginHook instanceof DynmapHook)
                 .map(pluginHook -> (DynmapHook) pluginHook)
                 .findAny().ifPresent(dynmapHook -> {
-                    String chatFormat = replacePlaceholders(LangUtil.Message.DYNMAP_CHAT_FORMAT.toString(), event, selectedRoles)
-                            .replace("%message%", finalMessage);
-                    String nameFormat = replacePlaceholders(LangUtil.Message.DYNMAP_NAME_FORMAT.toString(), event, selectedRoles)
-                            .replace("%message%", finalMessage);
+                    String chatFormat = replacePlaceholders(LangUtil.Message.DYNMAP_CHAT_FORMAT.toString(), event, selectedRoles, finalMessage);
+                    String nameFormat = replacePlaceholders(LangUtil.Message.DYNMAP_NAME_FORMAT.toString(), event, selectedRoles, finalMessage);
 
                     chatFormat = MessageUtil.translateLegacy(chatFormat);
                     nameFormat = MessageUtil.translateLegacy(nameFormat);
@@ -333,7 +324,7 @@ public class DiscordChatListener extends ListenerAdapter {
         String placedMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
         placedMessage = MessageUtil.translateLegacy(
-                replacePlaceholders(placedMessage, event, selectedRoles));
+                replacePlaceholders(placedMessage, event, selectedRoles, url));
 
         OfflinePlayer authorPlayer = null;
         UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
@@ -342,12 +333,8 @@ public class DiscordChatListener extends ListenerAdapter {
         placedMessage = PlaceholderUtil.replacePlaceholders(placedMessage, authorPlayer);
 
         placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
-        if (!MessageUtil.isLegacy(placedMessage)) {
-            // A hack that'll hold over until rewrite
-            placedMessage = placedMessage.replace("%toprolecolor%", "<white>%toprolecolor%");
-        }
+
         Component component = MessageUtil.toComponent(placedMessage);
-        component = replaceRoleColorAndMessage(component, url, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
         if (postEvent.isCancelled()) {
@@ -360,20 +347,6 @@ public class DiscordChatListener extends ListenerAdapter {
         return false;
     }
 
-    private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
-    private static final Pattern MESSAGE_MATTER = Pattern.compile("%message%");
-    private Component replaceRoleColorAndMessage(Component component, String message, int color) {
-        return component
-                .replaceText(TextReplacementConfig.builder()
-                        .match(TOP_ROLE_COLOR_PATTERN)
-                        .replacement(builder -> builder.content(builder.content().replaceFirst("%toprolecolor%", "")).color(TextColor.color(color)))
-                        .build()
-                ).replaceText(TextReplacementConfig.builder()
-                        .match(MESSAGE_MATTER)
-                        .replacement(builder -> MessageUtil.toComponent(message))
-                        .build());
-    }
-
     private String getTopRoleAlias(Role role) {
         if (role == null) return "";
         String name = role.getName();
@@ -382,7 +355,12 @@ public class DiscordChatListener extends ListenerAdapter {
         );
     }
 
-    private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles) {
+    private String getTopRoleColor(Role role) {
+        int color = role == null ? DiscordUtil.DISCORD_DEFAULT_COLOR_RGB : role.getColorRaw();
+        return ColorUtil.getLegacyColor(color);
+    }
+
+    private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
         Function<String, String> escape = MessageUtil.isLegacy(input)
                 ? str -> str
                 : str -> str.replaceAll("([<>])", "\\\\$1");
@@ -394,7 +372,9 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? escape.apply(DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1)) : "")
                 .replace("%toprolealias%", getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%allroles%", escape.apply(DiscordUtil.getFormattedRoles(selectedRoles)))
+                .replace("%toprolecolor%", getTopRoleColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%reply%", event.getMessage().getReferencedMessage() != null ? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), event.getMessage().getReferencedMessage()) : "")
+                .replace("%message%", message)
                 .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\*", "*") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\_", "_"); // get rid of escaped characters, since Minecraft doesn't use markdown
@@ -418,7 +398,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         int expiration = DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000;
         String playerListMessage;
-        if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
+        if (PlayerUtil.getOnlinePlayers(true).isEmpty()) {
             playerListMessage = PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString());
         } else {
             playerListMessage = LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
