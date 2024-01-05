@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "com.discordsrv"
-val minecraftVersion = project.properties["minecraftVersion"]!!
+val minecraftVersion = project.properties["minecraftVersion"]!!.toString()
 val targetJavaVersion = 1.8
 
 java {
@@ -301,7 +301,7 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.20.2")
+        minecraftVersion(minecraftVersion)
     }
 }
 
