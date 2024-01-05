@@ -87,6 +87,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # Einbetten und Webhook-Bild-/Avatar-URL-Format
 # Alternative Einbettungs-Avatar-URL für Offline-Server:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+# GeyserMC: https://api.creepernation.net/avatar/{uuid}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}
 
 # Reserializer
