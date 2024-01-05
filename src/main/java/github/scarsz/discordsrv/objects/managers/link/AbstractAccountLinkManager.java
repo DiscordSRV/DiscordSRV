@@ -47,7 +47,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class AbstractAccountLinkManager extends AccountLinkManager {
+public abstract class AbstractAccountLinkManager implements AccountLinkManager {
 
     @Getter
     protected final Map<String, UUID> linkingCodes = new ConcurrentHashMap<>();

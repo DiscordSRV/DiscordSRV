@@ -30,7 +30,7 @@ import java.util.UUID;
 /**
  * Class for accessing and managing linked accounts.
  */
-public abstract class AccountLinkManager implements Listener {
+public interface AccountLinkManager extends Listener {
 
     /**
      * Gets the Discord ID for a given player's linked account.
@@ -41,7 +41,7 @@ public abstract class AccountLinkManager implements Listener {
      * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
      * @see #isInCache(UUID)
      */
-    public abstract String getDiscordId(UUID uuid);
+    String getDiscordId(UUID uuid);
 
     /**
      * Gets the Minecraft uuid for a given user's linked account.
@@ -51,14 +51,14 @@ public abstract class AccountLinkManager implements Listener {
      * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
      * @see #isInCache(String)
      */
-    public abstract UUID getUuid(String discordId);
+    UUID getUuid(String discordId);
 
     /**
      * Gets the amount of linked accounts. This is kept in memory and is recommended over doing {@code getLinkedAccounts().size()}.
      *
      * @return the amount of linked accounts
      */
-    public abstract int getLinkedAccountCount();
+    int getLinkedAccountCount();
 
     /**
      * Gets multiple Discord id's for multiple uuids at once.
@@ -68,7 +68,7 @@ public abstract class AccountLinkManager implements Listener {
      * @see #getDiscordId(UUID)
      * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
      */
-    public abstract Map<UUID, String> getManyDiscordIds(Set<UUID> uuids);
+    Map<UUID, String> getManyDiscordIds(Set<UUID> uuids);
 
     /**
      * Gets multiple player uuid's for multiple Discord user ids at once.
@@ -78,7 +78,7 @@ public abstract class AccountLinkManager implements Listener {
      * @see #getUuid(String)
      * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
      */
-    public abstract Map<String, UUID> getManyUuids(Set<String> discordIds);
+    Map<String, UUID> getManyUuids(Set<String> discordIds);
 
     /**
      * Gets all linked accounts.
@@ -90,7 +90,7 @@ public abstract class AccountLinkManager implements Listener {
      * @see #getManyDiscordIds(Set)
      * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
      */
-    public abstract Map<String, UUID> getLinkedAccounts();
+    Map<String, UUID> getLinkedAccounts();
 
     /**
      * Gets the Discord ID for the given player from the cache
@@ -100,7 +100,7 @@ public abstract class AccountLinkManager implements Listener {
      * @return the given player's Discord id if it is in the cache
      * @see #isInCache(UUID)
      */
-    public abstract String getDiscordIdFromCache(UUID uuid);
+    String getDiscordIdFromCache(UUID uuid);
 
     /**
      * Gets the Player UUID for the given user from the cache
@@ -110,7 +110,7 @@ public abstract class AccountLinkManager implements Listener {
      * @return the given user's Minecraft uuid if it is in the cache
      * @see #isInCache(String)
      */
-    public abstract UUID getUuidFromCache(String discordId);
+    UUID getUuidFromCache(String discordId);
 
     /**
      * <p>Not recommended, may lead to blocking requests to storage backends</p>
@@ -118,7 +118,7 @@ public abstract class AccountLinkManager implements Listener {
      *
      * @see #getDiscordId(UUID)
      */
-    public abstract String getDiscordIdBypassCache(UUID uuid);
+    String getDiscordIdBypassCache(UUID uuid);
 
     /**
      * <p>Not recommended, may lead to blocking requests to storage backends</p>
@@ -126,7 +126,7 @@ public abstract class AccountLinkManager implements Listener {
      *
      * @see #getUuid(String)
      */
-    public abstract UUID getUuidBypassCache(String discordId);
+    UUID getUuidBypassCache(String discordId);
 
     /**
      * Checks if a given player's Discord account is in cache.
@@ -134,7 +134,7 @@ public abstract class AccountLinkManager implements Listener {
      * @param uuid the uuid for the player to check
      * @return weather or not the player's Discord account is in cache
      */
-    public abstract boolean isInCache(UUID uuid);
+    boolean isInCache(UUID uuid);
 
     /**
      * Checks if a given Discord user's player uuid is in cache.
@@ -142,15 +142,15 @@ public abstract class AccountLinkManager implements Listener {
      * @param discordId the discord id
      * @return weather or not the Discord user's Minecraft uuid is in cache
      */
-    public abstract boolean isInCache(String discordId);
+    boolean isInCache(String discordId);
 
-    public abstract String generateCode(UUID playerUuid);
-    public abstract Map<String, UUID> getLinkingCodes();
-    public abstract String process(String linkCode, String discordId);
-    public abstract void link(String discordId, UUID uuid);
-    public abstract void unlink(UUID uuid);
-    public abstract void unlink(String discordId);
+    String generateCode(UUID playerUuid);
+    Map<String, UUID> getLinkingCodes();
+    String process(String linkCode, String discordId);
+    void link(String discordId, UUID uuid);
+    void unlink(UUID uuid);
+    void unlink(String discordId);
 
-    public abstract void save() throws IOException;
+    void save() throws IOException;
 
 }
