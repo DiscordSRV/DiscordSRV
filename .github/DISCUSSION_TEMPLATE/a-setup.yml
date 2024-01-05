@@ -1,0 +1,30 @@
+title: "[Setup] "
+labels: ["waiting for support"]
+body:
+- type: dropdown
+  id: problem
+  attributes:
+    label: What problem are you facing?
+    options:
+      - I need help setting up/connecting the bot
+      - The bot is not connected to Discord
+      - The plugin is not loading/enabling properly
+      - DiscordSRV is showing red in /plugins
+  validations:
+    required: true
+- type: markdown
+  attributes:
+    value: |
+      Please check your log (`logs/latest.log`) for errors from DiscordSRV, during startup. If you cannot find your errors please post your log here. If you were able to find errors regarding the plugin enabling, please post them here.
+
+      If you haven't yet gotten to the step of installing the plugin, please explain what step you're stuck on
+
+      ---
+- type: textarea
+  id: logs
+  attributes:
+    label: If you are stuck on a step please explain which step here, otherwise send the error you are facing or your logs in a mclo.gs link
+    description: "You can use [mclo.gs](https://mclo.gs) to hide sensitive information in your log."
+    placeholder: "The step you are stuck on, error you are facing, or a link to your logs such as https://mclo.gs/#####"
+  validations:
+    required: true

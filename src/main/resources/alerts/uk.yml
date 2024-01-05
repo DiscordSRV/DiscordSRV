@@ -1,0 +1,120 @@
+# Це - просунутий функціонал DiscordSRV, що дозволяє відправляти повідомлення в дискорд за будь-якої події / введення команди.
+# Вам потрібно знати, як працюють події в Bukkit.
+# Якщо ви не впевнені, як це використовувати - можете запитати знайомого розробника, або приєднатися на наш дискорд-сервер @ discordsrv.com/discord
+#
+# Посилання на документацію Bukkit API:
+#  https://hub.spigotmc.org/javadocs/bukkit
+# Корисні штуки, які допоможуть зрозуміти як працює SpEL:#  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
+#  https://dzone.com/articles/learn-spring-expression-language-with-examples
+#
+# Ви можете використовувати наступні заповнювачі:
+#  {tps} - Середній сервер TPS
+#  {time} - Поточний час
+#  {date} - Поточна дата
+#  {name} - (для PlayerEvent) ім'я гравця
+#  {ping} - (для PlayerEvent) пінг гравця
+#  {username} - (для PlayerEvent) ім'я гравця
+#  {displayname} - (Для PlayerEvent) нік гравця
+#  {usernamenoescapes} - Якщо виявиться, що для автентифікатора користувача, username of player without escaping discord format (для використання в inline code & code block markdown)
+#  {displaynamenoescapes} - Якщо ви натискаєте на гравця, натисніть, щоб відобразити назву гравця без нескінченного формату запису (для використання в inline code & code block markdown)
+#  {world} - (Для PlayerEvent) світ, в якому знаходиться гравець
+#  {embedavatarurl} - якщо PlayerEvent, то посилання на аватар гравця, інакше на аватар бота
+#  {botavatarurl} - посилання на аватар бота
+#  {botname} - ім'я бота
+#  %placeholder% - будь-які шаблони PlaceholderAPI (can only use player ones when alert is for a player event)
+#
+# Ви також можете використовувати вирази SpEL через ${expression...}, наприклад...
+#  - Отримати IP гравця: ${#player.address.address.hostAddress}
+#  - Отримати ігровий режим гравця: ${#player.gameMode.name()}
+#  - Отримати id прив'язаного облікового запису Discord у гравця: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - Отримати кількість гравців на сервері: ${#server.onlinePlayers.size()}
+#  - Перевірити статус DiscordSRV: ${#jda.status.name()}
+#  - Перевірити, чи гравець у певному світі: ${#player.world.name == 'world_the_end'}
+#  - Перевірити, чи сонце світить у тому світі, в якому зараз гравець: ${#player.world.time > 0 && #player.world.time < 13000}
+#  Ви можете використовувати наступні плейсхолдери:
+#   #plugins.<plugin> - вказаний плагін (null, если не существует)
+#   #event - Событие, которое отправит уведомление (если это уведомление действительно отправляется событием)
+#   #server - Эквивалент Bukkit#getServer
+#   #discordsrv - объект плагина DiscordSRV
+#   #player - игрок, который вызвал событие / отправил команду
+#   #sender - отправитель команды
+#   #command - полная команда (без слеша в начале)
+#   #args - аргументы команды
+#   #allArgs - аргументы команды как единая строка
+#   #channel - канал, в который будет отправлено это уведомление
+#   #jda - объект DiscordSRV JDA, нужен чтобы общаться с дискордом
+#
+# Синтаксис/стандартне:
+#  - Trigger: <назва події або / команда>
+#    Conditions:
+#      - property == < > <= >= value и т. д.
+#    Channel: <discordsrv channel name>
+#    IgnoreCancelled: true # Тільки для подій
+#    Content: ""
+#    Webhook:
+#      Enabled: false
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{botname}"
+#    Embed:
+#      Enabled: true
+#      Color: "#00ff00" # приймає шістнадцятковий колірний код (напр. "#ffffff") або RGB-число (напр. 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{username} зробив... Щось."
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # Формат - "title;value;inline" (напр. "Хто увійшов?;%displayname%;true") або "blank", щоб додати порожнє поле
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # поставте на true, щоб використовувати час, у який було відправлено повідомлення, інакше буде використовуватися unix-timestamp для певного часу (https://www.epochconverter.com/)
+#
+Alerts:
+  # Конфіг-зразок, відправляє повідомлення в канал "fish", коли гравець ловить рибу
+  #- Trigger: PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} спіймав ${caught.itemStack.type.name()}!"
+
+  # Конфіг-зразок, щоб надсилати повідомлення античита Matrix
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # Не надсилати інфу про тих, у кого менше 5 порушень
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} попался на проверке ${hackType.name().toLowerCase()} | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+  # Конфіг-зразок, відправляє повідомлення щоразу, коли хтось використовує /gamemode
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} змінив ігровий режим на ${#args.get(0)}"
+
+  # Конфіг-зразок, відправляє повідомлення щоразу, коли хтось використовує /me
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"

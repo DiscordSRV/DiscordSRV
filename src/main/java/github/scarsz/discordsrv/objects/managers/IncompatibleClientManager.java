@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -22,7 +22,7 @@ package github.scarsz.discordsrv.objects.managers;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
-import org.bukkit.Bukkit;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,9 +62,9 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
         if (CLIENT_BRAND_NAME_METHOD == null) return;
 
         // Client brand is not available during this time, so we run check brand 2s and 10s after this point
-        Bukkit.getScheduler().runTaskLaterAsynchronously(
+        SchedulerUtil.runTaskLaterAsynchronously(
                 DiscordSRV.getPlugin(), () -> checkBrand(event.getPlayer()), 40L);
-        Bukkit.getScheduler().runTaskLaterAsynchronously(
+        SchedulerUtil.runTaskLaterAsynchronously(
                 DiscordSRV.getPlugin(), () -> checkBrand(event.getPlayer()), 200L);
     }
 
@@ -120,4 +120,5 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
     public void onPlayerQuit(PlayerQuitEvent event) {
         incompatibleClients.remove(event.getPlayer().getUniqueId());
     }
+
 }

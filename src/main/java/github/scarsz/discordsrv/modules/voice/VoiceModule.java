@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -24,6 +24,7 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import lombok.Getter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -75,14 +76,14 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             DiscordSRV.info("Enabling voice module");
             DiscordSRV.getPlugin().getJda().addEventListener(this);
             Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
-            Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () ->
-                    Bukkit.getScheduler().runTaskTimerAsynchronously(
+            SchedulerUtil.runTaskLater(DiscordSRV.getPlugin(), () ->
+                    SchedulerUtil.runTaskTimerAsynchronously(
                             DiscordSRV.getPlugin(),
                             this::tick,
-                            0,
+                            1,
                             DiscordSRV.config().getInt("Tick speed")
                     ),
-                    0
+                    1
             );
         }
 
@@ -321,7 +322,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             networks.stream()
                     .filter(network -> network.contains(event.getPlayer().getUniqueId()))
                     .forEach(network -> network.remove(event.getPlayer().getUniqueId()));

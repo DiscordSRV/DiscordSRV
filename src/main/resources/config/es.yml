@@ -205,7 +205,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelBlockBots: false
+DiscordConsoleChannelBlockBots: true
 
 # Comando en canal de chat ejecuta comando
 # Estas opciones controlan la capacidad de decir "!c kick Notch", o cualquiera que sea el prefijo para ejecutar un comando,

@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -23,10 +23,7 @@ package github.scarsz.discordsrv.objects.managers;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.GamePermissionUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
@@ -327,7 +324,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                         additions.add(groupName);
                         runnable.run();
                     } else {
-                        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), runnable);
+                        SchedulerUtil.runTask(DiscordSRV.getPlugin(), runnable);
                     }
                     synchronizationSummary.add("{" + groupName + ":" + role + "} adds Minecraft group" + (roleIsManaged ? " (Managed Role)" : ""));
                 }
@@ -359,7 +356,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                         removals.add(groupName);
                         runnable.run();
                     } else {
-                        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), runnable);
+                        SchedulerUtil.runTask(DiscordSRV.getPlugin(), runnable);
                     }
                     synchronizationSummary.add("{" + groupName + ":" + role + "} removes Minecraft group" + (roleIsManaged ? " (Managed Role)" : ""));
                 }
@@ -628,12 +625,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onServerCommand(ServerCommandEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getCommand()));
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getCommand()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onRemoteServerCommand(RemoteServerCommandEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getCommand()));
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getCommand()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -641,7 +638,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         if (!GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.groupsyncwithcommands")) {
             return;
         }
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getMessage()));
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getMessage()));
     }
 
     @SuppressWarnings({"deprecation", "ConstantConditions"}) // 2013 Bukkit
@@ -665,7 +662,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .findAny().orElse(null);
 
         // run task later so that this command has time to execute & change the group state
-        Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
+        SchedulerUtil.runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
                 () -> resync(target, SyncDirection.TO_DISCORD, SyncCause.MINECRAFT_GROUP_EDIT_COMMAND),
                 5
         );
