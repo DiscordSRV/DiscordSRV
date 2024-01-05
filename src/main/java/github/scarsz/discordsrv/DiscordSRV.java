@@ -1357,10 +1357,6 @@ public class DiscordSRV extends JavaPlugin {
         try {
             String finalShutdownFormat = shutdownFormat;
             executor.invokeAll(Collections.singletonList(() -> {
-
-                // serialize account links to disk
-                if (accountLinkManager != null) accountLinkManager.save();
-
                 // set server shutdown topics if enabled
                 if (config().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
                     String time = TimeUtil.timeStamp();
