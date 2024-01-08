@@ -20,6 +20,7 @@
 
 package github.scarsz.discordsrv.objects.managers;
 
+import com.google.common.collect.Multimap;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
@@ -496,7 +497,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .forEach(players::add);
 
         // synchronize everyone with a linked account in the connected discord servers
-        Map<String, UUID> linkedDiscords = DiscordSRV.getPlugin().getAccountLinkManager().getManyUuids(
+        Multimap<String, UUID> linkedDiscords = DiscordSRV.getPlugin().getAccountLinkManager().getManyUuids(
                 DiscordUtil.getJda().getGuilds().stream()
                         .flatMap(guild -> guild.getMembers().stream())
                         .map(ISnowflake::getId)
@@ -507,6 +508,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .filter(member -> linkedDiscords.containsKey(member.getId()))
                 .map(member -> linkedDiscords.get(member.getId()))
                 .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
                 .map(Bukkit::getOfflinePlayer)
                 .filter(Objects::nonNull)
                 .forEach(players::add);

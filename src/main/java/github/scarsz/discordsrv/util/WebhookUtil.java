@@ -22,6 +22,7 @@ package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -34,6 +35,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.ricetea.discordsrv.JBUser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -150,7 +152,8 @@ public class WebhookUtil {
                 }
             }
 
-            String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+            AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
+            String userId = accountLinkManager.getDiscordId(player.getUniqueId());
             if (userId != null) {
                 Member member = DiscordUtil.getMemberById(userId);
                 username = username
@@ -171,6 +174,18 @@ public class WebhookUtil {
             if (username.length() > 80) {
                 DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "The webhook username in " + player.getName() + "'s message was too long! Reducing to 80 characters");
                 username = username.substring(0, 80);
+            }
+
+            if (userId != null) {
+                JBUser user = JBUser.of(accountLinkManager.getUuids(userId));
+                if (user.size() == 2) {
+                    username = LangUtil.Message.NAME_FORMAT_WHEN_MULTIBINDING.toString()
+                            .replace("%name%", username)
+                            .replace("%suffix%",
+                                    JBUser.isBedrockUUID(player.getUniqueId()) ?
+                                            LangUtil.Message.BEDROCK_SUFFIX.toString() :
+                                            LangUtil.Message.JAVA_SUFFIX.toString());
+                }
             }
 
             deliverMessage(channel, username, avatarUrl, chatMessage, embeds, attachments, interactions);

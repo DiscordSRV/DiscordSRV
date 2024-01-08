@@ -20,9 +20,12 @@
 
 package github.scarsz.discordsrv.objects.managers;
 
+import com.google.common.collect.Multimap;
 import org.bukkit.event.Listener;
+import org.ricetea.utils.CollectionUtil;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -37,8 +40,8 @@ public interface AccountLinkManager extends Listener {
      *
      * @param uuid the player's UUID
      * @return the player's linked account's Discord user id or {@code null}.
-     * @see net.dv8tion.jda.api.JDA#getUserById(String)
      * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
+     * @see net.dv8tion.jda.api.JDA#getUserById(String)
      * @see #isInCache(UUID)
      */
     String getDiscordId(UUID uuid);
@@ -51,7 +54,22 @@ public interface AccountLinkManager extends Listener {
      * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
      * @see #isInCache(String)
      */
-    UUID getUuid(String discordId);
+    default UUID getUuid(String discordId) {
+        Collection<UUID> uuids = getUuids(discordId);
+        if (uuids == null)
+            return null;
+        return CollectionUtil.first(uuids);
+    }
+
+    /**
+     * Gets the Minecraft uuids for a given user's linked account.
+     *
+     * @param discordId the Discord user's id.
+     * @return the user's linked account's uuid or {@code null}.
+     * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
+     * @see #isInCache(String)
+     */
+    Collection<UUID> getUuids(String discordId);
 
     /**
      * Gets the amount of linked accounts. This is kept in memory and is recommended over doing {@code getLinkedAccounts().size()}.
@@ -65,8 +83,8 @@ public interface AccountLinkManager extends Listener {
      *
      * @param uuids the set of Minecraft player uuids.
      * @return the map of UUID-Discord id pairs, if a given player isn't linked there will be no entry for that player.
-     * @see #getDiscordId(UUID)
      * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
+     * @see #getDiscordId(UUID)
      */
     Map<UUID, String> getManyDiscordIds(Set<UUID> uuids);
 
@@ -75,22 +93,22 @@ public interface AccountLinkManager extends Listener {
      *
      * @param discordIds the set of Discord user ids.
      * @return the map of Discord id-UUID pairs, if a given user isn't linked there will be no entry for that user.
-     * @see #getUuid(String)
      * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
+     * @see #getUuid(String)
      */
-    Map<String, UUID> getManyUuids(Set<String> discordIds);
+    Multimap<String, UUID> getManyUuids(Set<String> discordIds);
 
     /**
      * Gets all linked accounts.
      *
      * @return all linked accounts in a Discord ID-UUID map.
+     * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
      * @see #getUuid(String)
      * @see #getDiscordId(UUID)
      * @see #getManyUuids(Set)
      * @see #getManyDiscordIds(Set)
-     * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
      */
-    Map<String, UUID> getLinkedAccounts();
+    Multimap<String, UUID> getLinkedAccounts();
 
     /**
      * Gets the Discord ID for the given player from the cache
@@ -110,7 +128,22 @@ public interface AccountLinkManager extends Listener {
      * @return the given user's Minecraft uuid if it is in the cache
      * @see #isInCache(String)
      */
-    UUID getUuidFromCache(String discordId);
+    default UUID getUuidFromCache(String discordId) {
+        Collection<UUID> uuids = getUuidsFromCache(discordId);
+        if (uuids == null)
+            return null;
+        return CollectionUtil.first(uuids);
+    }
+
+    /**
+     * Gets the Player UUIDs for the given user from the cache
+     * <p>WARNING, this may not represent the player's linking status</p>
+     *
+     * @param discordId the user's id
+     * @return the given user's Minecraft uuid if it is in the cache
+     * @see #isInCache(String)
+     */
+    Collection<UUID> getUuidsFromCache(String discordId);
 
     /**
      * <p>Not recommended, may lead to blocking requests to storage backends</p>
@@ -126,7 +159,20 @@ public interface AccountLinkManager extends Listener {
      *
      * @see #getUuid(String)
      */
-    UUID getUuidBypassCache(String discordId);
+    default UUID getUuidBypassCache(String discordId) {
+        Collection<UUID> uuids = getUuidsBypassCache(discordId);
+        if (uuids == null)
+            return null;
+        return CollectionUtil.first(uuids);
+    }
+
+    /**
+     * <p>Not recommended, may lead to blocking requests to storage backends</p>
+     * Requests the Minecraft player UUID for the given Discord user id bypassing any caches or main thread checks. Unsafe.
+     *
+     * @see #getUuids(String)
+     */
+    Collection<UUID> getUuidsBypassCache(String discordId);
 
     /**
      * Checks if a given player's Discord account is in cache.
@@ -145,10 +191,15 @@ public interface AccountLinkManager extends Listener {
     boolean isInCache(String discordId);
 
     String generateCode(UUID playerUuid);
+
     Map<String, UUID> getLinkingCodes();
+
     String process(String linkCode, String discordId);
+
     void link(String discordId, UUID uuid);
+
     void unlink(UUID uuid);
+
     void unlink(String discordId);
 
     void save() throws IOException;

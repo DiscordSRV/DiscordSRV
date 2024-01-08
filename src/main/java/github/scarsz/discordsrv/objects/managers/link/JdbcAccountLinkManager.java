@@ -20,9 +20,11 @@
 
 package github.scarsz.discordsrv.objects.managers.link;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
+import github.scarsz.discordsrv.objects.ExpiringHashmap;
 import github.scarsz.discordsrv.objects.managers.link.file.AppendOnlyFileAccountLinkManager;
 import github.scarsz.discordsrv.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +36,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.ricetea.discordsrv.JBUser;
 
 import java.io.File;
 import java.sql.*;
@@ -55,7 +58,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     private final String accountsTable;
     private final String codesTable;
 
-    private final ExpiringDualHashBidiMap<UUID, String> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(10));
+    private final ExpiringHashmap<UUID, String> cache = new ExpiringHashmap<>(TimeUnit.SECONDS.toMillis(10));
     private int count;
 
     private void putExpiring(UUID uuid, String discordId, long expiryTime) {
@@ -74,7 +77,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         try {
             Matcher matcher = JDBC_PATTERN.matcher(jdbc);
-        
+
             if (!matcher.matches()) {
                 if (!quiet) DiscordSRV.error("Not using JDBC because the JDBC connection string is invalid!");
                 return false;
@@ -96,15 +99,17 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             }
 
             if (host.equalsIgnoreCase("host") ||
-                port.equalsIgnoreCase("port") ||
-                database.equalsIgnoreCase("database")) {
-                if (!quiet) DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Not using JDBC, one of host/port/database was default");
+                    port.equalsIgnoreCase("port") ||
+                    database.equalsIgnoreCase("database")) {
+                if (!quiet)
+                    DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Not using JDBC, one of host/port/database was default");
                 return false;
             }
 
             return true;
         } catch (Exception e) {
-            if (!quiet) DiscordSRV.error("Not using JDBC because of exception while matching parts of JDBC url: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+            if (!quiet)
+                DiscordSRV.error("Not using JDBC because of exception while matching parts of JDBC url: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
             return false;
         }
     }
@@ -133,7 +138,8 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         database = connection.getCatalog();
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
-        if (StringUtils.isBlank(tablePrefix)) tablePrefix = ""; else tablePrefix += "_";
+        if (StringUtils.isBlank(tablePrefix)) tablePrefix = "";
+        else tablePrefix += "_";
         accountsTable = tablePrefix + "accounts";
         codesTable = tablePrefix + "codes";
 
@@ -167,7 +173,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             legacyExpected.put("expiration", "bigint(20)");
             expected.put("expiration", "bigint");
             if (!(SQLUtil.checkIfTableMatchesStructure(connection, codesTable, expected, false)
-            || SQLUtil.checkIfTableMatchesStructure(connection, codesTable, legacyExpected))) {
+                    || SQLUtil.checkIfTableMatchesStructure(connection, codesTable, legacyExpected))) {
                 throw new SQLException("JDBC table " + codesTable + " does not match expected structure");
             }
         } else {
@@ -214,11 +220,12 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
                 if (accountsFile.length() != 0) {
                     DiscordSRV.info("linked accounts file exists and we want to use JDBC backend, importing...");
                     File importFile = new File(accountsFile.getParentFile(), "accounts.aof.imported");
-                    if (!accountsFile.renameTo(importFile)) throw new RuntimeException("Failed to move accounts file to " + importFile.getName());
+                    if (!accountsFile.renameTo(importFile))
+                        throw new RuntimeException("Failed to move accounts file to " + importFile.getName());
 
-                    Map<String, UUID> accounts = new AppendOnlyFileAccountLinkManager().getLinkedAccounts();
+                    Multimap<String, UUID> accounts = new AppendOnlyFileAccountLinkManager().getLinkedAccounts();
                     connection.setAutoCommit(false);
-                    for (Map.Entry<String, UUID> entry : accounts.entrySet()) {
+                    for (Map.Entry<String, UUID> entry : accounts.entries()) {
                         String discord = entry.getKey();
                         UUID uuid = entry.getValue();
 
@@ -279,9 +286,9 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
-    public Map<String, UUID> getLinkedAccounts() {
+    public Multimap<String, UUID> getLinkedAccounts() {
         ensureOffThread(false);
-        Map<String, UUID> accounts = new HashMap<>();
+        Multimap<String, UUID> accounts = HashMultimap.create();
 
         try (final PreparedStatement statement = connection.prepareStatement("select * from " + accountsTable)) {
             try (final ResultSet result = statement.executeQuery()) {
@@ -302,8 +309,8 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
-    public UUID getUuidFromCache(String discordId) {
-        return cache.getKey(discordId);
+    public Collection<UUID> getUuidsFromCache(String discordId) {
+        return cache.getKeys(discordId);
     }
 
     @Override
@@ -465,16 +472,17 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
-    public UUID getUuid(String discordId) {
+    public Collection<UUID> getUuids(String discordId) {
         synchronized (cache) {
-            if (cache.containsValue(discordId)) return cache.getKey(discordId);
+            if (cache.containsValue(discordId)) return cache.getKeys(discordId);
         }
         ensureOffThread(true);
-        UUID uuid = getUuidBypassCache(discordId);
+        Collection<UUID> uuids = getUuidsBypassCache(discordId);
         synchronized (cache) {
-            cache.put(uuid, discordId);
+            for (UUID uuid : uuids)
+                cache.put(uuid, discordId);
         }
-        return uuid;
+        return uuids;
     }
 
     @Override
@@ -483,20 +491,20 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
-    public UUID getUuidBypassCache(String discordId) {
-        UUID uuid = null;
+    public Collection<UUID> getUuidsBypassCache(String discordId) {
+        Collection<UUID> uuids = new HashSet<>();
         try (final PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?")) {
             statement.setString(1, discordId);
 
             try (final ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
-                    uuid = UUID.fromString(result.getString("uuid"));
+                    uuids.add(UUID.fromString(result.getString("uuid")));
                 }
             }
         } catch (SQLException e) {
             DiscordSRV.error(e);
         }
-        return uuid;
+        return uuids;
     }
 
     @Override
@@ -510,9 +518,9 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
-    public Map<String, UUID> getManyUuids(Set<String> discordIds) {
+    public Multimap<String, UUID> getManyUuids(Set<String> discordIds) {
         ensureOffThread(false);
-        Map<String, UUID> results = new HashMap<>();
+        Multimap<String, UUID> results = HashMultimap.create();
 
         try {
             Array discordIdArray = connection.createArrayOf("varchar", discordIds.toArray(new String[0]));
@@ -558,8 +566,12 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         DiscordSRV.debug(Debug.ACCOUNT_LINKING, "JDBC Account link: " + discordId + ": " + uuid);
 
         // make sure the user isn't linked
-        unlink(discordId);
         unlink(uuid);
+
+        JBUser user = JBUser.of(getUuids(discordId));
+        UUID uuidNeedReplace = user.testReplace(uuid);
+        if (uuidNeedReplace != null)
+            unlink(uuidNeedReplace);
 
         try (final PreparedStatement statement = connection.prepareStatement("insert into " + accountsTable + " (discord, uuid) VALUES (?, ?)")) {
             statement.setString(1, discordId);
@@ -594,10 +606,10 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     @Override
     public void unlink(String discordId) {
         ensureOffThread(false);
-        UUID uuid = getUuid(discordId);
-        if (uuid == null) return;
-
-        beforeUnlink(uuid, discordId);
+        Collection<UUID> uuids = getUuids(discordId);
+        if (uuids == null || uuids.isEmpty()) return;
+        for (UUID uuid : uuids)
+            beforeUnlink(uuid, discordId);
         try (final PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `discord` = ?")) {
             statement.setString(1, discordId);
             statement.executeUpdate();
@@ -605,7 +617,8 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             DiscordSRV.error(e);
         }
         cache.removeValue(discordId);
-        afterUnlink(uuid, discordId);
+        for (UUID uuid : uuids)
+            afterUnlink(uuid, discordId);
     }
 
     @Override

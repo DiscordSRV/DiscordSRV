@@ -850,7 +850,12 @@ public class LangUtil {
         SERVER_WATCHDOG("ServerWatchdogMessage", false),
         UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW("LinkingError", true),
         UNKNOWN_CODE("UnknownCode", false),
-        UNLINK_SUCCESS("UnlinkCommandSuccess", true);
+        UNLINK_SUCCESS("UnlinkCommandSuccess", true),
+
+        NAME_FORMAT_WHEN_MULTIBINDING("NameFormatWhenMultibinding", false),
+        JAVA_SUFFIX("JavaSuffix", false),
+        BEDROCK_SUFFIX("BedrockSuffix", false);
+
 
         @Getter private final String keyName;
         @Getter private final boolean translateColors;

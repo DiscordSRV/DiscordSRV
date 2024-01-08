@@ -20,18 +20,19 @@
 
 package github.scarsz.discordsrv.objects.managers.link.file;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.google.gson.stream.MalformedJsonException;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.ricetea.utils.CollectionUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 @Deprecated
 public class JsonFileAccountLinkManager extends AbstractFileAccountLinkManager {
@@ -57,22 +58,39 @@ public class JsonFileAccountLinkManager extends AbstractFileAccountLinkManager {
             }
         }
 
+
         jsonObject.entrySet().forEach(entry -> {
             String key = entry.getKey();
-            String value = entry.getValue().getAsString();
-            if (key.isEmpty() || value.isEmpty()) {
+            if (key.isBlank()) {
                 // empty values are not allowed.
                 return;
             }
-
-            try {
-                linkedAccounts.put(key, UUID.fromString(value));
-            } catch (Exception e) {
-                try {
-                    linkedAccounts.put(value, UUID.fromString(key));
-                } catch (Exception f) {
-                    DiscordSRV.warning("Failed to load " + file.getName() + " file. It's extremely recommended to delete your " + file.getName() + " file.");
+            Consumer<String> loadUUIDConsumer = (value) -> {
+                if (value.isBlank()) {
+                    // empty values are not allowed.
+                    return;
                 }
+                UUID uuid;
+                try {
+                    uuid = UUID.fromString(value);
+                } catch (Exception ignored) {
+                    return;
+                }
+                try {
+                    linkedAccounts.put(key, UUID.fromString(value));
+                } catch (Exception e) {
+                    try {
+                        linkedAccounts.put(value, UUID.fromString(key));
+                    } catch (Exception f) {
+                        DiscordSRV.warning("Failed to load " + file.getName() + " file. It's extremely recommended to delete your " + file.getName() + " file.");
+                    }
+                }
+            };
+            JsonElement rawValue = entry.getValue();
+            if (rawValue instanceof JsonArray array) {
+                array.forEach(value -> loadUUIDConsumer.accept(value.getAsString()));
+            } else {
+                loadUUIDConsumer.accept(rawValue.getAsString());
             }
         });
     }
@@ -84,7 +102,20 @@ public class JsonFileAccountLinkManager extends AbstractFileAccountLinkManager {
         try {
             JsonObject map = new JsonObject();
             synchronized (linkedAccounts) {
-                linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
+                linkedAccounts.asMap().forEach((discordId, uuids) -> {
+                    int size = uuids.size();
+                    if (size == 0)
+                        return;
+                    if (size == 1) {
+                        map.add(discordId, new JsonPrimitive(String.valueOf(CollectionUtil.first(uuids))));
+                    } else {
+                        JsonArray array = new JsonArray(size);
+                        for (UUID uuid : uuids) {
+                            array.add(new JsonPrimitive(String.valueOf(uuid)));
+                        }
+                        map.add(discordId, array);
+                    }
+                });
             }
             FileUtils.writeStringToFile(getFile(), map.toString(), StandardCharsets.UTF_8);
         } catch (IOException e) {

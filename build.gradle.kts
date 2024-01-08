@@ -15,7 +15,7 @@ plugins {
 
 group = "com.discordsrv"
 val minecraftVersion = project.properties["minecraftVersion"]!!.toString()
-val targetJavaVersion = 1.8
+val targetJavaVersion = 17
 
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
@@ -289,6 +289,9 @@ dependencies {
     
     // debug hooks
     compileOnly("ch.njol:skript:2.5")
+
+    // other external libs
+    implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
 
     // JUnit
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")

@@ -33,6 +33,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,7 +80,7 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
             matcher = MODIFICATION_PATTERN.matcher(line);
             if (matcher.matches()) {
                 String discord = matcher.group("discord");
-                if (discord != null) linkedAccounts.remove(discord);
+                if (discord != null) linkedAccounts.removeAll(discord);
 
                 UUID uuid = matcher.group("uuid") != null ? UUID.fromString(matcher.group("uuid")) : null;
                 if (uuid != null) linkedAccounts.removeValue(uuid);
@@ -126,7 +127,7 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     public void save() throws IOException {
         try (FileWriter fileWriter = new FileWriter(getFile())) {
             try (BufferedWriter writer = new BufferedWriter(fileWriter)) {
-                for (Map.Entry<String, UUID> entry : linkedAccounts.entrySet()) {
+                for (Map.Entry<String, UUID> entry : linkedAccounts.entries()) {
                     String discordId = entry.getKey();
                     UUID uuid = entry.getValue();
                     writer.write(discordId + " " + uuid + "\n");
@@ -172,21 +173,25 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
 
         afterUnlink(uuid, discordId);
     }
+
     @Override
     @SneakyThrows
     public void unlink(String discordId) {
-        UUID uuid;
+        Collection<UUID> uuids;
         synchronized (linkedAccounts) {
-            uuid = linkedAccounts.get(discordId);
+            uuids = linkedAccounts.get(discordId);
         }
-        if (uuid == null) return;
+        if (uuids == null || uuids.isEmpty()) return;
 
         synchronized (linkedAccounts) {
-            beforeUnlink(uuid, discordId);
-            linkedAccounts.remove(discordId);
-            FileUtils.writeStringToFile(getFile(), "-" + discordId + " " + uuid + "\n", "UTF-8", true);
+            for (UUID uuid : uuids) {
+                beforeUnlink(uuid, discordId);
+                FileUtils.writeStringToFile(getFile(), "-" + discordId + " " + uuid + "\n", "UTF-8", true);
+            }
+            linkedAccounts.removeAll(discordId);
         }
-        afterUnlink(uuid, discordId);
+        for (UUID uuid : uuids)
+            afterUnlink(uuid, discordId);
     }
 
     @Override

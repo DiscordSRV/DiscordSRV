@@ -211,7 +211,7 @@ MinecraftPlayerJoinMessage:
       Text: ""
       Url: ""
     Description: ""
-    Fields: []
+    Fields: [ ]
     ImageUrl: ""
     Footer:
       Text: ""
@@ -240,7 +240,7 @@ MinecraftPlayerFirstJoinMessage:
       Text: ""
       Url: ""
     Description: ""
-    Fields: []
+    Fields: [ ]
     ImageUrl: ""
     Footer:
       Text: ""
@@ -269,7 +269,7 @@ MinecraftPlayerLeaveMessage:
       Text: ""
       Url: ""
     Description: ""
-    Fields: []
+    Fields: [ ]
     ImageUrl: ""
     Footer:
       Text: ""
@@ -299,7 +299,7 @@ MinecraftPlayerDeathMessage:
       Text: ""
       Url: ""
     Description: ""
-    Fields: []
+    Fields: [ ]
     ImageUrl: ""
     Footer:
       Text: ""
@@ -329,7 +329,7 @@ MinecraftPlayerAchievementMessage:
       Text: ""
       Url: ""
     Description: ""
-    Fields: []
+    Fields: [ ]
     ImageUrl: ""
     Footer:
       Text: ""
@@ -441,3 +441,8 @@ UnlinkCommandSuccess: "&b您的Minecraft帳號已經不再連結至%name%。"
 MinecraftNoLinkedAccount: "&c您的Minecraft帳號並未連結至Discord帳號。"
 LinkingError: "&c因為內部錯誤現在無法進行連結帳戶， 請聯繫您的伺服器管理人員。"
 MinecraftNobodyFound: "&c未找到任何和 \"%target%\"匹配的 Discord ID/Discord 名稱/Minecraft 名稱/Minecraft UUID 。 "
+
+NameFormatWhenMultibinding: "%name% (%suffix%)"
+
+JavaSuffix: "Java 版"
+BedrockSuffix: "基岩版"

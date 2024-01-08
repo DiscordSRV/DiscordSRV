@@ -20,28 +20,30 @@
 
 package github.scarsz.discordsrv.objects.managers.link.file;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.BidiMultimap;
 import github.scarsz.discordsrv.objects.managers.link.AbstractAccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
 import net.dv8tion.jda.api.entities.User;
-import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.ricetea.discordsrv.JBUser;
+import org.ricetea.utils.SoftCache;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class AbstractFileAccountLinkManager extends AbstractAccountLinkManager {
-
-    final DualHashBidiMap<String, UUID> linkedAccounts = new DualHashBidiMap<>();
+    final ThreadLocal<SoftCache<StringBuilder>> stringBuilderCache = ThreadLocal.withInitial(() ->
+            SoftCache.create(StringBuilder::new));
+    final BidiMultimap<String, UUID> linkedAccounts = BidiMultimap.create(HashMultimap::create);
 
     public AbstractFileAccountLinkManager() {
         try {
@@ -65,7 +67,7 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
     }
 
     @Override
-    public Map<String, UUID> getLinkedAccounts() {
+    public Multimap<String, UUID> getLinkedAccounts() {
         return linkedAccounts;
     }
 
@@ -75,8 +77,8 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
     }
 
     @Override
-    public UUID getUuidFromCache(String discordId) {
-        return getUuid(discordId);
+    public Collection<UUID> getUuidsFromCache(String discordId) {
+        return getUuids(discordId);
     }
 
     @Override
@@ -98,15 +100,20 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
             if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
                 unlink(discordId);
             } else {
-                UUID uuid;
+                Collection<UUID> uuids;
                 synchronized (linkedAccounts) {
-                    uuid = linkedAccounts.get(discordId);
+                    uuids = linkedAccounts.get(discordId);
                 }
-                OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
-                return LangUtil.Message.ALREADY_LINKED.toString()
-                        .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer, "<Unknown>", false))
-                        .replace("%uuid%", uuid.toString())
-                        .replace("%mention%", mention);
+                StringBuilder stringBuilder = this.stringBuilderCache.get().get();
+                stringBuilder.setLength(0);
+                for (UUID uuid : uuids) {
+                    OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
+                    stringBuilder.append(LangUtil.Message.ALREADY_LINKED.toString()
+                            .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer, "<Unknown>", false))
+                            .replace("%uuid%", uuid.toString())
+                            .replace("%mention%", mention));
+                }
+                return stringBuilder.toString();
             }
         }
 
@@ -166,26 +173,26 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
     }
 
     @Override
-    public UUID getUuid(String discordId) {
+    public Collection<UUID> getUuids(String discordId) {
         synchronized (linkedAccounts) {
             return linkedAccounts.get(discordId);
         }
     }
 
     @Override
-    public UUID getUuidBypassCache(String discordId) {
-        return getUuid(discordId);
+    public Collection<UUID> getUuidsBypassCache(String discordId) {
+        return getUuids(discordId);
     }
 
     @Override
-    public Map<String, UUID> getManyUuids(Set<String> discordIds) {
-        Map<String, UUID> results = new HashMap<>();
+    public Multimap<String, UUID> getManyUuids(Set<String> discordIds) {
+        Multimap<String, UUID> results = HashMultimap.create();
         for (String discordId : discordIds) {
-            UUID uuid;
+            Collection<UUID> uuids;
             synchronized (linkedAccounts) {
-                uuid = linkedAccounts.get(discordId);
+                uuids = linkedAccounts.get(discordId);
             }
-            if (uuid != null) results.put(discordId, uuid);
+            if (uuids != null) results.putAll(discordId, uuids);
         }
         return results;
     }
@@ -198,8 +205,13 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
         DiscordSRV.debug(Debug.ACCOUNT_LINKING, "File backed link: " + discordId + ": " + uuid);
 
         // make sure the user isn't linked
-        unlink(discordId);
         unlink(uuid);
+
+        JBUser user = JBUser.of(getUuids(discordId));
+        UUID uuidNeedReplace = user.testReplace(uuid);
+        if (uuidNeedReplace != null)
+            unlink(uuidNeedReplace);
+
 
         synchronized (linkedAccounts) {
             linkedAccounts.put(discordId, uuid);
@@ -225,20 +237,26 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
 
     @Override
     public void unlink(String discordId) {
-        UUID uuid;
+        Collection<UUID> uuids;
         synchronized (linkedAccounts) {
-            uuid = linkedAccounts.get(discordId);
+            uuids = linkedAccounts.get(discordId);
         }
-        if (uuid == null) return;
+        if (uuids == null || uuids.isEmpty()) return;
 
         synchronized (linkedAccounts) {
-            beforeUnlink(uuid, discordId);
-            linkedAccounts.remove(discordId);
+            for (UUID uuid : uuids) {
+                beforeUnlink(uuid, discordId);
+            }
+            linkedAccounts.removeAll(discordId);
         }
-        afterUnlink(uuid, discordId);
+
+        for (UUID uuid : uuids) {
+            afterUnlink(uuid, discordId);
+        }
     }
 
     abstract void load() throws IOException;
+
     abstract File getFile();
 
 }
