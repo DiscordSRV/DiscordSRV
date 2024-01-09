@@ -32,13 +32,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CommandLinked {
 
-    @Command(commandNames = { "linked" },
+    @Command(commandNames = {"linked"},
             helpMessage = "Checks what Discord user your (or someone else's) MC account is linked to",
             permission = "discordsrv.linked"
     )
@@ -86,9 +87,16 @@ public class CommandLinked {
                     (StringUtils.isNumeric(target) && target.length() >= 17 && target.length() <= 20)) {
                 // target is a Discord ID
                 notifyInterpret(sender, "Discord ID");
-                UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(target);
-                notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
-                notifyDiscord(sender, target);
+                Collection<UUID> uuids = DiscordSRV.getPlugin().getAccountLinkManager().getUuids(target);
+                if (uuids == null || uuids.isEmpty()) {
+                    notifyPlayer(sender, null);
+                    notifyDiscord(sender, target);
+                } else {
+                    for (UUID uuid : uuids) {
+                        notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
+                        notifyDiscord(sender, target);
+                    }
+                }
                 return;
             } else {
                 if (joinedTarget.contains("#") || (joinedTarget.length() >= 2 && joinedTarget.length() <= 32 + 5)) {
@@ -108,9 +116,16 @@ public class CommandLinked {
                         notifyInterpret(sender, "Discord name");
 
                         matches.stream().limit(5).forEach(user -> {
-                            UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
-                            notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
-                            notifyDiscord(sender, user.getId());
+                            Collection<UUID> uuids = DiscordSRV.getPlugin().getAccountLinkManager().getUuids(user.getId());
+                            if (uuids == null || uuids.isEmpty()) {
+                                notifyPlayer(sender, null);
+                                notifyDiscord(sender, user.getId());
+                            } else {
+                                for (UUID uuid : uuids) {
+                                    notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
+                                    notifyDiscord(sender, user.getId());
+                                }
+                            }
                         });
 
                         int remaining = matches.size() - 5;

@@ -35,6 +35,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ import static github.scarsz.discordsrv.commands.CommandLinked.*;
 
 public class CommandUnlink {
 
-    @Command(commandNames = { "unlink", "clearlinked" },
+    @Command(commandNames = {"unlink", "clearlinked"},
             helpMessage = "Unlinks your Minecraft account from your Discord account",
             permission = "discordsrv.unlink"
     )
@@ -96,11 +97,18 @@ public class CommandUnlink {
                     (StringUtils.isNumeric(target) && target.length() >= 17 && target.length() <= 20)) {
                 // target is a Discord ID
                 notifyInterpret(sender, "Discord ID");
-                UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(target);
-                notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
-                notifyDiscord(sender, target);
-                if (uuid != null) {
-                    DiscordSRV.getPlugin().getAccountLinkManager().unlink(uuid);
+                Collection<UUID> uuids = DiscordSRV.getPlugin().getAccountLinkManager().getUuids(target);
+                if (uuids == null || uuids.isEmpty()) {
+                    notifyPlayer(sender, null);
+                    notifyDiscord(sender, target);
+                } else {
+                    for (UUID uuid : uuids) {
+                        notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
+                        notifyDiscord(sender, target);
+                        if (uuid != null) {
+                            DiscordSRV.getPlugin().getAccountLinkManager().unlink(uuid);
+                        }
+                    }
                     notifyUnlinked(sender);
                 }
                 return;
@@ -142,9 +150,10 @@ public class CommandUnlink {
                         if (matches.size() == 1) {
                             User user = matches.iterator().next();
                             notifyDiscord(sender, user.getId());
-                            UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
-                            if (uuid != null) {
-                                notifyPlayer(sender, Bukkit.getOfflinePlayer(uuid));
+                            Collection<UUID> uuids = DiscordSRV.getPlugin().getAccountLinkManager().getUuids(user.getId());
+                            if (uuids != null && !uuids.isEmpty()) {
+                                for (UUID uuid : uuids)
+                                    notifyPlayer(sender, Bukkit.getOfflinePlayer(uuid));
                                 DiscordSRV.getPlugin().getAccountLinkManager().unlink(user.getId());
                                 notifyUnlinked(sender);
                             } else {
@@ -152,9 +161,16 @@ public class CommandUnlink {
                             }
                         } else {
                             matches.stream().limit(5).forEach(user -> {
-                                UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
-                                notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
-                                notifyDiscord(sender, user.getId());
+                                Collection<UUID> uuids = DiscordSRV.getPlugin().getAccountLinkManager().getUuids(user.getId());
+                                if (uuids == null || uuids.isEmpty()) {
+                                    notifyPlayer(sender, null);
+                                    notifyDiscord(sender, user.getId());
+                                } else {
+                                    for (UUID uuid : uuids) {
+                                        notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
+                                        notifyDiscord(sender, user.getId());
+                                    }
+                                }
                             });
 
                             int remaining = matches.size() - 5;

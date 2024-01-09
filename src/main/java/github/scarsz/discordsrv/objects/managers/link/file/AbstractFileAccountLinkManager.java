@@ -88,9 +88,27 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
 
     @Override
     public String process(String linkCode, String discordId) {
-        boolean contains;
+        // strip the code to get rid of non-numeric characters
+        linkCode = linkCode.replaceAll("[^0-9]", "");
+
+        UUID codeUUID;
+        Collection<UUID> uuids;
+        synchronized (linkingCodes) {
+            codeUUID = linkingCodes.get(linkCode);
+        }
         synchronized (linkedAccounts) {
-            contains = linkedAccounts.containsKey(discordId);
+            uuids = linkedAccounts.get(discordId);
+        }
+        UUID uuidBeReplaced;
+        boolean contains;
+        if (uuids == null) {
+            contains = false;
+            uuidBeReplaced = null;
+        }
+        else {
+            JBUser user = JBUser.of(uuids);
+            uuidBeReplaced = user.testReplace(codeUUID);
+            contains = uuidBeReplaced != null;
         }
 
         User user = DiscordUtil.getUserById(discordId);
@@ -98,12 +116,8 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
 
         if (contains) {
             if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
-                unlink(discordId);
+                unlink(uuidBeReplaced);
             } else {
-                Collection<UUID> uuids;
-                synchronized (linkedAccounts) {
-                    uuids = linkedAccounts.get(discordId);
-                }
                 StringBuilder stringBuilder = this.stringBuilderCache.get().get();
                 stringBuilder.setLength(0);
                 for (UUID uuid : uuids) {
@@ -117,16 +131,13 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
             }
         }
 
-        // strip the code to get rid of non-numeric characters
-        linkCode = linkCode.replaceAll("[^0-9]", "");
-
         if (linkingCodes.containsKey(linkCode)) {
-            link(discordId, linkingCodes.get(linkCode));
+            link(discordId, codeUUID);
             linkingCodes.remove(linkCode);
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(getUuid(discordId));
+            OfflinePlayer player = Bukkit.getOfflinePlayer(codeUUID);
             if (player.isOnline()) {
-                MessageUtil.sendMessage(Bukkit.getPlayer(getUuid(discordId)), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
+                MessageUtil.sendMessage(Bukkit.getPlayer(codeUUID), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
                         .replace("%username%", user == null ? "" : user.getName())
                         .replace("%id%", user == null ? "" : user.getId())
                 );
@@ -135,7 +146,7 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
                     .replace("%name%", PrettyUtil.beautifyUsername(player, "<Unknown>", false))
                     .replace("%displayname%", PrettyUtil.beautifyNickname(player, "<Unknown>", false))
-                    .replace("%uuid%", getUuid(discordId).toString())
+                    .replace("%uuid%", codeUUID.toString())
                     .replace("%mention%", mention);
         }
 

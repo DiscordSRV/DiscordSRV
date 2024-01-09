@@ -70,34 +70,42 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     public void resync() {
         resync(SyncCause.LEGACY);
     }
+
     @Deprecated
     public void resync(SyncDirection direction) {
         resync(direction, SyncCause.LEGACY);
     }
+
     @Deprecated
     public void resync(User user) {
         resync(user, SyncCause.LEGACY);
     }
+
     @Deprecated
     public void resync(User user, SyncDirection direction) {
         resync(user, direction, SyncCause.LEGACY);
     }
+
     @Deprecated
     public void resync(OfflinePlayer player) {
         resync(player, SyncCause.LEGACY);
     }
+
     @Deprecated
     public void resync(OfflinePlayer player, SyncDirection direction) {
         resync(player, direction, SyncCause.LEGACY);
     }
+
     @Deprecated
     public void resync(OfflinePlayer player, SyncDirection direction, boolean addLinkedRole) {
         resync(player, direction, addLinkedRole, SyncCause.LEGACY);
     }
+
     @Deprecated
     public void resyncEveryone() {
         resyncEveryone(SyncCause.LEGACY);
     }
+
     @Deprecated
     public void resyncEveryone(SyncDirection direction) {
         resyncEveryone(direction, SyncCause.LEGACY);
@@ -117,7 +125,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             // otherwise, only online players are synchronized
             DiscordUtil.getJda().getGuilds().stream()
                     .flatMap(guild -> guild.getMembers().stream())
-                    .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
+                    .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuids(member.getId()))
+                    .flatMap(Collection::stream)
                     .filter(Objects::nonNull)
                     .map(Bukkit::getOfflinePlayer)
                     .forEach(players::add);
@@ -131,13 +140,14 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     public void resync(User user, SyncDirection direction, SyncCause cause) {
-        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
-        if (uuid == null) {
+        Collection<UUID> uuids = DiscordSRV.getPlugin().getAccountLinkManager().getUuids(user.getId());
+        if (uuids == null || uuids.isEmpty()) {
             DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for " + user + " but their Discord account is not linked to a MC account");
             return;
         }
 
-        resync(Bukkit.getOfflinePlayer(uuid), direction, cause);
+        for (UUID uuid : uuids)
+            resync(Bukkit.getOfflinePlayer(uuid), direction, cause);
     }
 
     public void resync(OfflinePlayer player, SyncCause cause) {
@@ -188,7 +198,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         boolean oneWaySynchronisation = DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay");
         boolean minecraftIsStrictlyAuthoritative = oneWaySynchronisation && DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
         boolean discordIsStrictlyAuthoritative = oneWaySynchronisation && !DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
-        if (oneWaySynchronisation) synchronizationSummary.add("Synchronisation is one way (" + (minecraftIsStrictlyAuthoritative ? "Minecraft -> Discord" : "Discord -> Minecraft") + ")");
+        if (oneWaySynchronisation)
+            synchronizationSummary.add("Synchronisation is one way (" + (minecraftIsStrictlyAuthoritative ? "Minecraft -> Discord" : "Discord -> Minecraft") + ")");
 
         if ((minecraftIsStrictlyAuthoritative && direction == SyncDirection.TO_MINECRAFT) || (discordIsStrictlyAuthoritative && direction == SyncDirection.TO_DISCORD)) {
             DiscordSRV.debug(Debug.GROUP_SYNC, "Group synchronization (#" + id + ") " + direction + " cancelled because " + (minecraftIsStrictlyAuthoritative ? "Minecraft" : "Discord") + " is strictly authoritative");
@@ -217,7 +228,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
             // get the member, from cache if it's there otherwise from Discord
             Set<String> membersNotInGuild = membersNotInGuilds.computeIfAbsent(guild.getId(), key -> new HashSet<>());
-            if (guild.getMember(user) != null) membersNotInGuild.remove(user.getId()); // is in cache, so is in the server too
+            if (guild.getMember(user) != null)
+                membersNotInGuild.remove(user.getId()); // is in cache, so is in the server too
             if (membersNotInGuild.contains(user.getId())) {
                 synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in (cached)");
                 continue;
@@ -290,7 +302,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             }
             // Determine if Minecraft is authoritative in the synchronization.
             boolean minecraftIsAuthoritative = minecraftIsStrictlyAuthoritative
-                || (!roleIsManaged
+                    || (!roleIsManaged
                     && !discordIsStrictlyAuthoritative
                     && (direction == SyncDirection.AUTHORITATIVE ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative") : direction == SyncDirection.TO_DISCORD));
 
@@ -372,8 +384,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             synchronizationSummary.add("The player does not have the following groups due to having the " +
                     "discordsrv.sync.deny.<group name> permission(s): " + String.join(" | ", groupsDeniedByPermission));
         }
-        if (!bothSidesTrue.isEmpty()) synchronizationSummary.add("No changes for (Both sides true): " + String.join(" | ", bothSidesTrue));
-        if (!bothSidesFalse.isEmpty()) synchronizationSummary.add("No changes for (Both sides false): " + String.join(" | ", bothSidesFalse));
+        if (!bothSidesTrue.isEmpty())
+            synchronizationSummary.add("No changes for (Both sides true): " + String.join(" | ", bothSidesTrue));
+        if (!bothSidesFalse.isEmpty())
+            synchronizationSummary.add("No changes for (Both sides false): " + String.join(" | ", bothSidesFalse));
 
         if (addLinkedRole) {
             try {
@@ -407,12 +421,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                         (member.isOwner()
                                 ? " (server owner)"
                                 : !member.getRoles().isEmpty()
-                                    ? !selfMember.getRoles().isEmpty()
-                                        ? selfMember.getRoles().get(0).getPosition() <= member.getRoles().get(0).getPosition()
-                                            ? " (member has a higher or equal role: " + member.getRoles().get(0) + " (" + member.getRoles().get(0).getPosition() + "))"
-                                            : " (bot has a higher role????? bot: " + selfMember.getRoles().get(0) + ", member: " + member.getRoles().get(0) + ")"
-                                        : " (bot has 0 roles)"
-                                    : " (bot & member both have 0 roles)"
+                                ? !selfMember.getRoles().isEmpty()
+                                ? selfMember.getRoles().get(0).getPosition() <= member.getRoles().get(0).getPosition()
+                                ? " (member has a higher or equal role: " + member.getRoles().get(0) + " (" + member.getRoles().get(0).getPosition() + "))"
+                                : " (bot has a higher role????? bot: " + selfMember.getRoles().get(0) + ", member: " + member.getRoles().get(0) + ")"
+                                : " (bot has 0 roles)"
+                                : " (bot & member both have 0 roles)"
                         )
                 );
                 synchronizationSummary.add("Bot's top role in " + guild + ": " +
@@ -483,15 +497,16 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     public void resyncEveryone(SyncCause cause) {
         resyncEveryone(SyncDirection.AUTHORITATIVE, cause);
     }
+
     @SuppressWarnings("ConstantConditions") // I'm tired of hearing this
     public void resyncEveryone(SyncDirection direction, SyncCause cause) {
         Set<OfflinePlayer> players = new HashSet<>();
 
         // synchronize everyone with a linked account that's played on the server
         DiscordSRV.getPlugin().getAccountLinkManager().getManyDiscordIds(Arrays.stream(Bukkit.getOfflinePlayers())
-                .map(OfflinePlayer::getUniqueId)
-                .collect(Collectors.toSet())
-        ).keySet().stream()
+                        .map(OfflinePlayer::getUniqueId)
+                        .collect(Collectors.toSet())
+                ).keySet().stream()
                 .map(Bukkit::getOfflinePlayer)
                 .filter(Objects::nonNull)
                 .forEach(players::add);
@@ -587,10 +602,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     public void onGuildMemberRoleAdd(@Nonnull GuildMemberRoleAddEvent event) {
         onGuildMemberRolesChanged("add", event.getMember(), event.getRoles());
     }
+
     @Override
     public void onGuildMemberRoleRemove(@Nonnull GuildMemberRoleRemoveEvent event) {
         onGuildMemberRolesChanged("remove", event.getMember(), event.getRoles());
     }
+
     private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {
         if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
         List<Role> checkRoles = new ArrayList<>(roles);
@@ -658,7 +675,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
                     try {
                         return Bukkit.getOfflinePlayer(UUID.fromString(input));
-                    } catch (IllegalArgumentException ignored) {}
+                    } catch (IllegalArgumentException ignored) {
+                    }
                     return null;
                 })
                 .findAny().orElse(null);
@@ -676,6 +694,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     private Permission permission = null;
     private boolean warnedAboutMissingVault = false;
+
     public Permission getPermissions() {
         if (permission != null) {
             return permission;

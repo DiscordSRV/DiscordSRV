@@ -35,6 +35,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -82,8 +83,8 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         Member member = event.getMember();
         // add linked role and nickname back to people when they rejoin the server
-        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
-        if (uuid != null) {
+        Collection<UUID> uuids = DiscordSRV.getPlugin().getAccountLinkManager().getUuids(event.getUser().getId());
+        if (uuids != null && !uuids.isEmpty()) {
             Role roleToAdd = DiscordUtil.resolveRole(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
             if (roleToAdd == null || roleToAdd.getGuild().equals(member.getGuild())) {
                 if (roleToAdd != null) DiscordUtil.addRoleToMember(member, roleToAdd);
@@ -93,8 +94,10 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
             }
 
             if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
-                OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                DiscordSRV.getPlugin().getNicknameUpdater().setNickname(member, player);
+                for (UUID uuid : uuids) {
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+                    DiscordSRV.getPlugin().getNicknameUpdater().setNickname(member, player);
+                }
             }
         }
     }

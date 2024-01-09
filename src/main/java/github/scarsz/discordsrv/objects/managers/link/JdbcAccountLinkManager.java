@@ -37,6 +37,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.ricetea.discordsrv.JBUser;
+import org.ricetea.utils.ObjectUtil;
+import org.ricetea.utils.SoftCache;
 
 import java.io.File;
 import java.sql.*;
@@ -48,6 +50,9 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("SqlResolve")
 public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
+
+    final ThreadLocal<SoftCache<StringBuilder>> stringBuilderCache = ThreadLocal.withInitial(() ->
+            SoftCache.create(StringBuilder::new));
 
     // https://regex101.com/r/EuPRjG
     private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+?)(:(?<port>\\d{1,5}|PORT))?/(?<name>\\w+)\\??(?<params>.+)$");
@@ -349,24 +354,40 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         String mention = DiscordUtil.getUserById(discordId).getAsMention();
 
-        UUID existingUuid = getUuid(discordId);
-        boolean alreadyLinked = existingUuid != null;
+        UUID uuid;
+        synchronized (linkingCodes) {
+            uuid = linkingCodes.get(code);
+        }
+
+        Collection<UUID> existingUuids = getUuids(discordId);
+        JBUser user = ObjectUtil.safeMap(existingUuids, JBUser::of);
+        UUID uuidBeReplaced;
+        if (user == null) {
+            uuidBeReplaced = null;
+        } else {
+            uuidBeReplaced = user.testReplace(uuid);
+        }
+        boolean alreadyLinked = uuidBeReplaced != null;
         if (alreadyLinked) {
             if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
-                unlink(discordId);
+                unlink(uuidBeReplaced);
             } else {
-                OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(existingUuid);
-                return LangUtil.Message.ALREADY_LINKED.toString()
-                        .replace("%username%", String.valueOf(offlinePlayer.getName()))
-                        .replace("%uuid%", offlinePlayer.getUniqueId().toString())
-                        .replace("%mention%", mention);
+                StringBuilder stringBuilder = this.stringBuilderCache.get().get();
+                stringBuilder.setLength(0);
+                for (UUID existingUuid : existingUuids) {
+                    OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(existingUuid);
+                    stringBuilder.append(LangUtil.Message.ALREADY_LINKED.toString()
+                            .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer, "<Unknown>", false))
+                            .replace("%uuid%", uuid.toString())
+                            .replace("%mention%", mention));
+                }
+                return stringBuilder.toString();
             }
         }
 
         // strip the code to get rid of non-numeric characters
         code = code.replaceAll("[^0-9]", "");
 
-        UUID uuid = getLinkingCodes().get(code);
         if (uuid != null) {
             link(discordId, uuid);
 

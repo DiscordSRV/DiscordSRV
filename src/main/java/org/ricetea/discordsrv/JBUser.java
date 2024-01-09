@@ -141,7 +141,9 @@ public final class JBUser implements Iterable<UUID> {
     }
 
     @Nullable
-    public UUID testReplace(@Nonnull UUID uuid) {
+    public UUID testReplace(@Nullable UUID uuid) {
+        if (uuid == null)
+            return null;
         int indexOf;
         if (isBedrockUUID(uuid)) {
             indexOf = indexOf(JBUser::isBedrockUUID);
@@ -164,7 +166,7 @@ public final class JBUser implements Iterable<UUID> {
     }
 
     public static boolean isBedrockUUID(UUID uuid) {
-        return uuid.getMostSignificantBits() == 1;
+        return uuid.getMostSignificantBits() == 0;
     }
 
     @Nonnull
