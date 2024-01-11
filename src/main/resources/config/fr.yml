@@ -87,7 +87,6 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # Format d'URL d'image/avatar d'intégration et de webhook
 # URL d'avatar d'intégration alternative pour les serveurs hors ligne:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-# https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 AvatarUrl: https://crafthead.net/avatar/{uuid-nodashes}/{size}#{texture}
 
 # Reserializer
