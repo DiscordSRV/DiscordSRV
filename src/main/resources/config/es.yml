@@ -87,7 +87,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # Formato de URL de avatar/imagen para insertar y webhook
 # URL de avatar incrustada alternativa para servidores fuera de línea:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+AvatarUrl: https://crafthead.net/avatar/{uuid-nodashes}/{size}#{texture}
 
 # Reserializer
 # Convierte el formato (negrita, cursiva, subrayado) entre Minecraft y Discord
