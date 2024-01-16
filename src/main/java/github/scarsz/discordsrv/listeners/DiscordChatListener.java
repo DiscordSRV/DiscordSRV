@@ -69,7 +69,7 @@ public class DiscordChatListener extends ListenerAdapter {
             if (webhook != null && webhook.split("/")[6].equals(event.getAuthor().getId())) return;
 
             if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockWebhooks")) {
-                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from webhook" + event.getAuthor() + " but DiscordChatChannelBlockWebhooks is on");
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from webhook " + event.getAuthor() + " but DiscordChatChannelBlockWebhooks is on");
                 return;
             }
         }
