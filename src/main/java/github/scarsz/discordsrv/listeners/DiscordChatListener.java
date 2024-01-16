@@ -64,14 +64,14 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // block webhooks
         if (event.isWebhookMessage()) {
+            // Prevent our own webhook from being picked up
+            String webhook = WebhookUtil.getWebhookUrlFromCache(event.getChannel());
+            if (webhook != null && webhook.split("/")[6].equals(event.getAuthor().getId())) return;
+
             if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockWebhooks")) {
                 DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from webhook" + event.getAuthor() + " but DiscordChatChannelBlockWebhooks is on");
                 return;
             }
-
-            // Prevent our own webhook from being picked up
-            String webhook = WebhookUtil.getWebhookUrlFromCache(event.getChannel());
-            if (webhook != null && webhook.split("/")[6].equals(event.getAuthor().getId())) return;
         }
 
         // canned responses
