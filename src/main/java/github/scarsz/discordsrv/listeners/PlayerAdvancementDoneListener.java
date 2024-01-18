@@ -220,19 +220,32 @@ public class PlayerAdvancementDoneListener implements Listener {
                 }
 
                 Field titleComponentField = Arrays.stream(advancementDisplay.getClass().getDeclaredFields())
-                        .filter(field -> field.getType().getSimpleName().equals("IChatBaseComponent"))
+                        .filter(field -> field.getType().getSimpleName().equals("IChatBaseComponent") || field.getType().getSimpleName().equals("IChatMutableComponent"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find advancement display properties field"));
                 titleComponentField.setAccessible(true);
                 Object titleChatBaseComponent = titleComponentField.get(advancementDisplay);
-                String title = (String) titleChatBaseComponent.getClass().getMethod("getText").invoke(titleChatBaseComponent);
-                if (StringUtils.isNotBlank(title)) return title;
+                Method method_getText = null;
+                try {
+                    method_getText = titleChatBaseComponent.getClass().getMethod("getText");
+                } catch (Exception ignored) {}
+                if (method_getText == null) {
+                    try {
+                        method_getText = titleChatBaseComponent.getClass().getMethod("getString");
+                    } catch (Exception ignored) {}
+                }
+
+                if (method_getText != null) {
+                    String title = (String) method_getText.invoke(titleChatBaseComponent);
+                    if (StringUtils.isNotBlank(title)) return title;
+                }
+
                 Class<?> chatSerializerClass = Arrays.stream(titleChatBaseComponent.getClass().getDeclaredClasses())
                         .filter(clazz -> clazz.getSimpleName().equals("ChatSerializer"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Couldn't get component ChatSerializer class"));
                 String componentJson = (String) chatSerializerClass.getMethod("a", titleChatBaseComponent.getClass()).invoke(null, titleChatBaseComponent);
                 return MessageUtil.toLegacy(GsonComponentSerializer.gson().deserialize(componentJson));
             } catch (Exception e) {
-                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to get title of advancement " + advancement.getKey().getKey() + ": " + e.getMessage());
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, e, "Failed to get title of advancement " + advancement.getKey().getKey() + ": " + e.getMessage());
 
                 String rawAdvancementName = advancement.getKey().getKey();
                 return Arrays.stream(rawAdvancementName.substring(rawAdvancementName.lastIndexOf("/") + 1).toLowerCase().split("_"))
