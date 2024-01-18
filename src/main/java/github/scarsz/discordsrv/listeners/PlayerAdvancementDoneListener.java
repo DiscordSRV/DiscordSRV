@@ -33,6 +33,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementDisplay;
@@ -199,9 +200,9 @@ public class PlayerAdvancementDoneListener implements Listener {
         return false;
     }
 
-    private static final Map<Advancement, String> ADVANCEMENT_TITLE_CACHE = new ConcurrentHashMap<>();
+    private static final Map<NamespacedKey, String> ADVANCEMENT_TITLE_CACHE = new ConcurrentHashMap<>();
     public static String getTitle(Advancement advancement) {
-        return ADVANCEMENT_TITLE_CACHE.computeIfAbsent(advancement, v -> {
+        return ADVANCEMENT_TITLE_CACHE.computeIfAbsent(advancement.getKey(), v -> {
             try {
                 Object handle = advancement.getClass().getMethod("getHandle").invoke(advancement);
 
