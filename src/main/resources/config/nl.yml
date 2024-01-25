@@ -224,7 +224,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Eigenaar"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Eigenaar", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Eigenaar", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false

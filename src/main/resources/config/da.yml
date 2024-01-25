@@ -225,7 +225,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Udvikler", "Ejer"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Ejer", "Udvikler"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Ejer", "Udvikler"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
