@@ -88,7 +88,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # 임베드 및 웹훅 이미지/아바타 URL 형식
 # 오프라인 서버용 대체 아바타 URL 포함:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafthead.net/avatar/{uuid-nodashes}/{size}#{texture}
+AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 
 # Reserializer
 # 예를 들어 서식을 변환합니다. 굵은 기울임 꼴, 마인 크래프트와 Discord 사이에 밑줄
