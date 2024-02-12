@@ -1826,7 +1826,6 @@ public class DiscordSRV extends JavaPlugin {
                 .filter(hook -> hook instanceof ChatHook)
                 .map(hook -> (ChatHook) hook)
                 .findAny().orElse(null);
-        System.out.println("broadcast to server " + (chatHook == null));
         if (chatHook == null || channel == null) {
             if (channel != null && !channel.equalsIgnoreCase("global")) return; // don't send messages for non-global channels with no plugin hooks
             DiscordGuildMessagePreBroadcastEvent preBroadcastEvent = api.callEvent(new DiscordGuildMessagePreBroadcastEvent

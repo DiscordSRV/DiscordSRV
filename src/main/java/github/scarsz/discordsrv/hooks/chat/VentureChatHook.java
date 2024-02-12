@@ -172,7 +172,7 @@ public class VentureChatHook implements ChatHook {
 				.replace("%primarygroup%", userPrimaryGroup).replace("%username%", formatUsername);
 		discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
-		String displayName = MessageUtil.strip(chatPlayer.getName());
+		String displayName = MessageUtil.strip(username);
 		if (reserializer) {
 			message = MessageUtil.reserializeToDiscord(MessageUtil.toComponent(message));
 		} else {

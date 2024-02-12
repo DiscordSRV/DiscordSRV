@@ -272,8 +272,6 @@ dependencies {
     compileOnly("mineverse.aust1n46:venturechat:2.20.1")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
     
-    compileOnly(files("VentureChat-4.0.0.jar"))
-    
     // vanish hooks
     compileOnly("de.myzelyam:SuperVanish:6.2.0")
     
