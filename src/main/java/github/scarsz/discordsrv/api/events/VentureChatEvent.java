@@ -27,7 +27,7 @@ abstract class VentureChatMessageEvent extends Event {
 
     @Getter final private VentureChatEvent ventureChatEvent;
 
-    VentureChatMessageEvent(VentureChatEvent ventureChatEvent) {
+    VentureChatEvent(VentureChatEvent ventureChatEvent) {
         this.ventureChatEvent = ventureChatEvent;
     }
 

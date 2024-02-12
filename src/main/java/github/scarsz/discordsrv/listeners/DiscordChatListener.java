@@ -203,6 +203,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 return;
             }
         }
+        
+        if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
 
         if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength")) {
             event.getMessage().addReaction("\uD83D\uDCAC").queue(v -> event.getMessage().addReaction("❗").queue());
