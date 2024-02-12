@@ -31,7 +31,7 @@ import org.bukkit.event.Event;
  * Modification is allow and will effect the message sent to Discord.</p>
  * 
  * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePostProcessEvent} or 
- * {@link LegacyVentureChatMessagePostProcessEvent} (depending on VentureChat version) would be called instead, due to the lack of the Player object</p>
+ * {@link UpdatedVentureChatMessagePostProcessEvent} (depending on VentureChat version) would be called instead, due to the lack of the Player object</p>
  */
 public class GameChatMessagePostProcessEvent extends GameEvent<Event> implements Cancellable {
 

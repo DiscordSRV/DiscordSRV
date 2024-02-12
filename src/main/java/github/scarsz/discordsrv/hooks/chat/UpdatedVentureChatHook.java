@@ -38,8 +38,8 @@ import com.comphenix.protocol.events.PacketContainer;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.events.VentureChatMessagePostProcessEvent;
-import github.scarsz.discordsrv.api.events.VentureChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.api.events.UpdatedVentureChatMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.UpdatedVentureChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
@@ -142,7 +142,7 @@ public class UpdatedVentureChatHook implements ChatHook {
 
 		String channel = chatChannel.getName();
 
-		VentureChatMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new VentureChatMessagePreProcessEvent(channel, message, event));
+		UpdatedVentureChatMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new UpdatedVentureChatMessagePreProcessEvent(channel, message, event));
 		if (preEvent.isCancelled()) {
 			DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "VentureChatMessagePreProcessEvent was cancelled, message send aborted");
 			return;
@@ -191,7 +191,7 @@ public class UpdatedVentureChatHook implements ChatHook {
 			message = message.replace("@", "@\u200B"); // zero-width space
 		}
 
-		VentureChatMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new VentureChatMessagePostProcessEvent(channel, discordMessage, event, preEvent.isCancelled()));
+		UpdatedVentureChatMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new UpdatedVentureChatMessagePostProcessEvent(channel, discordMessage, event, preEvent.isCancelled()));
 		if (postEvent.isCancelled()) {
 			DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "VentureChatMessagePostProcessEvent was cancelled, message send aborted");
 			return;

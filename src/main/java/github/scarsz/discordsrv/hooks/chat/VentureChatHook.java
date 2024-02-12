@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -23,8 +23,8 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.comphenix.protocol.events.PacketContainer;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.events.LegacyVentureChatMessagePostProcessEvent;
-import github.scarsz.discordsrv.api.events.LegacyVentureChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.api.events.VentureChatMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.VentureChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.util.*;
 import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
@@ -113,7 +113,7 @@ public class VentureChatHook implements ChatHook {
         
         String channel = chatChannel.getName();
         
-        LegacyVentureChatMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new LegacyVentureChatMessagePreProcessEvent(channel, message, event));
+        VentureChatMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new VentureChatMessagePreProcessEvent(channel, message, event));
         if (preEvent.isCancelled()) {
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "VentureChatMessagePreProcessEvent was cancelled, message send aborted");
             return;
@@ -164,7 +164,7 @@ public class VentureChatHook implements ChatHook {
             message = message.replace("@", "@\u200B"); // zero-width space
         }
         
-        LegacyVentureChatMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new LegacyVentureChatMessagePostProcessEvent(channel, discordMessage, event, preEvent.isCancelled()));
+        VentureChatMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new VentureChatMessagePostProcessEvent(channel, discordMessage, event, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "VentureChatMessagePostProcessEvent was cancelled, message send aborted");
             return;
