@@ -27,7 +27,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import venture.Aust1n46.chat.api.events.VentureChatEvent;
-import org.bukkit.event.Cancellable;
 
 
 /**
