@@ -194,6 +194,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (handleMessageAddons(event, preEvent, selectedRoles, topRole, sticker.getIconUrl())) return;
             }
         }
+        
+        if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
 
         // apply regex filters
         for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
@@ -203,8 +205,6 @@ public class DiscordChatListener extends ListenerAdapter {
                 return;
             }
         }
-        
-        if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
 
         if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength")) {
             event.getMessage().addReaction("\uD83D\uDCAC").queue(v -> event.getMessage().addReaction("❗").queue());
