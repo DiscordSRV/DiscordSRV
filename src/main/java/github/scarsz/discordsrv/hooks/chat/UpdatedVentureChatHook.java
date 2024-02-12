@@ -23,7 +23,6 @@ package github.scarsz.discordsrv.hooks.chat;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -61,6 +60,7 @@ import venture.Aust1n46.chat.model.VentureChatPlayer;
 import venture.Aust1n46.chat.service.ConfigService;
 import venture.Aust1n46.chat.service.VentureChatFormatService;
 import venture.Aust1n46.chat.service.VentureChatPlayerApiService;
+import venture.Aust1n46.chat.utilities.FormatUtils;
 
 public class UpdatedVentureChatHook implements ChatHook {
 	@Inject
@@ -76,18 +76,15 @@ public class UpdatedVentureChatHook implements ChatHook {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onVentureChat(final VentureChatEvent event) {
-		final boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
-
 		final ChatChannel chatChannel = event.getChannel();
 		if (chatChannel == null) {
 			// uh oh, ok then
 			DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received VentureChatEvent with a null channel");
 			return;
 		}
-
 		final boolean bungeeSend = event.isBungee();
 		final boolean bungeeReceive = !bungeeSend && chatChannel.getBungee();
-
+		final boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
 		if (shouldUseBungee) {
 			// event will fire again when received. don't want to process it twice for the
 			// sending server
@@ -103,25 +100,20 @@ public class UpdatedVentureChatHook implements ChatHook {
 				return;
 			}
 		}
-
-		final String message = event.getChat();
 		final VentureChatPlayer chatPlayer = event.getVentureChatPlayer();
 		DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChatEvent (player: " + (chatPlayer != null ? chatPlayer.getName() : "null") + ")");
-
 		if (chatPlayer != null) {
-			Player player = chatPlayer.getPlayer();
+			final Player player = chatPlayer.getPlayer();
 			if (player != null) {
 				// these events are never cancelled
-				DiscordSRV.getPlugin().processChatMessage(player, message, chatChannel.getName(), false, event);
+				DiscordSRV.getPlugin().processChatMessage(player, event.getChat(), chatChannel.getName(), false, event);
 				return;
 			}
 		}
-
 		if (!shouldUseBungee) {
 			DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat message with a null MineverseChatPlayer or Player (and BungeeCord is disabled)");
 			return;
 		}
-
 		processChatMessageWithNoPlayer(event);
 	}
 
@@ -254,50 +246,52 @@ public class UpdatedVentureChatHook implements ChatHook {
 	}
 
 	@Override
-	public void broadcastMessageToChannel(String channel, Component component) {
-		ChatChannel chatChannel = configService.getChannel(channel); // case in-sensitive
+	public void broadcastMessageToChannel(final String channel, final Component component) {
+		final ChatChannel chatChannel = configService.getChannel(channel); // case in-sensitive
 		if (chatChannel == null) {
 			DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT,
 					"Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
 			return;
 		}
-		String legacy = MessageUtil.toLegacy(component);
-
 		String channelColor = null;
 		try {
 			channelColor = ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString();
-		} catch (Exception ignored) {
+		} catch (final Exception e) {
 			// if it has a section sign it's probably a already formatted color
 			if (chatChannel.getColor().contains(MessageUtil.LEGACY_SECTION.toString())) {
 				channelColor = MessageUtil.translateLegacy(chatChannel.getColor());
 			}
 		}
-
-		String message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString().replace("%channelname%", chatChannel.getName()).replace("%channelnickname%", chatChannel.getAlias())
-				.replace("%message%", legacy).replace("%channelcolor%", MessageUtil.translateLegacy(channelColor != null ? channelColor : ""));
-
+		final String legacyMessage = MessageUtil.toLegacy(component);
+		final String message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+				.replace("%channelname%", chatChannel.getName())
+				.replace("%channelnickname%", chatChannel.getAlias())
+				.replace("%message%", legacyMessage)
+				.replace("%channelcolor%", MessageUtil.translateLegacy(channelColor != null ? channelColor : ""));
 		if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
-			if (chatChannel.isFiltered())
-				message = formatService.FilterChat(message);
-			String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(message));
-			pluginMessageController.sendDiscordSRVPluginMessage(chatChannel.getName(), translatedMessage);
+			final String playerMessage = chatChannel.isFiltered() ? formatService.FilterChat(message) : message;
+			pluginMessageController.sendDiscordSRVPluginMessage(chatChannel.getName(), playerMessage);
 			DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Sent a message to VentureChat via BungeeCord (channel: " + chatChannel.getName() + ")");
 		} else {
-			List<VentureChatPlayer> playersToNotify = apiService.getOnlineMineverseChatPlayers().stream().filter(p -> p.getListening().contains(chatChannel.getName()))
-					.filter(p -> !chatChannel.hasPermission() || p.getPlayer().hasPermission(chatChannel.getPermission())).collect(Collectors.toList());
-			for (VentureChatPlayer player : playersToNotify) {
-				String playerMessage = (player.isFilter() && chatChannel.isFiltered()) ? formatService.FilterChat(message) : message;
-
+			final List<VentureChatPlayer> playersToNotify = apiService.getOnlineMineverseChatPlayers()
+					.stream()
+					.filter(p -> p.getListening().contains(chatChannel.getName()))
+					.filter(p -> !chatChannel.hasPermission() || p.getPlayer().hasPermission(chatChannel.getPermission()))
+					.toList();
+			for (final VentureChatPlayer player : playersToNotify) {
+				final String playerMessage = (player.isFilter() && chatChannel.isFiltered() ? formatService.FilterChat(message) : message);
 				// escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
-				playerMessage = playerMessage.replace("\"", "\\\"");
-				String json = formatService.convertPlainTextToJson(playerMessage, true);
-				int hash = (playerMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
-				String finalJSON = formatService.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
-				PacketContainer packet = formatService.createPacketPlayOutChat(finalJSON);
+				final String escapedPlayerMessage = playerMessage.replace("\"", "\\\"");
+				final String json = formatService.convertPlainTextToJson(escapedPlayerMessage, true);
+				final int hash = FormatUtils.stripColor(escapedPlayerMessage).hashCode();
+				final String finalJSON = formatService.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
+				final PacketContainer packet = formatService.createPacketPlayOutChat(finalJSON);
 				formatService.sendPacketPlayOutChat(player.getPlayer(), packet);
 			}
-
-			PlayerUtil.notifyPlayersOfMentions(player -> playersToNotify.stream().map(VentureChatPlayer::getPlayer).collect(Collectors.toList()).contains(player), message);
+			PlayerUtil.notifyPlayersOfMentions(player -> playersToNotify
+					.stream()
+					.map(VentureChatPlayer::getPlayer)
+					.toList().contains(player), message);
 		}
 	}
 
