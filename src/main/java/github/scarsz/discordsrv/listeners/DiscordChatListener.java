@@ -194,7 +194,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (handleMessageAddons(event, preEvent, selectedRoles, topRole, sticker.getIconUrl())) return;
             }
         }
-        
+
         if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
 
         // apply regex filters
