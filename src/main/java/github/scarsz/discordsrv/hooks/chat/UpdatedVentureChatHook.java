@@ -62,7 +62,7 @@ import venture.Aust1n46.chat.service.ConfigService;
 import venture.Aust1n46.chat.service.VentureChatFormatService;
 import venture.Aust1n46.chat.service.VentureChatPlayerApiService;
 
-public class VentureChatHook implements ChatHook {
+public class UpdatedVentureChatHook implements ChatHook {
 	@Inject
 	private PluginMessageController pluginMessageController;
 	@Inject
