@@ -20,10 +20,11 @@
 
 package github.scarsz.discordsrv.api.events;
 
+import org.bukkit.event.Cancellable;
+
 import lombok.Getter;
 import lombok.Setter;
 import venture.Aust1n46.chat.api.events.VentureChatEvent;
-import org.bukkit.event.Cancellable;
 
 /**
  * <p>
@@ -39,10 +40,10 @@ public class UpdatedVentureChatMessagePostProcessEvent extends UpdatedVentureCha
 	private String channel;
 	private String processedMessage;
 
-	public UpdatedVentureChatMessagePostProcessEvent(String channel, String processedMessage, VentureChatEvent ventureChatEvent, boolean cancelled) {
+	public UpdatedVentureChatMessagePostProcessEvent(final String channel, final String processedMessage, final VentureChatEvent ventureChatEvent, final boolean cancelled) {
 		super(ventureChatEvent);
 		this.channel = channel;
 		this.processedMessage = processedMessage;
-		setCancelled(cancelled);
+		this.cancelled = cancelled;
 	}
 }

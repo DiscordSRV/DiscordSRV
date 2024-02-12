@@ -75,18 +75,18 @@ public class UpdatedVentureChatHook implements ChatHook {
 	private Plugin plugin;
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onVentureChat(VentureChatEvent event) {
-		boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
+	public void onVentureChat(final VentureChatEvent event) {
+		final boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
 
-		ChatChannel chatChannel = event.getChannel();
+		final ChatChannel chatChannel = event.getChannel();
 		if (chatChannel == null) {
 			// uh oh, ok then
 			DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received VentureChatEvent with a null channel");
 			return;
 		}
 
-		boolean bungeeSend = event.isBungee();
-		boolean bungeeReceive = !bungeeSend && chatChannel.getBungee();
+		final boolean bungeeSend = event.isBungee();
+		final boolean bungeeReceive = !bungeeSend && chatChannel.getBungee();
 
 		if (shouldUseBungee) {
 			// event will fire again when received. don't want to process it twice for the
@@ -96,7 +96,7 @@ public class UpdatedVentureChatHook implements ChatHook {
 				return;
 			}
 		} else {
-			// since bungee compatability is disabled, we don't care about messages that we
+			// since bungee compatibility is disabled, we don't care about messages that we
 			// receive
 			if (bungeeReceive) {
 				DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event from BungeeCord, ignoring due to VentureChatBungee being disabled");
@@ -104,8 +104,8 @@ public class UpdatedVentureChatHook implements ChatHook {
 			}
 		}
 
-		String message = event.getChat();
-		VentureChatPlayer chatPlayer = event.getVentureChatPlayer();
+		final String message = event.getChat();
+		final VentureChatPlayer chatPlayer = event.getVentureChatPlayer();
 		DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChatEvent (player: " + (chatPlayer != null ? chatPlayer.getName() : "null") + ")");
 
 		if (chatPlayer != null) {
@@ -122,9 +122,18 @@ public class UpdatedVentureChatHook implements ChatHook {
 			return;
 		}
 
-		// Below is copied from DiscordSRV#processChatMessage for supporting messages
-		// with no player
+		processChatMessageWithNoPlayer(event);
+	}
 
+	/**
+	 * Copied from {@link DiscordSRV#processChatMessage} for supporting messages
+	 * with no player
+	 */
+	private void processChatMessageWithNoPlayer(final VentureChatEvent event) {
+		final VentureChatPlayer chatPlayer = event.getVentureChatPlayer();
+		final ChatChannel chatChannel = event.getChannel();
+		final boolean bungeeReceive = !event.isBungee() && chatChannel.getBungee();
+		String message = event.getChat();
 		DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD,
 				"Processing VentureChat message without a Player object" + (bungeeReceive ? " (a BungeeCord receive)" : " (not a BungeeCord receive)"));
 		if (!DiscordSRV.config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
@@ -191,7 +200,8 @@ public class UpdatedVentureChatHook implements ChatHook {
 			message = message.replace("@", "@\u200B"); // zero-width space
 		}
 
-		UpdatedVentureChatMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new UpdatedVentureChatMessagePostProcessEvent(channel, discordMessage, event, preEvent.isCancelled()));
+		UpdatedVentureChatMessagePostProcessEvent postEvent = DiscordSRV.api
+				.callEvent(new UpdatedVentureChatMessagePostProcessEvent(channel, discordMessage, event, preEvent.isCancelled()));
 		if (postEvent.isCancelled()) {
 			DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "VentureChatMessagePostProcessEvent was cancelled, message send aborted");
 			return;

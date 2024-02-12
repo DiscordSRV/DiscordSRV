@@ -28,7 +28,6 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import venture.Aust1n46.chat.api.events.VentureChatEvent;
 
-
 /**
  * <p>
  * Called before DiscordSRV has processed a VentureChat message from Bungee
@@ -50,14 +49,14 @@ public class UpdatedVentureChatMessagePreProcessEvent extends UpdatedVentureChat
 	private String channel;
 	private Component messageComponent;
 
-	public UpdatedVentureChatMessagePreProcessEvent(String channel, Component message, VentureChatEvent ventureChatEvent) {
+	public UpdatedVentureChatMessagePreProcessEvent(final String channel, final Component message, final VentureChatEvent ventureChatEvent) {
 		super(ventureChatEvent);
 		this.channel = channel;
 		this.messageComponent = message;
 	}
 
 	@Deprecated
-	public UpdatedVentureChatMessagePreProcessEvent(String channel, String message, VentureChatEvent ventureChatEvent) {
+	public UpdatedVentureChatMessagePreProcessEvent(final String channel, final String message, final VentureChatEvent ventureChatEvent) {
 		this(channel, MessageUtil.toComponent(message, true), ventureChatEvent);
 	}
 
@@ -67,7 +66,7 @@ public class UpdatedVentureChatMessagePreProcessEvent extends UpdatedVentureChat
 	}
 
 	@Deprecated
-	public void setMessage(String legacy) {
+	public void setMessage(final String legacy) {
 		this.messageComponent = MessageUtil.toComponent(legacy, true);
 	}
 }

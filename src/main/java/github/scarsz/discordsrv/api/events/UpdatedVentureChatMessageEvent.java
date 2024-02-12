@@ -23,11 +23,11 @@ package github.scarsz.discordsrv.api.events;
 import lombok.Getter;
 import venture.Aust1n46.chat.api.events.VentureChatEvent;
 
+@Getter
 abstract class UpdatedVentureChatMessageEvent extends Event {
-	@Getter
 	final private VentureChatEvent ventureChatEvent;
 
-	UpdatedVentureChatMessageEvent(VentureChatEvent ventureChatEvent) {
+	UpdatedVentureChatMessageEvent(final VentureChatEvent ventureChatEvent) {
 		this.ventureChatEvent = ventureChatEvent;
 	}
 }
