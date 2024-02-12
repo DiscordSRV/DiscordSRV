@@ -49,8 +49,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class LegacyVentureChatHook implements ChatHook {
-	private Plugin plugin;
+public class VentureChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVentureChat(VentureChatEvent event) {
@@ -217,7 +216,6 @@ public class LegacyVentureChatHook implements ChatHook {
 
     @Override
     public void broadcastMessageToChannel(String channel, Component component) {
-    	System.out.println("entered discord " + channel);
         ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive
         if (chatChannel == null) {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
@@ -274,12 +272,9 @@ public class LegacyVentureChatHook implements ChatHook {
     }
 
     @Override
-	public Plugin getPlugin() {
-		if (plugin == null) {
-			plugin = PluginUtil.getPlugin("VentureChat");
-		}
-		return plugin;
-	}
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("VentureChat");
+    }
     
     @Override
     public boolean isEnabled() {

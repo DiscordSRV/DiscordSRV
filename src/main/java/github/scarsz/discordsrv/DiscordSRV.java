@@ -1070,7 +1070,7 @@ public class DiscordSRV extends JavaPlugin {
                 "github.scarsz.discordsrv.hooks.chat.LegendChatHook",
                 "github.scarsz.discordsrv.hooks.chat.LunaChatHook",
                 "github.scarsz.discordsrv.hooks.chat.TownyChatHook",
-                "github.scarsz.discordsrv.hooks.chat.LegacyVentureChatHook",
+                "github.scarsz.discordsrv.hooks.chat.VentureChatHook",
                 "github.scarsz.discordsrv.hooks.chat.UpdatedVentureChatHook",
                 // vanish plugins
                 "github.scarsz.discordsrv.hooks.vanish.EssentialsHook",
