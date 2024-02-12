@@ -1,0 +1,350 @@
+# DiscordSRV Configuration
+# Потрібна допомога? Приєднуйтесь до нашого Discord, https://discordsrv.com/discord
+
+# Не чіпайте це будь ласка!
+ConfigVersion: ${version}
+
+# Токен бота; не знаєте, що це? Перегляньте відео з встановлення та налаштування плагіна
+# Після зміни цього параметра необхідно перезавантажити сервер.
+BotToken: "BOTTOKEN"
+
+# Посилання на канали з гри в Discord
+# синтаксис: Channels: {"назва внутрішньоігрового каналу з Minecraft": "числовий ідентифікатор каналу з Discord", "інша назва внутрішньоігрового каналу з Minecraft": "інший числовий ідентифікатор каналу з Discord"}
+#
+# Всі повідомлення DiscordSRV будуть йти на перший канал, якщо не визначено канал для цього типу повідомлень:
+# при використанні сумісного плагіна чату ім'я каналу буде тим самим, що й у цьому плагіні (для повідомлень чату)
+# - Якщо ви використовуєте TownyChat, стандартний канал зазвичай називається "general", а не "global".
+# для повідомлень у чаті гравця (якщо не використовується плагін чату): global
+# для повідомлень про запуск / зупинку сервера: status
+# для повідомлень про досягнення / просування: awards
+# для повідомлень про смерть: deaths
+# для повідомлень про приєднання: join
+# для повідомлень про вихід: leave
+# для повідомлень dynmap: dynmap
+# для повідомлень сторожового таймера: watchdog
+# для /discord broadcast: broadcasts (якщо не вказано в команді)
+# Посилання на обліковий запис: link
+#
+# Перша частина пар каналів не є назвою каналу Discord!
+# Виконайте "/discord reload" після зміни цієї опції для застосування
+Channels: {"global": "000000000000000000"}
+
+# Канал для виведення повідомлень Консолі (НЕ ІМ'Я); залиште порожнім, щоб вимкнути консольний канал
+DiscordConsoleChannelId: "000000000000000000"
+
+# Посилання на запрошення, що відображається гравцям при використанні /discord, і в повідомленні, що відображається незв'язаним гравцям при обов'язковій прив'язці.
+DiscordInviteLink: "https://discord.gg/поміняйте-посилання-в-config.yml"
+
+# Налагоджувальна інформація
+# Не вмикайте їх, якщо ви не намагаєтеся знайти проблему
+#
+# Доступні категорії налагодження:
+# MINECRAFT_TO_DISCORD  - Повідомлення з Minecraft
+# DISCORD_TO_MINECRAFT  - Повідомлення з Discord
+# GROUP_SYNC            - Групова синхронізація
+# PRESENCE              - Статус гри або присутність бота
+# VOICE                 - Голосовий модуль (див. voice.yml)
+# REQUIRE_LINK          - Потрібне посилання для приєднання модуля (див. linking.yml)
+# NICKNAME_SYNC         - Псевдонім синхронізації
+# ALERTS                - Оповіщення (див. alerts.yml)
+# WATCHDOG              - Моніторинг сервера
+# BAN_SYNCHRONIZATION   - Синхронізація банів
+# LP_CONTEXTS           - Контексти LuckPerm
+# ACCOUNT_LINKING       - прив'язка облікового запису Discord/Minecraft
+#
+# UNCATEGORIZED - Все, що не відноситься до жодної з вищезгаданих категорій
+# ALL - Усі перелічені категорії (включаючи UNCATEGORIZED)
+#
+# JDA - Налагоджувальні повідомлення JDA
+# JDA_REST_ACTIONS - Для налагодження решти дій JDA
+# CALLSTACKS - Відображає трасування стека для викликів налагодження DiscordSRV
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning до нової Debug option,
+# setting this to anything above 0 is the same as setting Debug to [ALL]
+DebugLevel: 0
+
+# Експерименти
+# Ці функції не повністю оптимізовані; Використовуйте на свій ризик
+
+# JDBC (MySQL/MariaDB)
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
+Experiment_JdbcTablePrefix: "discordsrv"
+Experiment_JdbcUsername: "username"
+Experiment_JdbcPassword: "password"
+
+# Webhook Delivery
+Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageFormat: "%message%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
+
+# Вбудовування та формат URL-адреси зображення / аватара веб-перехоплювача
+# Альтернативна URL-адреса для вбудовування аватара для офлайн-серверів:
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Reserializer
+# Перетворює форматування (жирний, курсив, підкреслення) між Minecraft та Discord
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+
+# Інші
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
+PrintGuildsAndChannels: true
+ForceTLSv12: true
+NoopHostnameVerifier: false
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
+DateFormat: yyyy-MM-dd
+# https://docs.discordsrv.com/config/#Timezone
+Timezone: default
+# MinecraftMentionSound: Чи повинен звук посилатися гравцю в Minecraft при згадці з Discord
+MinecraftMentionSound: true
+
+# Подключаемые модули
+# После изменения этих параметров необходимо перезагрузить сервер.
+#
+# DisabledPluginHooks: отключить модули (обычно это названия плагинов).
+# VentureChatBungee: включает BungeeCord-функционал модуля VentureChat (сообщения принимаются с каждого сервера, требуется, чтобы по крайней мере 1 игрок был в сети)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
+DisabledPluginHooks: []
+VentureChatBungee: false
+EnablePresenceInformation: false
+UseModernPaperChatEvent: false
+
+# Информация в статусе бота в Discord
+# Устанавливает боту индикатор "Играет в: ______".
+# Может быть как одним статическим значением, так и несколькими (сменяющимися друг за другом).
+# Вы можете добавить в начало "playing", "watching" или "listening to", чтобы установить тип активности (играет, смотрит, слушает)
+# Поддерживает шаблоны PlaceholderAPI
+#
+# DiscordGameStatus: Отображаемый текст. Может быть как одним значением, например "Minecraft", так и несколькими: ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Статус отображаемого действия. Он должен быть одним из следующих: ONLINE, DND, IDLE или INVISIBLE.
+# StatusUpdateRateInMinutes: Как часто (в минутах) менять статус (если их несколько)
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
+StatusUpdateRateInMinutes: 2
+
+# Налаштування каналу чату
+# Канал чату призначений для виведення всіх внутрішньоігрових повідомлень, а також усіх публічних повідомлень, якими обмінюються гравці
+# вашого сервера
+#
+# DiscordChatChannelDiscordToMinecraft: надсилати або не надсилати повідомлення з каналу чату до чату Minecraft (Discord -> Minecraft)
+# DiscordChatChannelMinecraftToDiscord: надсилати або не надсилати повідомлення з чату Minecraft в канал чату (Minecraft -> Discord)
+# DiscordChatChannelTruncateLength: максимальна довжина повідомлень з Discord для надсилання до чату Minecraft
+# DiscordChatChannelTranslateMentions: перекладати або не перекладати згадки, такі як @Person для повідомлень Minecraft у Discord
+# DiscordChatChannelAllowedMentions: типи згадок, дозволені у повідомленнях Minecraft to Discord; типи, відсутні в значенні за замовчуванням: "роль", "тут" та "все"
+# DiscordChatChannelEmojiBehavior: як смайли повинні бути відправлені до Мінекрафт. Можливо "show", "name" чи "hide".
+# DiscordChatChannelEmoteBehavior: як емоти повинні бути відправлені до Мінекрафту. Можливо "name" чи "hide".
+# DiscordChatChannelPrefixRequiredToProcessMessage: символ(и), необхідні як префікс повідомлень для їх відправки з Minecraft до Discord (наприклад, «!»)
+# DiscordChatChannelPrefixActsAsBlacklist: Чи повинен префікс діяти як чорний список.
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: список ролей, яким дозволено використовувати кольори/форматування в чаті Discord у Minecraft
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: виводити чи ні оброблені Discord повідомлення в ігрову консоль
+# DiscordChatChannelRequireLinkedAccount: чи вимагати прив'язку акаунта при надсиланні повідомлення з Discord до Minecraft
+# DiscordChatChannelBlockBots: чи блокувати ботам можливість надсилати повідомлення з Discord до Minecraft
+# DiscordChatChannelBlockWebhooks: чи слід блокувати ботів у чаті Discord -> MC
+# DiscordChatChannelBlockedIds: ідентифікатори користувачів (або ботів), заблокованих для надсилання повідомлень з Discord до Minecraft
+# DiscordChatChannelBlockedRolesAsWhitelist: якщо наступний список слід розглядати як білий список (true) або чорний список (false)
+# DiscordChatChannelBlockedRolesIds: ідентифікатори ролей Discord, повідомлення яких не повинні оброблятися та надсилатися до MC
+# DiscordChatChannelRolesSelectionAsWhitelist: якщо наступний список слід розглядати як білий список (true) або чорний список (false)
+# DiscordChatChannelRolesSelection: список ролей, які мають бути відфільтровані за всіма ролями користувача.
+# DiscordChatChannelRoleAliases: список псевдонімів ролей (альтернативні імена для ролей для використання у повідомленнях Minecraft)
+#
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelTruncateLength: 256
+DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
+DiscordChatChannelEmojiBehavior: "name"
+DiscordChatChannelEmoteBehavior: "name"
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+
+# Налаштування чату консолі
+# Канал або чат консолі - це текстовий канал, який інтерпретує всі повідомлення, що відсилаються з Discord, як команди консолі,
+# а також транслює всі події, повідомлення та команди консолі сервера в Discord
+#
+# Ви можете налаштувати формат усіх повідомлень (включаючи видалення тимчасових міток) у конфігураційному файлі messages.yml
+#
+# DiscordConsoleChannelLogRefreshRateInSeconds: швидкість в секундах між надсиланням повідомлень з консолі
+# DiscordConsoleChannelUsageLog:
+#    %date%: поточна дата
+#              приклад: 2017-01-01
+#    PlaceholderAPI заповнювачі підтримуються
+# DiscordConsoleChannelBlacklistActsAsWhitelist: чи інвертувати "чорний" список команд, перетворюючи його на "білий"
+# DiscordConsoleChannelBlacklistedCommands: фрази, укладені в лапки, які користувачі не можуть відправляти у вигляді команд у консоль
+# DiscordConsoleChannelFilters: фільтри регулярних виразів, які будуть застосовуватися до консольних рядків, що відправляються в Discord, якщо результат порожній, повідомлення не буде відправлено взагалі
+# DiscordConsoleChannelLevels: типи логів, які надсилаються в консольний канал
+# DiscordConsoleChannelUseCodeBlocks: якщо консоль повинна бути загорнута в блоки коду та пофарбована
+# DiscordConsoleChannelBlockBots: дозволити ботам відправляти команди в каналі консолі
+#
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
+DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelUseCodeBlocks: true
+DiscordConsoleChannelBlockBots: true
+
+# Налаштування виконання команд у каналі чату
+# Ці опції дозволяють налаштувати виконання певних команд на серверній консолі
+# скажемо, ось так "!c kick Notch"
+#
+# DiscordChatChannelConsoleCommandEnabled: дозволяти або забороняти консольні команди з каналу чату.
+# DiscordChatChannelConsoleCommandNotifyErrors: надсилати або не надсилати повідомлення про помилку під час спроби використовувати команду, не маючи прав
+# DiscordChatChannelConsoleCommandPrefix: префікс для використання в консольних командах. наприклад "! c tps"
+# DiscordChatChannelConsoleCommandRolesAllowed: ролі, яким дозволено виконувати команди сервера з каналу чату
+# DiscordChatChannelConsoleCommandWhitelist: список команд, які можуть бути запущені за допомогою DiscordChatChannelConsoleCommandPrefix
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: список ролей, які обходять білий список
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: чи командний білий список повинен діяти як чорний список
+# DiscordChatChannelConsoleCommandExpiration: час у секундах, поки результат команди буде видалено ботом. Встановіть значення 0, щоб вимкнути термін дії.
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: видалити або не видаляти повідомлення гравця, який виконав команду
+#
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandNotifyErrors: true
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
+DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+
+# Особлива команда виведення списку гравців у каналі чату
+# Так-так, всі ці опції тільки для однієї невинної команди "playerlist"
+#
+# DiscordChatChannelListCommandEnabled: чи включено команду
+# DiscordChatChannelListCommandMessage: команда, яку можуть використовувати гравці, щоб вивести список гравців на сервері
+# DiscordChatChannelListCommandExpiration: час у секундах, поки виведений список користувачів не буде видалено ботом. встановіть значення 0, щоб вимкнути закінчення терміну дії.
+# DiscordChatChannelListCommandExpirationDeleteRequest: чи видаляти повідомлення гравця, який спочатку запросив виведення списку гравців
+#
+DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandMessage: "playerlist"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
+
+# Чорний список фраз та регулярних виразів для каналу чату
+#
+# DiscordChatChannelGameFilters: фільтри регулярних виразів, які будуть застосовуватися до повідомлень чату, що відправляються в Discord, якщо результат порожній, повідомлення не буде відправлено взагалі
+# DiscordChatChannelDiscordFilters: фільтри регулярних виразів, які будуть застосовуватися до повідомлень чату, що надсилаються до Minecraft, якщо результат порожній, повідомлення не буде відправлено взагалі
+#
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+
+# Налаштування оновлення теми каналу
+#
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: чи повинні теми каналу взагалі бути змінені при завершенні роботи сервера
+# ChannelTopicUpdaterRateInMinutes: кількість хвилин між автоматичним оновленням тем каналу зі свіжою інформацією
+#
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInMinutes: 10
+
+# Оновлення каналу
+# Ця функція змінює назву вказаних каналів, щоб вони відповідали внутрішньоігровим заповнювачам.
+# Опції:
+#   ChannelId: ідентифікатор каналу для зміни (обов'язково)
+#   Format: формат каналу (обов'язково). Доступні заповнювачі:
+#     %playercount%: поточна кількість гравців
+#     %playermax%: максимальна кількість гравців
+#     %date%: поточна дата та час
+#     %totalplayers%: загальна кількість гравців, які будь-коли приєдналися до основного світу
+#     %uptimemins%: кількість хвилин з моменту запуску DiscordSRV
+#     %uptimehours%: кількість годин з моменту запуску DiscordSRV
+#     %motd%:          motd сервера
+#     %serverversion%: версія сервера, наприклад, Spigot-1.9.
+#     %freememory%: вільна пам'ять JVM у МБ
+#     %usedmemory%: пам'ять JVM, що використовується в МБ
+#     %totalmemory%: загальний обсяг пам'яті JVM у МБ
+#     %maxmemory%: максимальна пам'ять JVM у МБ
+#     %freememorygb%: вільна пам'ять JVM у ГБ
+#     %usedmemorygb%: пам'ять JVM, що використовується в ГБ
+#     %totalmemorygb%: загальний обсяг пам'яті JVM у ГБ
+#     %maxmemorygb%: максимальна пам'ять JVM у ГБ
+#     %tps%: середнє значення TPS сервера
+#     Заповнювачі PlaceholderAPI також підтримуються
+#   ShutdownFormat: Формат, який повинен приймати канал після вимкнення сервера. Доступні заповнювачі:
+#     %time% або %date%: поточна дата та час
+#     %serverversion%: версія сервера
+#     %totalplayers%: загальна кількість гравців, які будь-коли приєдналися до основного світу
+#     %timestamp%: поточна часова мітка unix
+#   UpdateInterval: Час у хвилинах очікування між оновленням імені каналу (мінімум 10 через обмеження швидкості)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% гравців онлайн"
+    ShutdownFormat: "Сервер вимкнено"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Поточний показник TPS: %tps%"
+    ShutdownFormat: "Сервер вимкнено"
+    UpdateInterval: 10
+
+# Заготовлені відповіді
+# Ці тригери (команди певною мірою), які будуть відправляти «заготовлену відповідь» у відповідь на них
+# Можливо, ви захочете змінити їх або додати свої власні
+#
+# Синтаксис {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
+# Якщо ви не бажаєте використовувати цю опцію, просто залиште {}
+# До речі, доступні шаблони PlaceholderAPI
+#
+DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+
+# Підключення облікового запису Minecraft до Discord
+# Ці опції стосуються налаштування зв'язування ігрового облікового запису Minecraft з обліковим записом Discord
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: команди, які підлягають виконанню при зв'язуванні облікових записів (див. нижче всі можливі шаблони)
+# MinecraftDiscordAccountUnlinkedConsoleCommands: команди, які підлягають виконанню при розриві пов'язаних облікових записів (див. нижче всі можливі шаблони)
+# %minecraftplayername%: нік гравця Minecraft
+#                         пример: Notch
+# %minecraftuuid%:        uuid гравця
+#                         приклад: ви знаєте як виглядає uuid
+# %discordid%:           пов'язаний ID облікового запису Discord
+#                         приклад: 12345678901234567890
+# %discordname%:         прив'язаний нік акаунта Discord
+#                         приклад: Notch
+#
+#MinecraftDiscordAccountLinkedRoleNameToAddUserTo: ім'я або ID Discord ролі, до якої будуть додані користувачі, після того, як прив'яжуть свої облікові записи
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: чи можна надіслати новий код боту, щоб перев'язати обліковий запис
+# MinecraftDiscordAccountLinkedUsePM: Зв'язування рахунків за допомогою PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Час (в секундах) до видалення повідомлення під час зв'язування в текстовому каналі. Встановіть 0, якщо ви не бажаєте видаляти повідомлення.
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
+
+# Моніторинг сервера
+#
+# Моніторинг відстежує стан вашого сервера з останнього ігрового такту (тіка)
+# Якщо час, що минув з моменту останнього тику, перевищує встановлений тайм-аут в секундах, у чат Discord буде надіслано відповідне повідомлення
+#
+# ServerWatchdogEnabled: увімкнено чи ні моніторинг сервера в принципі
+# ServerWatchdogTimeout: час у секундах, який має пройти з моменту останнього тику, перш ніж буде надіслано повідомлення (наприклад, Spigot використовує 60 секунд)
+#                        мінімум для цього значення - 10 секунд
+# ServerWatchdogMessageCount: кількість разів відправки ServerWatchdogMessage. Корисно, якщо ви дійсно хочете переконатися що щось пішло не так
+#
+ServerWatchdogEnabled: true
+ServerWatchdogTimeout: 30
+ServerWatchdogMessageCount: 3

@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -54,7 +54,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
                     DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
                             player,
                             GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
@@ -89,19 +89,20 @@ public class PlayerJoinLeaveListener implements Listener {
         // player doesn't have silent join permission, send join message
 
         // schedule command to run in a second to be able to capture display name
-        Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
-                DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), event.getJoinMessage()), 20);
+        String message = event.getJoinMessage();
+        SchedulerUtil.runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
+                DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), message), 20);
 
         // if enabled, set the player's discord nickname as their ign
         if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
                 final String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
                 DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), player);
             });
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used, it is at lowest so that it executes before VanishNoPacket's player leave listener and is able to see whether the player is vanished
+    @EventHandler(priority = EventPriority.LOW) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used, it needs to be < NORMAL so that it executes before VanishNoPacket's player leave listener and is able to see whether the player is vanished
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
         if (PlayerUtil.isVanished(player)) {
@@ -125,8 +126,9 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         // player doesn't have silent quit, show quit message
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(),
-                () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage()));
+        String message = event.getQuitMessage();
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(),
+                () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), message));
     }
 
 }

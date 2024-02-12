@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -68,17 +68,30 @@ public class NicknameUpdater extends Thread {
 
                 Guild guild = DiscordSRV.getPlugin().getMainGuild();
                 for (Player onlinePlayer : PlayerUtil.getOnlinePlayers()) {
+                    String playerName = onlinePlayer.getName();
                     // skip vanished players
-                    if (PlayerUtil.isVanished(onlinePlayer)) continue;
+                    if (PlayerUtil.isVanished(onlinePlayer)) {
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, playerName + " is vanished, not setting nickname");
+                        continue;
+                    }
 
                     String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(onlinePlayer.getUniqueId());
-                    if (userId == null) continue;
+                    if (userId == null) {
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, playerName + " isn't linked, not setting nickname");
+                        continue;
+                    }
 
                     User linkedUser = DiscordUtil.getJda().getUserById(userId);
-                    if (linkedUser == null) continue;
+                    if (linkedUser == null) {
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, "Could not resolve a valid Discord user for " + playerName + ", not setting nickname");
+                        continue;
+                    }
 
                     if (guild.getMember(linkedUser) != null) nonMembers.remove(linkedUser.getId());
-                    if (nonMembers.contains(linkedUser.getId())) continue;
+                    if (nonMembers.contains(linkedUser.getId())) {
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser.getName() + " is not in the Main guild, not setting nickname");
+                        continue;
+                    }
 
                     // get the member, from cache if it's there otherwise from Discord
                     Member member;
@@ -92,7 +105,7 @@ public class NicknameUpdater extends Thread {
                         throw e;
                     }
                     if (member == null) {
-                        DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser + " is not in the Main guild, not setting nickname");
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser.getName() + " is not in the Main guild, not setting nickname");
                         continue;
                     }
 
@@ -121,6 +134,7 @@ public class NicknameUpdater extends Thread {
                 return;
             }
 
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "Syncing nickname for " + player.getName());
             nickname = DiscordSRV.config().getString("NicknameSynchronizationFormat")
                     .replace("%displayname%", player.getDisplayName() != null ? player.getDisplayName() : player.getName())
                     .replace("%username%", player.getName())
@@ -139,4 +153,5 @@ public class NicknameUpdater extends Thread {
         }
         DiscordUtil.setNickname(member, nickname);
     }
+
 }
