@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -257,7 +257,7 @@ public class AlertListener implements Listener, EventListener {
 
             if (async) {
                 int alertIndex = i;
-                Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> process(event, alert, triggers, alertIndex));
+                SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> process(event, alert, triggers, alertIndex));
             } else {
                 process(event, alert, triggers, i);
             }

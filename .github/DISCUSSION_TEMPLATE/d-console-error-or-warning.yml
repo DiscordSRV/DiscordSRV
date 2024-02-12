@@ -1,0 +1,13 @@
+title: "[Console Error/Warning] "
+labels: ["waiting for support"]
+body:
+- type: markdown
+  attributes:
+    value: |
+      Please attach the entire error/warning, including any lines starting with `at` or `Caused by:` below the message. If you are not sure what parts to copy, please attach your log (`logs/latest.log`) via a [mclo.gs](https://mclo.gs) link
+- type: textarea
+  id: error
+  attributes:
+    label: The error or logs in a mclo.gs link
+  validations:
+    required: true

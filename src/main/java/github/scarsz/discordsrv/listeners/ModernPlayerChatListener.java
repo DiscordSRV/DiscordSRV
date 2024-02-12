@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -39,9 +39,9 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -54,7 +54,7 @@ public class ModernPlayerChatListener implements Listener {
     public void onAsyncChat(AsyncChatEvent event) {
         if (!DiscordSRV.config().getBooleanElse("UseModernPaperChatEvent", false)) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             String json;
             try {
                 // workaround for us having a relocated version of adventure
@@ -84,4 +84,5 @@ public class ModernPlayerChatListener implements Listener {
             );
         });
     }
+
 }

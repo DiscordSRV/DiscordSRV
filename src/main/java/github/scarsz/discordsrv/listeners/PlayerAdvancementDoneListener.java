@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.api.events.AchievementMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.AchievementMessagePreProcessEvent;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -34,6 +35,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -42,17 +44,18 @@ import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class PlayerAdvancementDoneListener implements Listener {
 
     private static final boolean GAMERULE_CLASS_AVAILABLE;
     private static final Object GAMERULE;
-    private static boolean PAPER_ADVANCEMENT_API_UNSUPPORTED = false;
 
     static {
         String gamerule = "announceAdvancements";
@@ -76,50 +79,19 @@ public class PlayerAdvancementDoneListener implements Listener {
         // return if advancement or player objects are knackered because this can apparently happen for some reason
         if (event.getAdvancement() == null || player == null) return;
 
-        // don't send messages for advancements related to recipes
-        String key = event.getAdvancement().getKey().getKey();
-        if (key.contains("recipe/") || key.contains("recipes/")) return;
-
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
 
-        // ensure advancements should be announced in the world
-        World world = player.getWorld();
-        Boolean isGamerule = GAMERULE_CLASS_AVAILABLE // This class was added in 1.13
-                ? world.getGameRuleValue((GameRule<Boolean>) GAMERULE) // 1.13+
-                : Boolean.parseBoolean(world.getGameRuleValue((String) GAMERULE)); // <= 1.12
-        if (Boolean.FALSE.equals(isGamerule)) return;
-
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
     }
 
     private void runAsync(PlayerAdvancementDoneEvent event) {
-        if (!PAPER_ADVANCEMENT_API_UNSUPPORTED) {
-            try {
-                io.papermc.paper.advancement.AdvancementDisplay display = event.getAdvancement().getDisplay();
-                if (display == null || !display.doesAnnounceToChat()) return;
-            } catch (Throwable t) {
-                PAPER_ADVANCEMENT_API_UNSUPPORTED = true;
-                DiscordSRV.debug("Paper advancement api is unsupported: " + t);
-            }
-        }
-
-        if (PAPER_ADVANCEMENT_API_UNSUPPORTED) {
-            try {
-                Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
-                Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
-                boolean display = (boolean) advancementDisplay.getClass().getMethod("i").invoke(advancementDisplay);
-                if (!display) return;
-            } catch (NullPointerException e) {
-                return;
-            } catch (Exception e) {
-                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
-            }
-        }
-
-        String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
         Player player = event.getPlayer();
         Advancement advancement = event.getAdvancement();
+
+        if (advancementIsHiddenInChat(advancement, player.getWorld())) return;
+
+        String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
 
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerAchievementMessage");
         if (messageFormat == null) return;
@@ -187,18 +159,56 @@ public class PlayerAdvancementDoneListener implements Listener {
         }
     }
 
+    private static Method ADVANCEMENT_GET_DISPLAY_METHOD = null;
+    @SneakyThrows
+    @SuppressWarnings("removal")
+    private boolean advancementIsHiddenInChat(Advancement advancement, World world) {
+
+        // don't send messages for advancements related to recipes
+        String key = advancement.getKey().getKey();
+        if (key.contains("recipe/") || key.contains("recipes/")) return true;
+
+        // ensure advancements should be announced in the world
+        Boolean isGamerule = GAMERULE_CLASS_AVAILABLE // This class was added in 1.13
+                ? world.getGameRuleValue((GameRule<Boolean>) GAMERULE) // 1.13+
+                : Boolean.parseBoolean(world.getGameRuleValue((String) GAMERULE)); // <= 1.12
+        if (Boolean.FALSE.equals(isGamerule)) return true;
+
+        // paper advancement API has its own AdvancementDisplay type from Advancement#getDisplay
+        if (ADVANCEMENT_GET_DISPLAY_METHOD == null)
+            ADVANCEMENT_GET_DISPLAY_METHOD = Arrays.stream(advancement.getClass().getMethods())
+                    .filter(method -> method.getName().equals("getDisplay"))
+                    .findFirst().orElseThrow(() -> new RuntimeException("Failed to find PlayerAdvancementDoneEvent#getDisplay method"));
+        Object advancementDisplay = ADVANCEMENT_GET_DISPLAY_METHOD.invoke(advancement);
+
+        if (advancementDisplay == null) return true;
+
+        if (advancementDisplay instanceof org.bukkit.advancement.AdvancementDisplay) {
+            return !((org.bukkit.advancement.AdvancementDisplay) advancementDisplay).shouldAnnounceChat();
+        } else if (advancementDisplay instanceof io.papermc.paper.advancement.AdvancementDisplay) {
+            return !((io.papermc.paper.advancement.AdvancementDisplay) advancementDisplay).doesAnnounceToChat();
+        } else {
+            try {
+                Object craftAdvancement = ((Object) advancement).getClass().getMethod("getHandle").invoke(advancement);
+                Optional<Object> craftAdvancementDisplay = (Optional<Object>) getAdvancementDisplayObject(craftAdvancement);
+                return !craftAdvancementDisplay.isPresent();
+            } catch (Exception e) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
+            }
+        }
+        return false;
+    }
+
     private static final Map<Advancement, String> ADVANCEMENT_TITLE_CACHE = new ConcurrentHashMap<>();
     public static String getTitle(Advancement advancement) {
         return ADVANCEMENT_TITLE_CACHE.computeIfAbsent(advancement, v -> {
             try {
                 Object handle = advancement.getClass().getMethod("getHandle").invoke(advancement);
-                Object advancementDisplay = Arrays.stream(handle.getClass().getMethods())
-                        .filter(method -> method.getReturnType().getSimpleName().equals("AdvancementDisplay"))
-                        .filter(method -> method.getParameterCount() == 0)
-                        .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
-                        .invoke(handle);
-                if (advancementDisplay == null) throw new RuntimeException("Advancement doesn't have display properties");
 
+                Optional<Object> advancementDisplayOptional = (Optional<Object>) getAdvancementDisplayObject(handle);
+                if (!advancementDisplayOptional.isPresent()) throw new RuntimeException("Advancement doesn't have display properties");
+
+                Object advancementDisplay = advancementDisplayOptional.get();
                 try {
                     Field advancementMessageField = advancementDisplay.getClass().getDeclaredField("a");
                     advancementMessageField.setAccessible(true);
@@ -230,6 +240,33 @@ public class PlayerAdvancementDoneListener implements Listener {
                         .collect(Collectors.joining(" "));
             }
         });
+    }
+
+    private static Optional<?> getAdvancementDisplayObject(Object handle) throws IllegalAccessException, InvocationTargetException {
+        if (handle.getClass().getSimpleName().equals("AdvancementHolder")) {
+            Method getAdvancementMethod = Arrays.stream(handle.getClass().getMethods())
+                    .filter(method -> method.getReturnType().getName().equals("net.minecraft.advancements.Advancement"))
+                    .filter(method -> method.getParameterCount() == 0)
+                    .findFirst()
+                    .orElse(null);
+
+            if (getAdvancementMethod != null) {
+                Object holder = getAdvancementMethod.invoke(handle);
+
+                return (Optional<?>) Arrays.stream(holder.getClass().getMethods())
+                        .filter(method -> method.getReturnType().getSimpleName().equals("Optional"))
+                        .filter(method -> method.getGenericReturnType().getTypeName().contains("AdvancementDisplay"))
+                        .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
+                        .invoke(holder);
+            }
+        } else {
+            return Optional.of(Arrays.stream(handle.getClass().getMethods())
+                    .filter(method -> method.getReturnType().getSimpleName().equals("AdvancementDisplay"))
+                    .filter(method -> method.getParameterCount() == 0)
+                    .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
+                    .invoke(handle));
+        }
+        return Optional.empty();
     }
 
 }

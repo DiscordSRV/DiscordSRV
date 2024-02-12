@@ -204,7 +204,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelBlockBots: false
+DiscordConsoleChannelBlockBots: true
 
 # 聊天頻道執行命令
 # 這裡的設定可以讓你在聊天頻道中, 使用前綴如同控制台一般執行指令。  如"!c kick Notch"
