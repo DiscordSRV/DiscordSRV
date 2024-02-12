@@ -93,6 +93,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // sanity & intention checks
         String message = event.getMessage().getContentRaw();
+        message = "fake message";
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().isEmpty() && event.getMessage().getStickers().isEmpty()) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
@@ -192,7 +193,7 @@ public class DiscordChatListener extends ListenerAdapter {
             }
         }
 
-        if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
+//        if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
 
         // apply regex filters
         for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {

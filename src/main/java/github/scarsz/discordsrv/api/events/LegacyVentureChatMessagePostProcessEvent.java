@@ -24,26 +24,24 @@ import org.bukkit.event.Cancellable;
 
 import lombok.Getter;
 import lombok.Setter;
-import venture.Aust1n46.chat.api.events.VentureChatEvent;
+import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 
 /**
- * <p>
- * Called after DiscordSRV has processed a VentureChat message from Bungee (when
- * the VentureChatBungee config option is enabled) but before being sent to
- * Discord. Modification is allow and will effect the message sent to Discord.
- * </p>
+ * <p>Called after DiscordSRV has processed a VentureChat message from Bungee (when the VentureChatBungee config option is enabled) but before being sent to Discord.
+ * Modification is allow and will effect the message sent to Discord.</p>
  */
-@Getter
-@Setter
-public class VentureChatMessagePostProcessEvent extends VentureChatMessageEvent implements Cancellable {
-	private boolean cancelled;
-	private String channel;
-	private String processedMessage;
+public class LegacyVentureChatMessagePostProcessEvent extends LegacyVentureChatMessageEvent implements Cancellable {
 
-	public VentureChatMessagePostProcessEvent(String channel, String processedMessage, VentureChatEvent ventureChatEvent, boolean cancelled) {
-		super(ventureChatEvent);
-		this.channel = channel;
-		this.processedMessage = processedMessage;
-		setCancelled(cancelled);
-	}
+    @Getter @Setter private boolean cancelled;
+
+    @Getter @Setter private String channel;
+    @Getter @Setter private String processedMessage;
+
+    public LegacyVentureChatMessagePostProcessEvent(String channel, String processedMessage, VentureChatEvent ventureChatEvent, boolean cancelled) {
+        super(ventureChatEvent);
+        this.channel = channel;
+        this.processedMessage = processedMessage;
+        setCancelled(cancelled);
+    }
+
 }

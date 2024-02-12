@@ -20,30 +20,14 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import org.bukkit.event.Cancellable;
-
 import lombok.Getter;
-import lombok.Setter;
 import venture.Aust1n46.chat.api.events.VentureChatEvent;
 
-/**
- * <p>
- * Called after DiscordSRV has processed a VentureChat message from Bungee (when
- * the VentureChatBungee config option is enabled) but before being sent to
- * Discord. Modification is allow and will effect the message sent to Discord.
- * </p>
- */
-@Getter
-@Setter
-public class VentureChatMessagePostProcessEvent extends VentureChatMessageEvent implements Cancellable {
-	private boolean cancelled;
-	private String channel;
-	private String processedMessage;
+abstract class VentureChatMessageEvent extends Event {
+	@Getter
+	final private VentureChatEvent ventureChatEvent;
 
-	public VentureChatMessagePostProcessEvent(String channel, String processedMessage, VentureChatEvent ventureChatEvent, boolean cancelled) {
-		super(ventureChatEvent);
-		this.channel = channel;
-		this.processedMessage = processedMessage;
-		setCancelled(cancelled);
+	VentureChatMessageEvent(VentureChatEvent ventureChatEvent) {
+		this.ventureChatEvent = ventureChatEvent;
 	}
 }
