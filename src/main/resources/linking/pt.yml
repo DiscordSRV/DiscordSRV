@@ -1,0 +1,57 @@
+Require linked account to play:
+  Enabled: false
+
+  # Se você não souber o que isso significa, não mexa
+  #
+  # A prioridade que o ouvinte de entrada deve ter
+  # Em ordem do primeiro ao último, os valores disponíveis são LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # Pode ser necessário alterar isso para uma prioridade posterior para um plugin de banir o jogador antes que o DiscordSRV os negue
+  Listener priority: LOWEST
+  # O evento que o módulo de link deve ouvir e impedir logins em
+  # Alguns plugins de lista branca usam AsyncPlayerPreLoginEvent (bom), alguns usam PlayerLoginEvent (não tão bom)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # Se você não souber o que isso significa, não mexa
+
+  # IGNs de Minecraft para sempre permitir, seja vinculados ou inscritos ou não
+  Bypass names: [Scarsz, Vankka]
+  # Se os jogadores que estão na lista branca do VANILLA irão ignorar a necessidade de vincular suas contas/ter uma cargo de inscrito
+  Whitelisted players bypass check: true
+  # Se os jogadores na lista de banimento do VANILLA poderão vincular suas contas
+  Check banned players: false
+  # Se os jogadores que não estão na lista de banimento do VANILLA irão ignorar a necessidade de vincular suas contas/ter uma cargo de inscrito
+  Only check banned players: false
+
+  # Mensagem para chutar jogadores dizendo-lhes para vincular suas contas
+  # Use {BOT} como um placeholder para o nome do bot
+  # Use {CODE} como um placeholder para o código que as pessoas precisam enviar por DM para o bot
+  # Use {INVITE} como um placeholder para o link de convite que as pessoas precisam para entrar no servidor do Discord, usa DiscordInviteLink configurado em config.yml
+  Not linked message: "&7Você precisa vincular sua conta do &9Discord &7 para jogar.\n\n&7Envie uma DM para &b{BOT}&7 no servidor Discord contendo apenas &b{CODE}&7 para vincular sua conta.\n\n&7Convite do Discord » &b{INVITE}"
+
+  # Se ativado, os jogadores não só precisarão ter suas contas vinculadas, mas também serão obrigados a
+  # ser um membro de um servidor do Discord que o bot também está.
+  #
+  # Formatos aceitáveis:
+  #   true/false: a conta vinculada deve estar em pelo menos um servidor do Discord que o bot também está
+  #     ex: true
+  #   <server id>: a conta vinculada deve estar no servidor do Discord fornecido
+  #     ex: 135634590575493120
+  #   [<server id>, <server id>, ...]: a conta vinculada deve estar em TODOS os servidores do Discord fornecidos
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # O valor desta opção é substituído quando você tem cargos de inscrito aplicadas abaixo.
+  Must be in Discord server: true
+
+  # Opcionalmente exigir que as pessoas não só estejam vinculadas, mas também tenham um dos ou todos os cargos especificados, como um cargo de inscrito do Twitch
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # quando falso, apenas um dos cargos acima é necessário
+    Kick message: "&cVocê precisa ser inscrito na Twitch para poder jogar."
+
+  Messages:
+    DiscordSRV still starting: "&cAtualmente indisponível para verificar o status do link porque o servidor ainda está se conectando ao Discord.\n\nTente novamente em um minuto."
+    Not in server: "&cNo momento você não faz parte do nosso servidor do Discord.\n\nJunte-se em {INVITE}!"
+    Failed to find subscriber role: "&cFalha ao encontrar qualquer cargo de inscrito no servidor do Discord.\n\nEntre em contato com os administradores do servidor para falar sobre este problema."
+    Failed for unknown reason: "&cOcorreu um erro ao tentar verificar sua conta.\n\nEntre em contato com os administradores do servidor para falar sobre este problema."
+    Kicked for unlinking: "&cVocê foi expulso(a) do servidor por desvincular suas contas.\n\nPor favor, entre novamente no servidor para vincular suas contas novamente."
