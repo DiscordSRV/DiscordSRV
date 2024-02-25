@@ -330,10 +330,10 @@ public class LangUtil {
             put(Language.ZH,
                     "\n" +
                     "\n" +
-                    "RespectChatPlugins已禁用，此选项仅用于测试目的\n" +
-                    "并且永远不要在生产服务器上禁用它。\n" +
-                    "禁用该选项将导致取消的邮件转发到Discord\n" +
-                    "包括但不限于不带/ command的私人消息或员工聊天消息\n" +
+                    "RespectChatPlugins已禁用，此選項僅用於測試目的\n" +
+                    "並且永遠不要在生產伺服器上禁用它。\n" +
+                    "禁用該選項將導致取消的郵件轉發到Discord\n" +
+                    "包括但不限於不帶/ command的私人消息或員工聊天消息\n" +
                     "\n" +
                     "\n");
             put(Language.PL,
@@ -379,7 +379,7 @@ public class LangUtil {
             put(Language.ES, "Su experiencia de usuario se degrada debido al uso de {cliente}, es posible que algunos comandos no funcionen como se esperaba.");
             put(Language.RU, "Ваше взаимодействие с пользователем ухудшается из-за использования {client}, некоторые команды могут работать не так, как ожидалось.");
             put(Language.ET, "Teie kasutuskogemus on {client} kasutamise tõttu halvenenud, mõned käsud ei pruugi ootuspäraselt töötada.");
-            put(Language.ZH, "您的用户体验因使用 {client} 而下降，某些命令可能无法按预期工作。");
+            put(Language.ZH, "您的用戶體驗因使用 {client} 而下降，某些命令可能無法按預期工作。");
             put(Language.PL, "Twoje doświadczenie użytkownika jest pogorszone z powodu korzystania z {client}, niektóre polecenia mogą nie działać zgodnie z oczekiwaniami.");
             put(Language.DA, "Din brugeroplevelse er nedgraderet grundet din brug af {client}, nogle kommandoer ville ikke virke som forventet.");
             put(Language.UK, "Ваша взаємодія з користувачем погіршується через використання {client}, деякі команди можуть працювати не так, як очікувалося.");
@@ -757,7 +757,7 @@ public class LangUtil {
             put(Language.ES, "Se produjo un error interno al procesar su comando.");
             put(Language.RU, "Во время обработки вашей команды произошла внутренняя ошибка.");
             put(Language.ET, "Käskluse töötlemisel esines sisemine viga.");
-            put(Language.ZH, "处理命令时发生内部错误。");
+            put(Language.ZH, "處理命令時發生內部錯誤。");
             put(Language.PL, "Podczas przetwarzania polecenia wystąpił błąd wewnętrzny.");
             put(Language.DA, "En intern fejl fandt sted imens den behandlede din kommando.");
             put(Language.UK, " під час обробки вашої команди сталася Внутрішня помилка.");
@@ -771,7 +771,7 @@ public class LangUtil {
             put(Language.ES, "La sincronización de grupo requiere entradas válidas de GroupRoleSynchronizationGroupsAndRolesToSync en synchronization.yml");
             put(Language.RU, "Синхронизация группы требует допустимых записей GroupRoleSynchronizationGroupsAndRolesToSync в synchronization.yml");
             put(Language.ET, "Grupi sünkroonimiseks on vaja kehtivaid GroupRoleSynchronizationGroupsAndRolesToSync kirjeid failis synchronization.yml");
-            put(Language.ZH, "群组同步需要在synchronization.yml中有效的GroupRoleSynchronizationGroupsAndRolesToSync条目");
+            put(Language.ZH, "群組同步需要在synchronization.yml中有效的GroupRoleSynchronizationGroupsAndRolesToSync條目");
             put(Language.PL, "Synchronizacja grupowa wymaga ważnego GroupRoleSynchronizationGroupsAndRolesToSync wpisu w synchronization.yml");
             put(Language.DA, "Gruppe synkronisation kræver valid GroupRoleSynchronizationGroupsAndRolesToSync entréer i synchronization.yml");
             put(Language.UK, " Синхронізація групи вимагає дійсних записів GroupRoleSynchronizationGroupsAndrolestosync у synchronization.yml");
@@ -785,7 +785,7 @@ public class LangUtil {
             put(Language.ES, "DiscordSRV ha sido recargado. ¡Esto NO es compatible, y OCURRIRÁN problemas! ¡Reinicie su servidor antes de solicitar asistencia!");
             put(Language.RU, "DiscordSRV был перезагружен. Это НЕ поддерживается, и проблемы будут происходить! Перезагрузите сервер, прежде чем обращаться за поддержкой!");
             put(Language.ET, "DiscordSRV on taaslaaditud. See EI OLE toetatud ning probleemid ESINEVAD kindlalt! Enne toe küsimist taaskäivita oma server!");
-            put(Language.ZH, "DiscordSRV已重新加载。 不支持此功能，并且会发生问题！ 在寻求支持之前，请重新启动服务器！");
+            put(Language.ZH, "DiscordSRV已重新載入。 不支持此功能，並且會發生問題！ 在尋求支持之前，請重新啟動伺服器！");
             put(Language.PL, "DiscordSRV został ponownie załadowany. To NIE jest obsługiwane i pojawią się problemy! Zrestartuj serwer, zanim poprosisz o wsparcie!");
             put(Language.DA, "DiscordSRV er blevet genladet. Dette er IKKE understøttet, og problemer VIL OPSTÅ! Genstart din server før du spørger om hjælp!");
             put(Language.UK, " DiscordSRV було перезавантажено. Це не підтримується, і проблеми будуть відбуватися! Перезавантажте сервер, перш ніж звертатися за підтримкою!");

@@ -3,8 +3,8 @@
 # DiscordToMinecraftChatMessageFormat: 由Discord傳送至Minecraft的訊息格式。
 # DiscordToMinecraftChatMessageFormatNoRole: 沒有身分組的成員由Discord傳送至Minecraft的訊息格式。
 #
-# 您可以为每个通道指定不同的格式。假设您有一个名为：“ mychannel”的频道。
-# 如果您希望它具有除全局定义的格式以外的其他格式，则可以添加以下属性：
+# 您可以為每個通道指定不同的格式。假設您有一個名為：“ mychannel”的頻道。
+# 如果您希望它具有除全域定義的格式以外的其他格式，則可以添加以下屬性：
 #
 # DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
 # DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
@@ -16,34 +16,34 @@
 #                    範例: Hello!
 # %toprole%:        發言者的最高身分組
 #                    範例: 造物主
-# %toprolealias%:   DiscordChatChannelRoleAliases中角色的别名，否则角色的名称
+# %toprolealias%:   DiscordChatChannelRoleAliases中角色的別名，否則角色的名稱
 #                    範例: Dev
 # %toproleinitial%: 發言者最高身分組名稱的第一個字元
 #                    範例: O
 # %toprolecolor%:   與發言者最高身分組顏色的近似顏色。
 #                    範例: &4
-# %name%:           该人在Discord上的有效姓名（如果有昵称，则为昵称）
+# %name%:           該人在Discord上的有效姓名（如果有昵稱，則為昵稱）
 #                    範例: NotchIsMe
-# %username%:       Discord扬声器的用户名。
+# %username%:       Discord的用戶名。
 #                    範例: Notch
 # %channelname%:    發送訊息的頻道名稱
 #                    範例: server-chat
-# %reply%:         當該消息是對另一條消息的答复時顯示的消息。
+# %reply%:         當該消息是對另一條消息的答覆時顯示的消息。
 #                    可以使用DiscordToMinecraftMessageMessageReplyFormat配置消息格式，
-#                    如果該消息不是對其他消息的答复，則此字段為空
+#                    如果該消息不是對其他消息的答覆，則此欄位為空
 #
-# DiscordToMinecraftAllRolesSeparator: 用於 %allroles% 中，各身分組之間的分隔符號。
+# DiscordToMinecraftAllRolesSeparator: 用於 %allroles% 中，各身分組之間的分隔符號號。
 #
-# DiscordToMinecraftMessageReplyFormat：所顯示消息的格式，以指示該消息是答复
+# DiscordToMinecraftMessageReplyFormat：所顯示消息的格式，以指示該消息是答覆
 #
 # 可用的佔位符:
-# %name%:          在Discord上要回复的用戶的有效名稱（如果存在暱稱，則為用戶名）
+# %name%:          在Discord上要回復的用戶的有效名稱（如果存在暱稱，則為用戶名）
 #                   範例:NotchIsMe
-# %username%:      在Discord上被回复的用戶的用戶名
+# %username%:      在Discord上被回復的用戶的用戶名
 #                   範例:缺口
-# %message%:       要回复的消息內容
+# %message%:       要回復的消息內容
 #
-# 注意：如果您希望 DiscordToMinecraftMessageReplyFormat 显示在您的消息中，则 %reply% 占位符需要以格式存在。
+# 注意：如果您希望 DiscordToMinecraftMessageReplyFormat 顯示在您的消息中，則 %reply% 佔位符需要以格式存在。
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
@@ -60,9 +60,9 @@ DiscordToMinecraftMessageReplyFormat: " (回覆 %name%)"
 #                  範例: jeb_
 # %displayname%:  玩家的顯示名稱，如暱稱等
 #                  範例: BigBossManJeb
-# %usernamenoescapes%:     原始玩家名稱，不转义不和谐格式（用于内联代码和代码块减价）
+# %usernamenoescapes%:     原始玩家名稱，不轉義不和諧格式（用於內聯代碼和代碼塊減價）
 #                  example: jeb_
-# %displaynamenoescapes%:  玩家的顯示名稱，如暱稱等，不转义不和谐格式（用于内联代码和代码块减价）
+# %displaynamenoescapes%:  玩家的顯示名稱，如暱稱等，不轉義不和諧格式（用於內聯代碼和代碼塊減價）
 #                  example: BigBossManJeb
 # %message%:      訊息內容
 #                  範例: Hello!
@@ -96,20 +96,20 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
-# Dynmap讯息
+# Dynmap訊息
 #
-# DynmapNameFormat: 发送到Dynmap的消息的用户名部分的格式（根据dynmap设置，可能会隐藏）
-# DynmapChatFormat: 发送到Dynmap的消息的消息部分的格式
+# DynmapNameFormat: 發送到Dynmap的消息的用戶名部分的格式（根據dynmap設置，可能會隱藏）
+# DynmapChatFormat: 發送到Dynmap的消息的消息部分的格式
 #
 # 可用的變數:
-# 与Discord-> Minecraft占位符相同
+# 與Discord-> Minecraft佔位符相同
 #
-# DynmapDiscordFormat: Dynmap消息的格式将变为Discord
+# DynmapDiscordFormat: Dynmap消息的格式將變為Discord
 #
 # 可用的變數:
 # %message%:  訊息內容
 #              範例: Hello!
-# %name%:     Dynmap网络聊天中发送的消息的用户名（可以为空）
+# %name%:     Dynmap網路聊天中發送的消息的用戶名（可以為空）
 #              範例: Notch
 # 同樣支援PlaceholderAPI所提供的變數
 #
@@ -123,14 +123,14 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # 可用的變數:
 # {level}:     訊息分級
 #               範例: INFO, WARN, ERROR
-# {name}:      记录器名称
+# {name}:      記錄器名稱
 #               範例: Server
 # {datetime}:  當前時間
 #               範例: Sun 15:30:45
 # 同樣支援PlaceholderAPI所提供的變數
 #
-# DiscordConsoleChannelPrefix: 要附加到一批行的文字前缀。
-# DiscordConsoleChannelSuffix: 要附加到一批行的文字后缀。
+# DiscordConsoleChannelPrefix: 要附加到一批行的文字前綴。
+# DiscordConsoleChannelSuffix: 要附加到一批行的文字后綴。
 #
 DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
 DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
@@ -170,27 +170,27 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**沒有玩家在線**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord 通知讯息
+# Minecraft -> Discord 通知訊息
 #
 #
 # 嵌入信息:
-# Color:      接受十六进制颜色代码 (例 "#ffffff") 或一个rgb整数 (例 0)
-# Fields:     格式为 "标题;值;inline" (eg. "谁加入了？;%displayname%;true") 或"blank"以添加空白字段
-# Timestamp:  设置为true以使用发送消息的时间或在特定时间使用纪元时间戳 (https://www.epochconverter.com/)
+# Color:      接受十六進位顏色代碼 (例 "#ffffff") 或一個rgb整數 (例 0)
+# Fields:     格式為 "標題;值;inline" (eg. "誰加入了？;%displayname%;true") 或"blank"以添加空白欄位
+# Timestamp:  設置為true以使用發送消息的時間或在特定時間使用紀元時間戳記 (https://www.epochconverter.com/)
 #
-# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement的可用占位符:
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement的可用佔位符:
 # %displayname%:         玩家的顯示名稱，如暱稱等
 # %username%:            原始玩家名稱
-# %displaynamenoescapes%:  玩家的顯示名稱，如暱稱等，不转义不和谐格式（用于内联代码和代码块减价）
-# %usernamenoescapes%:     原始玩家名稱，不转义不和谐格式（用于内联代码和代码块减价）
+# %displaynamenoescapes%:  玩家的顯示名稱，如暱稱等，不轉義不和諧格式（用於內聯代碼和代碼塊減價）
+# %usernamenoescapes%:     原始玩家名稱，不轉義不和諧格式（用於內聯代碼和代碼塊減價）
 # %date%:                當前日期與時間
-# %embedavatarurl%:      用户的头像
-# %botavatarurl%:        机器人的头像
+# %embedavatarurl%:      用戶的頭像
+# %botavatarurl%:        機器人的頭像
 # %botname%:             機器人的名字
 # 同樣支援PlaceholderAPI所提供的變數
 #
-# PlayerJoin的可用占位符:
-# %message%:        加入游戏中看到的消息
+# PlayerJoin的可用佔位符:
+# %message%:        加入遊戲中看到的消息
 #
 MinecraftPlayerJoinMessage:
   Enabled: true
@@ -218,8 +218,8 @@ MinecraftPlayerJoinMessage:
       IconUrl: ""
     Timestamp: false
 #
-# PlayerFirstJoin的可用占位符:
-# %message%:        加入游戏中看到的消息
+# PlayerFirstJoin的可用佔位符:
+# %message%:        加入遊戲中看到的消息
 #
 MinecraftPlayerFirstJoinMessage:
   Enabled: true
@@ -247,8 +247,8 @@ MinecraftPlayerFirstJoinMessage:
       IconUrl: ""
     Timestamp: false
 #
-# PlayerLeave的可用占位符:
-# %message%:        在游戏中看到留言
+# PlayerLeave的可用佔位符:
+# %message%:        在遊戲中看到留言
 #
 MinecraftPlayerLeaveMessage:
   Enabled: true
@@ -276,7 +276,7 @@ MinecraftPlayerLeaveMessage:
       IconUrl: ""
     Timestamp: false
 #
-# PlayerDeath的可用占位符:
+# PlayerDeath的可用佔位符:
 # %deathmessage%: 原始死亡訊息
 # %world%:        玩家死亡的世界名稱
 #
@@ -306,7 +306,7 @@ MinecraftPlayerDeathMessage:
       IconUrl: ""
     Timestamp: false
 #
-# PlayerAchievement消息的可用占位符：
+# PlayerAchievement消息的可用佔位符：
 # %achievement%: 成就或進度的標題
 # %world%:       玩家所在的世界名稱
 #
@@ -370,11 +370,11 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "伺服器已關�
 # Discord 指令訊息
 # 當玩家執行 "/discord"指令時，發送給該玩家此訊息
 # 建議在這裡放入指令參數
-# 使用{INVITE}作为人们加入Discord服务器所需的邀请链接的占位符，使用config.yml中配置的DiscordInviteLink
+# 使用{INVITE}作為人們加入Discord伺服器所需的邀請連結的佔位符，使用config.yml中配置的DiscordInviteLink
 #
 DiscordCommandFormat: "&b加入我們的 Discord  {INVITE}  輸入 \"/discord ?\"取得指令說明"
 
-# 没有权限信息
+# 沒有權限資訊
 NoPermissionMessage: "&c您沒有權限執行這個指令"
 
 # 未知命令消息
@@ -407,21 +407,21 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 服務器在 %timeout% �
 #
 # 可用的變數:
 # UnknownCode/InvalidCode:      %code%:         生成給玩家的驗證碼
-#                               %mention%:      提到了Discord账户
+#                               %mention%:      提到了Discord帳戶
 # DiscordAccountLinked:         %name%:         已連結至Discord的Minecraft玩家名稱
-#                               %displayname%:  用户的Discord帐户已链接到Minecraft播放器的显示名称
+#                               %displayname%:  使用者的Discord帳戶已連結到Minecraft玩家的顯示名稱
 #                               %uuid%:         已連結至Discord的Minecraft玩家UUID
-#                               %mention%:      提到了Discord账户
-# DiscordAccountAlreadyLinked:  %uuid%:         用户关联的Minecraft帐户的Minecraft uuid
-#                               %username%:     用户链接的Minecraft帐户的Minecraft用户名
-#                               %mention%:      提到了Discord账户
+#                               %mention%:      提到了Discord帳戶
+# DiscordAccountAlreadyLinked:  %uuid%:         用戶關聯的Minecraft帳戶的Minecraft uuid
+#                               %username%:     使用者連結的Minecraft帳戶的Minecraft用戶名
+#                               %mention%:      提到了Discord帳戶
 # DiscordLinkedAccountRequired  %message%:      the message the user was not able to send because they were not linked
 # CodeGenerated:                %code%:         生成給玩家的驗證碼
 #                               %botname%:      Discord bot的名稱
 # MinecraftAccountLinked:       %id%:           Minecraft玩家已連結的Discord ID
 #                               %username%:     Minecraft玩家已連結的Discord名稱
-# LinkedCommandSuccess:         %name%:         用户的Minecraft帐户已链接到的Discord用户的discord用户名
-# UnlinkCommandSuccess:         %name%:         用户的Minecraft帐户已链接到的Discord用户的Discord用户名
+# LinkedCommandSuccess:         %name%:         使用者的Minecraft帳戶已連結到的Discord使用者的discord用戶名
+# UnlinkCommandSuccess:         %name%:         使用者的Minecraft帳戶已連結到的Discord使用者的Discord用戶名
 # MinecraftNobodyFound:         %target%:       導致未找到結果的輸入
 #
 # Discord
@@ -430,10 +430,10 @@ InvalidCode: "您確定這是您的驗證碼？驗證碼為四位數字。"
 DiscordAccountLinked: "您的Discord帳號已連結至Minecraft帳號: %name% (%uuid%)"
 DiscordAccountAlreadyLinked: "您已與%username%（%uuid%）相關聯"
 DiscordLinkedAccountRequired: "您嘗試發送訊息至遊戲中，但這個伺服器要求您將Minecraft帳號連結至Discord。  輸入`/discord link` 以連結帳號。\n```%message%```"
-DiscordLinkedAccountCheckFailed: "无法检查您的帐户是否已链接，请稍后再试"
+DiscordLinkedAccountCheckFailed: "無法檢查您的帳戶是否已連結，請稍後再試"
 # Minecraft
 CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 (%botname%) 以進行帳戶連結"
-ClickToCopyCode: "点击复制"
+ClickToCopyCode: "點擊複製"
 MinecraftAccountLinked: "&b您的Minecraft UUID 已連結至Discord帳號 %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&b您的Minecraft帳號已連結至Discord。  如果您有足夠的權限，可以輸入 /discord unlink 來取消連結。"
 LinkedCommandSuccess: "&b您的Minecraft帳號已和%name%連結。"
