@@ -74,13 +74,7 @@ public class ChattyChatHook implements ChatHook {
     }
 
     private ChattyApi getApi() {
-        Plugin chatty = getPlugin();
-        try {
-            return (ChattyApi) chatty.getClass().getMethod("api").invoke(chatty);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            DiscordSRV.error("Unable to get Chatty plugin", e);
-            return null;
-        }
+        return ChattyApi.instance();
     }
 
     @Override
