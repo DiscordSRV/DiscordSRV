@@ -392,14 +392,25 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? escape.apply(DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1)) : "")
                 .replace("%toprolealias%", getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%allroles%", escape.apply(DiscordUtil.getFormattedRoles(selectedRoles)))
-                .replace("%reply%", event.getMessage().getReferencedMessage() != null ? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), event.getMessage().getReferencedMessage()) : "")
+                .replace("%reply%", replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), event.getMessage().getReferencedMessage()))
                 .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\*", "*") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\_", "_"); // get rid of escaped characters, since Minecraft doesn't use markdown
     }
 
     private String replaceReplyPlaceholders(String format, Message repliedMessage) {
-        Function<String, String> escape = MessageUtil.isLegacy(format)
+        if (repliedMessage == null) {
+            return "";
+        }
+
+        boolean isLegacy = MessageUtil.isLegacy(format);
+        String message = repliedMessage.getContentDisplay();
+
+        Component reserialized = MessageUtil.reserializeToMinecraftBasedOnConfig(message);
+        message = MessageUtil.toPlain(reserialized, isLegacy);
+        if (!isLegacy) message = MessageUtil.escapeMiniTokens(message);
+
+        Function<String, String> escape = isLegacy
                 ? str -> str
                 : str -> str.replaceAll("([<>])", "\\\\$1");
 
@@ -407,7 +418,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         return format.replace("%name%", escape.apply(MessageUtil.strip(repliedUserName)))
                 .replace("%username%", escape.apply(MessageUtil.strip(repliedMessage.getAuthor().getName())))
-                .replace("%message%", escape.apply(MessageUtil.strip(repliedMessage.getContentDisplay())));
+                .replace("%message%", message);
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
