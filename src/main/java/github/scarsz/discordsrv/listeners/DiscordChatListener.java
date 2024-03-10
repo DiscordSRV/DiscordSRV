@@ -404,7 +404,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         boolean isLegacy = MessageUtil.isLegacy(format);
-        String message = repliedMessage.getContentDisplay();
+        String message = repliedMessage.getContentRaw();
 
         Component reserialized = MessageUtil.reserializeToMinecraftBasedOnConfig(message);
         message = MessageUtil.toPlain(reserialized, isLegacy);
