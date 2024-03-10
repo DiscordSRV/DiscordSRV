@@ -842,7 +842,7 @@ public class LangUtil {
             put(Language.PL, "DiscordSRV został ponownie załadowany. To NIE jest obsługiwane i pojawią się problemy! Zrestartuj serwer, zanim poprosisz o wsparcie!");
             put(Language.DA, "DiscordSRV er blevet genladet. Dette er IKKE understøttet, og problemer VIL OPSTÅ! Genstart din server før du spørger om hjælp!");
             put(Language.UK, " DiscordSRV було перезавантажено. Це не підтримується, і проблеми будуть відбуватися! Перезавантажте сервер, перш ніж звертатися за підтримкою!");
-            put(Language.EN, "DiscordSRV yeniden yüklendi. Bu DESTEKLENMEMEKTEDİR ve sorunlar ortaya ÇIKARTACAKTIR! Destek istemeden önce sunucunuzu yeniden başlatın!");
+            put(Language.TR, "DiscordSRV yeniden yüklendi. Bu DESTEKLENMEMEKTEDİR ve sorunlar ortaya ÇIKARTACAKTIR! Destek istemeden önce sunucunuzu yeniden başlatın!");
         }});
 
         @Getter private final Map<Language, String> definitions;
