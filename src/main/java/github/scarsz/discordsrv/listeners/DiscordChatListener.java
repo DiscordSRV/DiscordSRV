@@ -52,8 +52,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import static github.scarsz.discordsrv.util.MessageFormatResolver.getMessageFormat;
-
 public class DiscordChatListener extends ListenerAdapter {
 
     @Override
@@ -223,7 +221,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // get the correct format message
         String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
-        String formatMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
+        String formatMessage = MessageFormatResolver.getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
         message = message != null ? message : "<blank message>";
         boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
@@ -330,7 +328,7 @@ public class DiscordChatListener extends ListenerAdapter {
     private boolean handleMessageAddons(GuildMessageReceivedEvent event, DiscordGuildMessagePreProcessEvent preEvent, List<Role> selectedRoles, Role topRole, String url) {
         // get the correct format message
         String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
-        String placedMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
+        String placedMessage = MessageFormatResolver.getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
         placedMessage = MessageUtil.translateLegacy(
                 replacePlaceholders(placedMessage, event, selectedRoles));
