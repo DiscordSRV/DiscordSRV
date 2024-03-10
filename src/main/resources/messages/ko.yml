@@ -408,8 +408,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 서버가 %timeout%초 �
 # 계정 연동 시 전송할 메시지를 설정합니다.
 #
 # 사용 가능한 변수:
-# CodeGenerated:                %code%:         DiscordSRV가 계정 인증을 위해 임의로 발급한 코드입니다.
-#                               %botname%:      디스코드 상의 봇의 이름입니다.
 # UnknownCode/InvalidCode:      %code%:         DiscordSRV가 계정 인증을 위해 임의로 발급한 코드입니다.
 #                               %mention%:      Discord 계정에 대한 언급
 # DiscordAccountLinked:         %name%:         연동할 마인크래프트 플레이어 이름입니다.
@@ -420,6 +418,8 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 서버가 %timeout%초 �
 #                               %username%:     연결된 마인크래프트 계정의 이름입니다.
 #                               %mention%:      Discord 계정에 대한 언급
 # DiscordLinkedAccountRequired  %message%:      계정 연결이 필수인 경우 계정이 연결되지 않아 메시지를 보내지 못할때 전송되는 안내 메시지입니다.
+# CodeGenerated:                %code%:         DiscordSRV가 계정 인증을 위해 임의로 발급한 코드입니다.
+#                               %botname%:      디스코드 상의 봇의 이름입니다.
 # MinecraftAccountLinked:       %id%:           연동할 플레이어의 디스코드 ID입니다.
 #                               %username%:     연동할 플레이어의 디스코드 사용자 이름입니다.
 # LinkedCommandSuccess:         %name%:         사용자의 마인크래프트 계정을 연결할 디스코드 사용자 이름.
@@ -427,7 +427,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 서버가 %timeout%초 �
 # MinecraftNobodyFound:         %target%:       사용자가 연결 대상으로 지정했으나 서버에서 찾을수 없는 사용자 이름.
 #
 # 디스코드
-CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메시지로 해당 코드를 보내주세요!"
 UnknownCode: "알 수 없는 코드입니다. 다시 시도해 주세요."
 InvalidCode: "코드가 올바르지 않습니다. 코드는 4자리 숫자로 구성되어 있습니다."
 DiscordAccountLinked:  "마인크래프트 계정 %name%(%uuid%)과 연결되었습니다!"
@@ -435,6 +434,7 @@ DiscordAccountAlreadyLinked: "이미 %username%(%uuid%)에 연결되어 있습�
 DiscordLinkedAccountRequired: "아래 메시지를 보내고자 하셨지만, 이 서버는 채팅을 사용하려면 마인크래프트 계정을 디스코드에 연동해야 합니다. 인게임에서 `/discord link`를 입력하세요: \n```%message%```"
 DiscordLinkedAccountCheckFailed: "계정이 연결되어있는지 확인할 수 없습니다. 나중에 다시 시도하세요."
 # 마인크래프트
+CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메시지로 해당 코드를 보내주세요!"
 ClickToCopyCode: "클릭하여 복사"
 MinecraftAccountLinked: "&b디스코드 계정 %username%(%id%)과 연동되었습니다!"
 MinecraftAccountAlreadyLinked: "&b당신의 마인크래프트 계정이 이미 디스코드 계정과 연결되어 있습니다."

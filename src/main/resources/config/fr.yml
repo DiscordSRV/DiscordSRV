@@ -2,7 +2,7 @@
 # Besoin d'aide? Rejoignez notre Discord, https://discordsrv.com/discord
 
 # Merci de ne pas toucher ceci
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Bot token; Vous ne savez pas ce que c'est ? Regardez la vidéo sur la page du plugin
 # Vous devez redémarrer votre serveur après avoir modifié cette option
@@ -194,7 +194,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: filtres regex à appliquer aux lignes de console envoyées à Discord, si le résultat est vide, le message ne sera pas envoyé du tout
 # DiscordConsoleChannelLevels: niveaux à envoyer à la console par l'intermédiaire de l'appender
 # DiscordConsoleChannelUseCodeBlocks: si la console doit être enveloppée dans des blocs de code et colorée
-# DiscordConsoleChannelAllowPluginUpload: devrait télécharger des plugins sur le canal de la console les ajouter automatiquement au serveur
 # DiscordConsoleChannelBlockBots : si les bots doivent être autorisés à envoyer des commandes dans le canal de la console
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -204,8 +203,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
-DiscordConsoleChannelBlockBots: false
+DiscordConsoleChannelBlockBots: true
 
 # Channel de tchat Commande d'exécution
 # Ces options gèrent la fonction d'écrire "!c kick Notch", ou n'importe quel préfixe pour envoyer une commande,
@@ -250,7 +248,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtres regex à appliquer aux messages de discussion envoyés à Minecraft, si le résultat est vide, le message ne sera pas envoyé du tout
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Mse à jour des informations du canal
 #

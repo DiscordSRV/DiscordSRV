@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.objects.threads;
@@ -70,17 +68,30 @@ public class NicknameUpdater extends Thread {
 
                 Guild guild = DiscordSRV.getPlugin().getMainGuild();
                 for (Player onlinePlayer : PlayerUtil.getOnlinePlayers()) {
+                    String playerName = onlinePlayer.getName();
                     // skip vanished players
-                    if (PlayerUtil.isVanished(onlinePlayer)) continue;
+                    if (PlayerUtil.isVanished(onlinePlayer)) {
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, playerName + " is vanished, not setting nickname");
+                        continue;
+                    }
 
                     String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(onlinePlayer.getUniqueId());
-                    if (userId == null) continue;
+                    if (userId == null) {
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, playerName + " isn't linked, not setting nickname");
+                        continue;
+                    }
 
                     User linkedUser = DiscordUtil.getJda().getUserById(userId);
-                    if (linkedUser == null) continue;
+                    if (linkedUser == null) {
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, "Could not resolve a valid Discord user for " + playerName + ", not setting nickname");
+                        continue;
+                    }
 
                     if (guild.getMember(linkedUser) != null) nonMembers.remove(linkedUser.getId());
-                    if (nonMembers.contains(linkedUser.getId())) continue;
+                    if (nonMembers.contains(linkedUser.getId())) {
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser.getName() + " is not in the Main guild, not setting nickname");
+                        continue;
+                    }
 
                     // get the member, from cache if it's there otherwise from Discord
                     Member member;
@@ -94,7 +105,7 @@ public class NicknameUpdater extends Thread {
                         throw e;
                     }
                     if (member == null) {
-                        DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser + " is not in the Main guild, not setting nickname");
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser.getName() + " is not in the Main guild, not setting nickname");
                         continue;
                     }
 
@@ -123,6 +134,7 @@ public class NicknameUpdater extends Thread {
                 return;
             }
 
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "Syncing nickname for " + player.getName());
             nickname = DiscordSRV.config().getString("NicknameSynchronizationFormat")
                     .replace("%displayname%", player.getDisplayName() != null ? player.getDisplayName() : player.getName())
                     .replace("%username%", player.getName())
@@ -141,4 +153,5 @@ public class NicknameUpdater extends Thread {
         }
         DiscordUtil.setNickname(member, nickname);
     }
+
 }

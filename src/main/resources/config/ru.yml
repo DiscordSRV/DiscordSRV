@@ -2,7 +2,7 @@
 # Нужна помощь? Присоединяйтесь к нашему Discord, https://discordsrv.com/discord
 
 # Не трогайте это пожалуйста!
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Токен бота; не знаете что это? Просмотрите видео по установке и настройке плагина
 # После изменения этого параметра необходимо перезагрузить сервер.
@@ -197,7 +197,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: фильтры регулярных выражений, которые будут применяться к консольным строкам, отправляемым в Discord, если результат пуст, сообщение не будет отправлено вообще
 # DiscordConsoleChannelLevels: типы логов, которые отправляются в консольный канал
 # DiscordConsoleChannelUseCodeBlocks: если консоль должна быть завернута в блоки кода и окрашена
-# DiscordConsoleChannelAllowPluginUpload: должен загружать плагины в канал консоли, добавлять их на сервер автоматически
 # DiscordConsoleChannelBlockBots: разрешить ли ботам отправлять команды в канале консоли
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -207,8 +206,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
-DiscordConsoleChannelBlockBots: false
+DiscordConsoleChannelBlockBots: true
 
 # Настройка выполнения команд в канале чата
 # Эти опции позволяют настроить выполнение определённых команды на серверной консоли
@@ -253,7 +251,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: фильтры регулярных выражений, которые будут применяться к сообщениям чата, отправляемым в Minecraft, если результат пуст, сообщение не будет отправлено вообще
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Настройки обновления темы канала
 #

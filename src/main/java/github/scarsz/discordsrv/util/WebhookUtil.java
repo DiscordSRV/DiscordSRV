@@ -1,9 +1,8 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -17,7 +16,6 @@
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -32,7 +30,6 @@ import net.dv8tion.jda.internal.utils.BufferedRequestBody;
 import okhttp3.*;
 import okio.Okio;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -119,7 +116,7 @@ public class WebhookUtil {
     }
 
     public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             String avatarUrl;
             if (player instanceof Player) {
                 avatarUrl = DiscordSRV.getAvatarUrl((Player) player);
@@ -410,7 +407,7 @@ public class WebhookUtil {
         };
 
         if (scheduleAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), task);
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), task);
         } else {
             task.run();
         }
@@ -490,4 +487,5 @@ public class WebhookUtil {
     public static String getWebhookUrlFromCache(TextChannel channel) {
         return channelWebhookUrls.get(channel.getId());
     }
+
 }

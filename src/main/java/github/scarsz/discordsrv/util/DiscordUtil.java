@@ -1,9 +1,8 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -17,7 +16,6 @@
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -195,7 +193,7 @@ public class DiscordUtil {
      * @return String with markdown escaped
      */
     public static String escapeMarkdown(String text) {
-        return text == null ? "" : text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~").replace("|", "\\|").replace(">", "\\>").replace("`", "\\`");
+        return text == null ? "" : text.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("~", "\\~").replace("|", "\\|").replace(">", "\\>").replace("`", "\\`");
     }
 
     /**
@@ -215,9 +213,9 @@ public class DiscordUtil {
     }
 
     /**
-     * regex-powered aggressive stripping pattern, see https://regex101.com/r/pQNGzA for explanation
+     * strip ANSI sequences
      */
-    private static final Pattern aggressiveStripPattern = Pattern.compile("\u001B(?:\\[0?m|\\[38;2(?:;\\d{1,3}){3}m|\\[([0-9]{1,2}[;m]?){3})");
+    private static final Pattern aggressiveStripPattern = Pattern.compile("\u001B\\[[\\d;]*m");
 
     public static String aggressiveStrip(String text) {
         if (StringUtils.isBlank(text)) {
@@ -870,4 +868,5 @@ public class DiscordUtil {
             return null;
         }
     }
+
 }

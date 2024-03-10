@@ -10,21 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v2
+        uses: actions/checkout@v3.5.2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3.11.0
         with:
-          distribution: 'adopt'
-          java-version: 8
-      - name: Restore .m2 cache
-        uses: actions/cache@v2
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'gradle'
+      - name: Build
+        run: ./gradlew build --no-daemon
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3.1.1
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Build & deploy to Nexus
+          name: build-artifacts
+          path: "build/libs/*.jar"
+      - name: Deploy to Nexus
         env:
-          NEXUS_USER: ci
-          NEXUS_PASS: ${{ secrets.NEXUS_CI }}
-        run: mvn --batch-mode --update-snapshots --settings deploy.xml clean deploy
+          REPO_PASSWORD: ${{ secrets.NEXUS_CI }}
+        run: ./gradlew publish --no-daemon

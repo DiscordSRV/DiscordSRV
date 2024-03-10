@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.listeners;
@@ -56,7 +54,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
                     DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
                             player,
                             GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
@@ -91,19 +89,20 @@ public class PlayerJoinLeaveListener implements Listener {
         // player doesn't have silent join permission, send join message
 
         // schedule command to run in a second to be able to capture display name
-        Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
-                DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), event.getJoinMessage()), 20);
+        String message = event.getJoinMessage();
+        SchedulerUtil.runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
+                DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), message), 20);
 
         // if enabled, set the player's discord nickname as their ign
         if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
                 final String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
                 DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), player);
             });
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used, it is at lowest so that it executes before VanishNoPacket's player leave listener and is able to see whether the player is vanished
+    @EventHandler(priority = EventPriority.LOW) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used, it needs to be < NORMAL so that it executes before VanishNoPacket's player leave listener and is able to see whether the player is vanished
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
         if (PlayerUtil.isVanished(player)) {
@@ -127,8 +126,9 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         // player doesn't have silent quit, show quit message
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(),
-                () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage()));
+        String message = event.getQuitMessage();
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(),
+                () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), message));
     }
 
 }

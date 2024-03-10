@@ -1,0 +1,122 @@
+# Dette er /avanceret/ brug af DiscordSRV, som tillader dig at sende beskeder til Discord, når en in-game begivenhed sker,
+# eller når en kommando bliver eksekveret. Du skal bruge viden omkring hvordan Bukkit events virker og deres egenskaber.
+# Hvis du ikke er sikker på hvad du piller ved her, så burde du spørge en programmør eller joine support serveren @ discordsrv.com/discord
+#
+# Referer til Bukkit API javadoc for at finde events og egenskaber at bruge:
+#  https://hub.spigotmc.org/javadocs/bukkit
+# Hjælpsomme resurser for at lære SpEL:
+#  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
+#  https://dzone.com/articles/learn-spring-expression-language-with-examples
+#
+# Du kan bruge følgende placeholders:
+#  {tps} - server TPS
+#  {time} - formateret tid
+#  {date} - formateret dato
+#  {name} - hvis alert'en er for en spiller event, så henter den navnet på spilleren
+#  {ping} - hvis alert'en er for en spiller event, så hentes pingen på spilleren
+#  {username} - hvis alert'en er for en spiller event, så hentes navnet på spilleren
+#  {displayname} - hvis alert'en er for en spiller event, så hentes display navnet på spilleren
+#  {usernamenoescapes} - hvis alert'en er for en spiller event, så hentes navnet på spilleren, uden at undvige discord formatet (for brug ved inline kode og kode blok)
+#  {displaynamenoescapes} - hvis alert'en er for en spiller event, så hentes display navnet på spilleren uden at undvige discord formatet (for brug ved inline kode og kode blok)
+#  {world} - hvis alert'en er for en spiller event, så hentes verden spilleren er i
+#  {embedavatarurl} - hvis alert'en er for en spiller event, så hentes url'et for hovedet på spilleren, ellers, så hentes bottens avatar URL
+#  {botavatarurl} - bottens avatar URL
+#  {botname} - bottens navn
+#  %placeholder% - hvilken som helst PlaceholderAPI placeholders, kan kun bruge player placeholders, når alertøen er for en spiller event
+#
+# Du kan også bruge SpEL udtryk med ${expression...}, såsom....
+#  - At få en spillers IP: ${#player.address.address.hostAddress}
+#  - At få en spillers gamemode: ${#player.gameMode.name()}
+#  - At få en spillers linked Discord-konto-id: ${discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - At få online spillerliste: ${#server.onlinePlayers.size()}
+#  - At få status på DiscordSRV's forbindelste til Discord: ${#jda.status.name()}
+#  - Kontrollere om en spiller er i en specifik verden: ${#player.world.name == 'world_the_end'}
+#  - Kontrollere om det er dag i den verden spilleren er i: ${#player.world.time > 0 && #player.world.time < 13000}
+#  Du kan bruge følgende udtryk placeholders, som set ovenover:
+#   #plugins.<plugin> - den specificerede plugin instance, null hvis den ikke eksisterer
+#   #event - eventen der udløser alert'en hvis denne alert er en event alert
+#   #server - Bukkit API-serverforekomsten, svarende til Bukkit#getServer
+#   #discordsrv - DiscordSRV plugin forekomsten
+#   #player - spilleren som eventet er for, hvis dette er en spiller event eller kommando
+#   #sender - den som sender kommandoen, uden skråstreg, hvis dette er en kommando alert
+#   #command - den fulde kommando, uden skråstreg, hvis denne er en kommando alert
+#   #args - kommando argumenter, hvis dette er en kommando alert
+#   #allArgs - kommando argumenter som en string, hvis dette er en kommando alert
+#   #channel - kanal destinationen for denne alert
+#   #jda - DiscordSRV's JDA forekomst som den bruger til at kommunikerer med Discord
+#
+# Syntax/defaults:
+#  - Trigger: <event navn eller /command>
+#    Async: true # valgfrit, standard er true, du burde stort set aldrig ændre denne
+#    Conditions:
+#      - property == < > <= >= værdi osv
+#    Channel: <discordsrv kanal navn>
+#    IgnoreCancelled: true # kun for event alerts
+#    Content: ""
+#    Webhook:
+#      Enabled: false
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{botname}"
+#    Embed:
+#      Enabled: true
+#      Color: "#00ff00" # accepterer hex farvekoder (eks. "#ffffff") eller et rgb integer (eg. 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{username} gjorde... noget."
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # formaten er "title;value;inline" (eks. "Hvem joinede?;%displayname%;true") eller "blank" for at tilføje et blankt område
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # sæt til true for at bruge tiden beskeden blev sendt eller brug et epoke tidsstempel for at tilføje en specific tid (https://www.epochconverter.com/)
+#
+Alerts:
+  # Eksempel konfiguration på at sende en besked til "fish" DiscordSRV kanal, når en spiller successfuldt fanger en fisk
+  #- Trigger: PlayerFishEvent
+  #  Channel: fisk
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} fangede en ${caught.itemStack.type.name()}!"
+
+  # Eksempel konfiguration til at sende Matrix anti-cheat beskeder
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # Ikke send events til spillere med < 5 krænkelser
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} fejlede ${hackType.name().toLowerCase()} kontrollér | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+  # Eksempel konfiguration til at sende /gamemode beskeder
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} ændrede sin gamemode til ${#args.get(0)}"
+
+  # Eksempel konfiguration til at sende /me kommandoer
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"

@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -168,7 +166,7 @@ public class DebugUtil {
                         childJoiner.add("- " + grandchild.asObject());
                     }
 
-                    stringBuilder.append(child.key().asString()).append(": ").append(childJoiner);
+                    stringBuilder.append(child.key().asObject()).append(": ").append(childJoiner);
                 }
                 stringBuilder.append("\n");
             }
@@ -297,8 +295,8 @@ public class DebugUtil {
         }
 
         String consoleChannelId = DiscordSRV.config().getString("DiscordConsoleChannelId");
-        if (DiscordSRV.getPlugin().getChannels().values().stream().filter(Objects::nonNull)
-                .anyMatch(channelId -> channelId.equals(consoleChannelId))) {
+        if (consoleChannelId != null && !consoleChannelId.matches("^0*$")
+                && DiscordSRV.getPlugin().getChannels().values().stream().filter(Objects::nonNull).anyMatch(channelId -> channelId.equals(consoleChannelId))) {
             messages.add(new Message(Message.Type.CONSOLE_AND_CHAT_SAME_CHANNEL));
         }
 
@@ -497,7 +495,6 @@ public class DebugUtil {
         return String.join("\n", output);
     }
 
-
     private static String getThreads() {
         Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
         Set<Thread> alreadyLoggedThreads = new HashSet<>();
@@ -526,15 +523,22 @@ public class DebugUtil {
             if (alreadyLoggedThreads.add(thread)) {
                 Plugin plugin = null;
                 try {
-                    plugin = Bukkit.getScheduler().getActiveWorkers().stream()
-                            .filter(work -> work.getThread() == thread)
-                            .map(BukkitWorker::getOwner).findAny().orElse(null);
+                    plugin = SchedulerUtil.isFolia()
+                             ? null // not implemented on folia
+                             : Bukkit.getScheduler().getActiveWorkers().stream()
+                               .filter(work -> work.getThread() == thread)
+                               .map(BukkitWorker::getOwner).findAny().orElse(null);
                 } catch (Throwable ignored) {}
 
                 stringBuilder.append("- ").append(thread.getName())
                         .append(plugin != null ? " (Owned by " + plugin.getName() + ")" : "")
                         .append('\n');
             }
+        }
+
+        if (SchedulerUtil.isFolia()) {
+            stringBuilder.append("\nScheduler info is not available on Folia.");
+            return stringBuilder.toString();
         }
 
         try {

@@ -1,33 +1,30 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.objects.managers.link;
 
-import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
+import github.scarsz.discordsrv.objects.managers.link.file.AppendOnlyFileAccountLinkManager;
 import github.scarsz.discordsrv.util.*;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
@@ -39,7 +36,6 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -50,8 +46,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings("SqlResolve")
 public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
-    // https://regex101.com/r/EAt5La
-    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+):(?<port>[0-9]{1,5}|PORT)/(?<name>\\w+)\\??(?<params>.+)$");
+    // https://regex101.com/r/EuPRjG
+    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+?)(:(?<port>\\d{1,5}|PORT))?/(?<name>\\w+)\\??(?<params>.+)$");
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
 
     private final Connection connection;
@@ -189,7 +185,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         DiscordSRV.info("JDBC tables passed validation, using JDBC account backend");
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
             long currentTime = System.currentTimeMillis();
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 UUID uuid = onlinePlayer.getUniqueId();
@@ -211,30 +207,16 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         }, 1L, 200L);
     }
 
-    public void migrateJSON() {
-        File accountsFile = DiscordSRV.getPlugin().getLinkedAccountsFile();
+    public void migrateFile() {
+        File accountsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "accounts.aof");
         if (accountsFile.exists()) {
             try {
-                if (DiscordSRV.getPlugin().getLinkedAccountsFile().length() != 0) {
-                    DiscordSRV.info("linkedaccounts.json exists and we want to use JDBC backend, importing...");
-                    File importFile = new File(accountsFile.getParentFile(), "linkedaccounts.json.imported");
-                    if (!accountsFile.renameTo(importFile)) {
-                        throw new RuntimeException("failed to move file to " + importFile.getName());
-                    }
+                if (accountsFile.length() != 0) {
+                    DiscordSRV.info("linked accounts file exists and we want to use JDBC backend, importing...");
+                    File importFile = new File(accountsFile.getParentFile(), "accounts.aof.imported");
+                    if (!accountsFile.renameTo(importFile)) throw new RuntimeException("Failed to move accounts file to " + importFile.getName());
 
-                    Map<String, UUID> accounts = new HashMap<>();
-                    DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(importFile, StandardCharsets.UTF_8), JsonObject.class).entrySet().forEach(entry -> {
-                        try {
-                            accounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
-                        } catch (Exception e) {
-                            try {
-                                accounts.put(entry.getValue().getAsString(), UUID.fromString(entry.getKey()));
-                            } catch (Exception f) {
-                                throw new RuntimeException("failed to parse");
-                            }
-                        }
-                    });
-
+                    Map<String, UUID> accounts = new AppendOnlyFileAccountLinkManager().getLinkedAccounts();
                     connection.setAutoCommit(false);
                     for (Map.Entry<String, UUID> entry : accounts.entrySet()) {
                         String discord = entry.getKey();
@@ -253,13 +235,15 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
                     connection.setAutoCommit(true); // commit all changes at once
                     DiscordSRV.info("Finished importing accounts to JDBC backend");
                 } else {
-                    DiscordSRV.getPlugin().getLinkedAccountsFile().delete();
+                    if (!accountsFile.delete()) {
+                        accountsFile.deleteOnExit();
+                    }
                 }
             } catch (Exception e) {
                 if (e instanceof RuntimeException) {
-                    DiscordSRV.error("Failed to import linkedaccounts.json: " + e.getMessage());
+                    DiscordSRV.error("Failed to import linked accounts file: " + e.getMessage());
                 } else {
-                    DiscordSRV.error("Failed to import linkedaccounts.json", e);
+                    DiscordSRV.error("Failed to import linked accounts file", e);
                 }
             }
         }
@@ -637,7 +621,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerLogin(PlayerLoginEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             UUID uuid = event.getPlayer().getUniqueId();
             cache.putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
         });

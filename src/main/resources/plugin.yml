@@ -1,10 +1,11 @@
 name: DiscordSRV
-version: ${project.version}
+version: ${version}
 description: The most powerful, configurable, open-source Discord bridge plugin out there.
 author: Scarsz
 authors: [Androkai, Vankka]
 website: https://github.com/DiscordSRV/DiscordSRV
 api-version: 1.13
+folia-supported: true
 
 main: github.scarsz.discordsrv.DiscordSRV
 database: false
@@ -13,9 +14,9 @@ loadbefore: [
 ]
 softdepend: [
   # Chat plugins
-  Herochat, Legendchat, LunaChat, TownyChat, VentureChat,
+  Chatty, FancyChat, Herochat, Legendchat, LunaChat, nChat, TownyChat, VentureChat,
   # Vanish plugins
-  Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
+  Essentials, PhantomAdmin, SuperVanish,
   # Misc. plugins
   Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap, Skript
 ]
