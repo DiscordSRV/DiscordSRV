@@ -308,15 +308,15 @@ public class DiscordSRV extends JavaPlugin {
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
-        String value = entry.getValue();
-        if (entry != null && !StringUtils.isBlank(value)) {
+        String value = entry != null ? entry.getValue() : null;
+        if (!StringUtils.isBlank(value)) {
             return jda.getTextChannelById(value); // found case-sensitive channel
         }
 
         // no case-sensitive channel found, try case in-sensitive
         entry = channels.entrySet().stream().filter(e -> e.getKey().equalsIgnoreCase(gameChannelName)).findFirst().orElse(null);
-        value = entry.getValue();
-        if (entry != null && !StringUtils.isBlank(value)) {
+        value = entry != null ? entry.getValue() : null;
+        if (!StringUtils.isBlank(value)) {
             return jda.getTextChannelById(value); // found case-insensitive channel
         }
 
