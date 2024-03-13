@@ -2054,8 +2054,8 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        String defaultUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
-        String offlineUrl = "https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}";
+        String defaultUrl = "https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}";
+        String offlineUrl = "https://crafthead.net/helm/{username}/{size}#{texture}";
 
         if (StringUtils.isBlank(avatarUrl)) {
             avatarUrl = !offline ? defaultUrl : offlineUrl;
