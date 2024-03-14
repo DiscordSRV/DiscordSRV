@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -53,16 +53,18 @@ public class SchedulerUtil {
         return callMethod(clazz, null, methodName, new Class[]{});
     }
 
-    private static boolean methodExist(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+    private static boolean classExists(String className) {
         try {
-            clazz.getDeclaredMethod(methodName, parameterTypes);
+            Class.forName(className);
             return true;
         } catch (Throwable ignored) {}
         return false;
     }
 
     public static Boolean isFolia() {
-        if (IS_FOLIA == null) IS_FOLIA = methodExist(Bukkit.class, "getGlobalRegionScheduler");
+        if (IS_FOLIA == null) {
+            IS_FOLIA = classExists("io.papermc.paper.threadedregions.RegionizedServer");
+        }
         return IS_FOLIA;
     }
 
@@ -108,7 +110,6 @@ public class SchedulerUtil {
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, initialDelayTicks, periodTicks);
     }
 
-
     public static void runTaskLater(Plugin plugin, Runnable runnable, long delayedTicks) {
         if (isFolia()) {
             Object globalRegionScheduler = getGlobalRegionScheduler();
@@ -149,4 +150,5 @@ public class SchedulerUtil {
         }
         Bukkit.getScheduler().cancelTasks(plugin);
     }
+
 }

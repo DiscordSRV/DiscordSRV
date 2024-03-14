@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -42,6 +42,7 @@ public class JsonFileAccountLinkManager extends AbstractFileAccountLinkManager {
 
     void load() throws IOException {
         File file = getFile();
+        if (!file.exists()) return;
         String fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         if (fileContent == null || StringUtils.isBlank(fileContent)) fileContent = "{}";
         JsonObject jsonObject;

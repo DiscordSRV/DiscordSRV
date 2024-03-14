@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -105,6 +105,7 @@ public class DebugUtil {
                     "   main guild: " + DiscordSRV.getPlugin().getMainGuild(),
                     "Environmental variables:",
                     "   discord main guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
+                    "   discord server owner: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getOwner()),
                     "   vault groups: " + Arrays.toString(VaultHook.getGroups()),
                     "   PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
                     "   Skripts: " + String.join(", ", SkriptHook.getSkripts()),
@@ -494,7 +495,6 @@ public class DebugUtil {
 
         return String.join("\n", output);
     }
-
 
     private static String getThreads() {
         Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();

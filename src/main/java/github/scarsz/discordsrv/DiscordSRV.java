@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -73,10 +73,15 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.kyori.adventure.text.Component;
+import okhttp3.Authenticator;
 import okhttp3.ConnectionPool;
+import okhttp3.Credentials;
 import okhttp3.Dispatcher;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Route;
 import okhttp3.internal.Util;
 import okhttp3.internal.tls.OkHostnameVerifier;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -308,11 +313,17 @@ public class DiscordSRV extends JavaPlugin {
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
-        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-sensitive channel
+        String value = entry != null ? entry.getValue() : null;
+        if (!StringUtils.isBlank(value)) {
+            return jda.getTextChannelById(value); // found case-sensitive channel
+        }
 
         // no case-sensitive channel found, try case in-sensitive
         entry = channels.entrySet().stream().filter(e -> e.getKey().equalsIgnoreCase(gameChannelName)).findFirst().orElse(null);
-        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-insensitive channel
+        value = entry != null ? entry.getValue() : null;
+        if (!StringUtils.isBlank(value)) {
+            return jda.getTextChannelById(value); // found case-insensitive channel
+        }
 
         return null; // no channel found, case-insensitive or not
     }
@@ -484,7 +495,6 @@ public class DiscordSRV extends JavaPlugin {
             getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information. Can't figure it out? Go to https://discordsrv.com/discord for help");
         });
         initThread.start();
-
 
         if (Bukkit.getWorlds().size() > 0) {
             playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
@@ -721,7 +731,12 @@ public class DiscordSRV extends JavaPlugin {
         dispatcher.setMaxRequestsPerHost(20); // most requests are to discord.com
         ConnectionPool connectionPool = new ConnectionPool(5, 10, TimeUnit.SECONDS);
 
-        OkHttpClient httpClient = new OkHttpClient.Builder()
+        String proxyHost = config.getString("ProxyHost");
+        int proxyPort = config.getInt("ProxyPort");
+        String authUser = config.getString("ProxyUser");
+        String authPassword = config.getString("ProxyPassword");
+
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
                 .dns(dns)
@@ -731,9 +746,28 @@ public class DiscordSRV extends JavaPlugin {
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .hostnameVerifier(noopHostnameVerifier.isPresent() && noopHostnameVerifier.get()
                         ? (hostname, sslSession) -> true
-                        : OkHostnameVerifier.INSTANCE
-                )
-                .build();
+                        : OkHostnameVerifier.INSTANCE);
+
+        if (proxyHost != null && !proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
+            try {
+                // This had to be set to empty string to avoid issue with basic auth
+                // Reference: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111
+                System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.trim(), proxyPort));
+                httpClientBuilder = httpClientBuilder.proxy(proxy);
+
+                if (!authPassword.isEmpty()) {
+                    httpClientBuilder = httpClientBuilder.proxyAuthenticator((route, response) -> {
+                        String credential = Credentials.basic(authUser.trim(), authPassword.trim());
+                        return response.request().newBuilder().header("Proxy-Authorization", credential).build();
+                    });
+                }
+            } catch (Exception e) {
+                DiscordSRV.error("Failed to generate a proxy from config options.", e);
+            }
+        }
+
+        OkHttpClient httpClient = httpClientBuilder.build(); 
 
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
@@ -1017,9 +1051,8 @@ public class DiscordSRV extends JavaPlugin {
         // load account links
         if (JdbcAccountLinkManager.shouldUseJdbc()) {
             try {
-                JdbcAccountLinkManager jdbcManager = new JdbcAccountLinkManager();
-                accountLinkManager = jdbcManager;
-                jdbcManager.migrateFile();
+                accountLinkManager = new JdbcAccountLinkManager();
+                ((JdbcAccountLinkManager) accountLinkManager).migrateFile();
             } catch (SQLException e) {
                 StringBuilder stringBuilder = new StringBuilder("JDBC account link backend failed to initialize: ");
 
@@ -1357,10 +1390,6 @@ public class DiscordSRV extends JavaPlugin {
         try {
             String finalShutdownFormat = shutdownFormat;
             executor.invokeAll(Collections.singletonList(() -> {
-
-                // serialize account links to disk
-                if (accountLinkManager != null) accountLinkManager.save();
-
                 // set server shutdown topics if enabled
                 if (config().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
                     String time = TimeUtil.timeStamp();
@@ -1743,8 +1772,6 @@ public class DiscordSRV extends JavaPlugin {
             // Replace the PAPI placeholders in the message pattern
             discordMessagePattern = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessagePattern, player);
 
-
-
             /*
             // Reserialize the message pattern, in the case the placeholders added more color codes.
             // DiscordSRV is not ready for this yet. Leaving this here for when that faithful day comes upon us.
@@ -2056,8 +2083,8 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        String defaultUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
-        String offlineUrl = "https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}";
+        String defaultUrl = "https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}";
+        String offlineUrl = "https://crafthead.net/helm/{username}/{size}#{texture}";
 
         if (StringUtils.isBlank(avatarUrl)) {
             avatarUrl = !offline ? defaultUrl : offlineUrl;

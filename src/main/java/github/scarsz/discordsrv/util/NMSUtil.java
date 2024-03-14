@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -22,8 +22,10 @@ package github.scarsz.discordsrv.util;
 
 import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
+import github.scarsz.discordsrv.Debug;
+import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.entity.Player;
-
+import org.bukkit.advancement.Advancement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,9 +46,11 @@ public class NMSUtil {
     protected static Class<?> class_GameProfile;
     protected static Class<?> class_GameProfileProperty;
     protected static Class<?> class_EntityPlayer;
+    protected static Class<?> class_Advancement;
     protected static Method method_CraftPlayer_getHandle;
     protected static Method method_EntityPlayer_getGameProfile;
     protected static Method method_GameProfile_getProperties;
+    protected static Method method_Advancement_getHandle;
     protected static Field field_PropertyMap_properties;
     protected static Field field_GameProfileProperty_value;
 
@@ -71,6 +75,9 @@ public class NMSUtil {
                 }
             }
 
+            class_Advancement = fixBukkitClass("org.bukkit.craftbukkit.advancement.CraftAdvancement");
+            method_Advancement_getHandle = class_Advancement.getMethod("getHandle");
+
             class_CraftPlayer = fixBukkitClass("org.bukkit.craftbukkit.entity.CraftPlayer");
             method_CraftPlayer_getHandle = class_CraftPlayer.getMethod("getHandle");
 
@@ -86,6 +93,7 @@ public class NMSUtil {
             field_PropertyMap_properties = method_GameProfile_getProperties.getReturnType().getDeclaredField("properties");
             field_PropertyMap_properties.setAccessible(true);
         } catch (Throwable e) {
+            DiscordSRV.debug(Debug.UNCATEGORIZED, "Failed to generate NMS classes, methods, and fields.");
             e.printStackTrace();
             failed = true;
         }
@@ -185,4 +193,14 @@ public class NMSUtil {
         return null;
     }
 
+    public static Object getHandle(Advancement advancement) {
+        if (failed) return null;
+
+        try {
+            return method_Advancement_getHandle.invoke(advancement);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

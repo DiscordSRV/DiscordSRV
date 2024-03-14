@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -20,6 +20,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 
@@ -47,7 +48,13 @@ public class UpdateUtil {
             String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/DiscordSRV/DiscordSRV/randomaccessfiles/minimumbuild").trim();
             if (minimumHash.length() == 40) { // make sure we have a hash
                 JsonObject minimumComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + minimumHash + "..." + buildHash + "?per_page=1"), JsonObject.class);
-                boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("behind");
+                JsonElement status = minimumComparisonResult.get("status");
+
+                if (status == null) {
+                    return false; // comparing a local hash against remote, skipping
+                }
+
+                boolean minimumAhead = status.getAsString().equalsIgnoreCase("behind");
                 if (minimumAhead) {
                     printUpdateMessage("The current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start.");
                     DiscordSRV.getPlugin().disablePlugin();

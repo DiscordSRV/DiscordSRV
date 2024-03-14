@@ -10,10 +10,11 @@ plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("net.kyori.indra.git") version "2.1.1"
     id("net.researchgate.release") version "3.0.2"
+    id("xyz.jpenilla.run-paper") version "2.2.0"
 }
 
 group = "com.discordsrv"
-val minecraftVersion = project.properties["minecraftVersion"]!!
+val minecraftVersion = project.properties["minecraftVersion"]!!.toString()
 val targetJavaVersion = 1.8
 
 java {
@@ -104,7 +105,7 @@ tasks {
         mustRunAfter("build")
         minimize {
             exclude(dependency("github.scarsz:configuralize:.*"))
-            exclude(dependency("me.scarsz:jdaappender:.*"))
+            exclude(dependency("me.scarsz.jdaappender:jda4:.*"))
             exclude(dependency("com.fasterxml.jackson.core:jackson-databind:.*"))
         }
 
@@ -188,7 +189,7 @@ dependencies {
     }
     
     // JDA
-    api("net.dv8tion:JDA:4.4.0_352.fix-4") {
+    api("net.dv8tion:JDA:4.4.0_352.fix-5") {
         exclude(module = "opus-java") // we don't use voice features
     }
     
@@ -200,7 +201,7 @@ dependencies {
     }
     
     // Logging
-    implementation("me.scarsz:jdaappender:1.0.3")
+    implementation("me.scarsz.jdaappender:jda4:1.2.0")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9
@@ -210,13 +211,13 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-core:2.0-beta9")
 
     // adventure, adventure-platform, MCDiscordReserializer
-    val adventureVersion = "4.10.1"
+    val adventureVersion = "4.16.0"
     api("net.kyori:adventure-api:${adventureVersion}")
     api("net.kyori:adventure-text-minimessage:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
     api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
@@ -234,7 +235,9 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     // DynamicProxy
-    runtimeOnly("dev.vankka:dynamicproxy:1.0.0:runtime")
+    runtimeOnly("dev.vankka:dynamicproxy:1.0.0:runtime") {
+        exclude(module = "javaparser-symbol-solver-core")
+    }
     compileOnly("dev.vankka:dynamicproxy:1.0.0")
     annotationProcessor("dev.vankka:dynamicproxy:1.0.0")
     
@@ -291,6 +294,15 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
+}
+
+tasks {
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion(minecraftVersion)
+    }
 }
 
 var generatedPaths: FileCollection = sourceSets.main.get().output.generatedSourcesDirs
