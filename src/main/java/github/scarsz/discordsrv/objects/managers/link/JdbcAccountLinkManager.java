@@ -213,10 +213,9 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             try {
                 if (accountsFile.length() != 0) {
                     DiscordSRV.info("linked accounts file exists and we want to use JDBC backend, importing...");
+                    Map<String, UUID> accounts = new AppendOnlyFileAccountLinkManager().getLinkedAccounts();
                     File importFile = new File(accountsFile.getParentFile(), "accounts.aof.imported");
                     if (!accountsFile.renameTo(importFile)) throw new RuntimeException("Failed to move accounts file to " + importFile.getName());
-
-                    Map<String, UUID> accounts = new AppendOnlyFileAccountLinkManager().getLinkedAccounts();
                     connection.setAutoCommit(false);
                     for (Map.Entry<String, UUID> entry : accounts.entrySet()) {
                         String discord = entry.getKey();

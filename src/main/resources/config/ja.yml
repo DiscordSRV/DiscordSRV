@@ -8,6 +8,13 @@ ConfigVersion: ${version}
 # このオプションを変更した後、サーバーを再起動する必要があります
 BotToken: "BOTTOKEN"
 
+# The proxy to be used for Discord  
+# Leave this alone if you don't understand what it does  
+ProxyHost: "https://example.com"  
+ProxyPort: 1234  
+ProxyUser: "USERNAME"  
+ProxyPassword: "PASSWORD"  
+
 # ゲームからDiscordへのチャンネルリンク
 # 構文は Channels: {"Minecraft内のチャンネル名": "Discord内のチャンネルID（数値）", "Minecraft内の別のチャンネル名": "Discord内の別のチャンネルID（数値）"}
 #
@@ -88,7 +95,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # 埋め込みと Webhook の画像/アバター URLの形式
 # オフラインサーバー用の代替埋め込みアバターURL:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 
 # 書式の再変換
 # MinecraftとDiscord間の書式設定（太字、斜体、下線、取り消し線）を変換する
@@ -226,7 +233,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false

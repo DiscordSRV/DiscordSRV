@@ -20,6 +20,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageSentEvent;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageSentEvent;
@@ -760,17 +761,17 @@ public class DiscordUtil {
 
     public static void setNickname(Member member, String nickname) {
         if (member == null) {
-            DiscordSRV.debug("Can't set nickname of null member");
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "Can't set nickname of null member");
             return;
         }
 
         if (!member.getGuild().getSelfMember().canInteract(member)) {
-            DiscordSRV.debug("Not setting " + member + "'s nickname because we can't interact with them");
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "Not setting " + member + "'s nickname because we can't interact with them");
             return;
         }
 
         if (nickname != null && nickname.equals(member.getNickname())) {
-            DiscordSRV.debug("Not setting " + member + "'s nickname because it wouldn't change");
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "Not setting " + member + "'s nickname because it wouldn't change");
             return;
         }
 
