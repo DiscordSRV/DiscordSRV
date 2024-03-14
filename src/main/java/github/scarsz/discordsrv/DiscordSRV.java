@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -313,11 +313,17 @@ public class DiscordSRV extends JavaPlugin {
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
-        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-sensitive channel
+        String value = entry != null ? entry.getValue() : null;
+        if (!StringUtils.isBlank(value)) {
+            return jda.getTextChannelById(value); // found case-sensitive channel
+        }
 
         // no case-sensitive channel found, try case in-sensitive
         entry = channels.entrySet().stream().filter(e -> e.getKey().equalsIgnoreCase(gameChannelName)).findFirst().orElse(null);
-        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-insensitive channel
+        value = entry != null ? entry.getValue() : null;
+        if (!StringUtils.isBlank(value)) {
+            return jda.getTextChannelById(value); // found case-insensitive channel
+        }
 
         return null; // no channel found, case-insensitive or not
     }
@@ -489,7 +495,6 @@ public class DiscordSRV extends JavaPlugin {
             getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information. Can't figure it out? Go to https://discordsrv.com/discord for help");
         });
         initThread.start();
-
 
         if (Bukkit.getWorlds().size() > 0) {
             playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
@@ -1051,9 +1056,8 @@ public class DiscordSRV extends JavaPlugin {
         // load account links
         if (JdbcAccountLinkManager.shouldUseJdbc()) {
             try {
-                JdbcAccountLinkManager jdbcManager = new JdbcAccountLinkManager();
-                accountLinkManager = jdbcManager;
-                jdbcManager.migrateFile();
+                accountLinkManager = new JdbcAccountLinkManager();
+                ((JdbcAccountLinkManager) accountLinkManager).migrateFile();
             } catch (SQLException e) {
                 StringBuilder stringBuilder = new StringBuilder("JDBC account link backend failed to initialize: ");
 
@@ -1391,10 +1395,6 @@ public class DiscordSRV extends JavaPlugin {
         try {
             String finalShutdownFormat = shutdownFormat;
             executor.invokeAll(Collections.singletonList(() -> {
-
-                // serialize account links to disk
-                if (accountLinkManager != null) accountLinkManager.save();
-
                 // set server shutdown topics if enabled
                 if (config().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
                     String time = TimeUtil.timeStamp();
@@ -1777,8 +1777,6 @@ public class DiscordSRV extends JavaPlugin {
             // Replace the PAPI placeholders in the message pattern
             discordMessagePattern = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessagePattern, player);
 
-
-
             /*
             // Reserialize the message pattern, in the case the placeholders added more color codes.
             // DiscordSRV is not ready for this yet. Leaving this here for when that faithful day comes upon us.
@@ -2090,8 +2088,8 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        String defaultUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
-        String offlineUrl = "https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}";
+        String defaultUrl = "https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}";
+        String offlineUrl = "https://crafthead.net/helm/{username}/{size}#{texture}";
 
         if (StringUtils.isBlank(avatarUrl)) {
             avatarUrl = !offline ? defaultUrl : offlineUrl;

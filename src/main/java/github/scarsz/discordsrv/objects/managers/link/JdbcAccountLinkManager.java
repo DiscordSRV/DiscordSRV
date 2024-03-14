@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -213,10 +213,9 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             try {
                 if (accountsFile.length() != 0) {
                     DiscordSRV.info("linked accounts file exists and we want to use JDBC backend, importing...");
+                    Map<String, UUID> accounts = new AppendOnlyFileAccountLinkManager().getLinkedAccounts();
                     File importFile = new File(accountsFile.getParentFile(), "accounts.aof.imported");
                     if (!accountsFile.renameTo(importFile)) throw new RuntimeException("Failed to move accounts file to " + importFile.getName());
-
-                    Map<String, UUID> accounts = new AppendOnlyFileAccountLinkManager().getLinkedAccounts();
                     connection.setAutoCommit(false);
                     for (Map.Entry<String, UUID> entry : accounts.entrySet()) {
                         String discord = entry.getKey();

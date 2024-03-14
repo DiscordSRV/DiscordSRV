@@ -94,7 +94,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # Встраивание и формат URL-адреса изображения / аватара веб-перехватчика
 # Альтернативный URL-адрес для встраивания аватара для офлайн-серверов:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 
 # Reserializer
 # Преобразует форматирование (жирный, курсив, подчеркивание) между Minecraft и Discord
