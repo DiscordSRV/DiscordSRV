@@ -843,7 +843,7 @@ public class LangUtil {
             put(Language.PL, "DiscordSRV został ponownie załadowany. To NIE jest obsługiwane i pojawią się problemy! Zrestartuj serwer, zanim poprosisz o wsparcie!");
             put(Language.DA, "DiscordSRV er blevet genladet. Dette er IKKE understøttet, og problemer VIL OPSTÅ! Genstart din server før du spørger om hjælp!");
             put(Language.UK, " DiscordSRV було перезавантажено. Це не підтримується, і проблеми будуть відбуватися! Перезавантажте сервер, перш ніж звертатися за підтримкою!");
-            put(Language.NB, "DiscordSRV har blitt lastet om. Dette er IKKE støttet og feil VIL oppstå! Restart serveren din før du ber om støtte DiscordSRV has been reloaded. This is NOT supported, and issues WILL occur! Restart your server before asking for support!");
+            put(Language.NB, "DiscordSRV har blitt lastet om. Dette er IKKE støttet og feil VIL oppstå! Restart serveren din før du ber om støtte.");
         }});
 
         @Getter private final Map<Language, String> definitions;
