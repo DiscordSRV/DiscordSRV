@@ -731,10 +731,10 @@ public class DiscordSRV extends JavaPlugin {
         dispatcher.setMaxRequestsPerHost(20); // most requests are to discord.com
         ConnectionPool connectionPool = new ConnectionPool(5, 10, TimeUnit.SECONDS);
 
-        String proxyHost = config.getString("ProxyHost").trim();
+        String proxyHost = config.getString("ProxyHost");
         int proxyPort = config.getInt("ProxyPort");
-        String authUser = config.getString("ProxyUser").trim();
-        String authPassword = config.getString("ProxyPassword").trim();
+        String authUser = config.getString("ProxyUser");
+        String authPassword = config.getString("ProxyPassword");
 
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
@@ -748,29 +748,24 @@ public class DiscordSRV extends JavaPlugin {
                         ? (hostname, sslSession) -> true
                         : OkHostnameVerifier.INSTANCE);
 
-        if (!proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
-            try{
-                URL url = new URL(proxyHost);
-                InetAddress address = InetAddress.getByName(url.getHost()).toString();
-                String ProxyIP = address.substring(temp.indexOf("/")+1,temp.length());
+        if (proxyHost != null && !proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
+            try {
                 // This had to be set to empty string to avoid issue with basic auth
-                // Ref: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111
+                // Reference: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111
                 System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ProxyIP, proxyPort));
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.trim(), proxyPort));
                 httpClientBuilder = httpClientBuilder.proxy(proxy);
 
                 if (!authPassword.isEmpty()) {
-                    httpClientBuilder = httpClientBuilder.proxyAuthenticator(new Authenticator() {
-                        @Override
-                        public Request authenticate(Route route, Response response) throws IOException {
-                            String credential = Credentials.basic(authUser, authPassword);
-                            return response.request().newBuilder().header("Proxy-Authorization", credential).build();
-                        }
+                    httpClientBuilder = httpClientBuilder.proxyAuthenticator((route, response) -> {
+                        String credential = Credentials.basic(authUser.trim(), authPassword.trim());
+                        return response.request().newBuilder().header("Proxy-Authorization", credential).build();
                     });
                 }
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }}
+            } catch (Exception e) {
+                DiscordSRV.error("Failed to generate a proxy from config options.", e);
+            }
+        }
 
         OkHttpClient httpClient = httpClientBuilder.build(); 
 
