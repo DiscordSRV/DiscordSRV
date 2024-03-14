@@ -1,0 +1,31 @@
+# Bu DiscordSRV'nin ses modülünün konfigürasyon dosyasıdır.
+# Deneysel bir özelliktir, birşeyler yanlış gidebilir.
+# Eğer bu modül ile oynarsanız, lütfen bize tüm hata
+# geri bildirimlerinizi Discord'umuz üzerinden iletmeyi
+# unutmayınız. https://discordsrv.com/discord
+
+# DiscordSRV'nin yakınlık bazlı sesli sohbet özelliğini açma yada kapatma ayarı
+# bu ayarı değiştirdikten sonra sunucunuzu yeniden başlatmak zorundasınız
+Voice enabled: false
+# Ağ güncellemeleri arasında beklenen süre (tick)
+Tick speed: 5
+# Bu ana kategori altında ses modülü kanal oluşturacak/silecek/taşıyacak
+# Bu kategoride lobi kanalı dışında kanal bulunmamalıdır
+Voice category: 000000000000000000
+# İnsanların başka hiçbir ağın yakınlarında bulunmadıklarında taşınacakları lobi kanalı.
+# Bu kanal aynı zamanda insanların sesli sohbet ağına girmek için katılmaları gereken kanal olacaktır.
+# Bu kanalın ses kategorisi içerisinde bulunması zorunludur
+Lobby channel: 000000000000000000
+# Lobi kanalında konuşma yetkisi olan kullanıcıları susturur
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # Bağlı kalmaları için oyuncular arası bulunulması gereken minimum mesafe
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  #  Bir oyuncu ağa katıldığında, bu ağdan ayrılmak için
+  #  strength + falloff blok uzaklaşmaları gerekir
+  Falloff: 5
+  # Ses ağı kanallarını herkese gösterme veya göstermeme ayarı. (Bağlı olmayan kişiler buna dahildir)
+  # İnsanlara ses ağının şu anda kullanılıp kullanılmadığını göstermeye yarar
+  Channels are visible: false
