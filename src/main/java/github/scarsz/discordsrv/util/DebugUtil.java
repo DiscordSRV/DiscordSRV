@@ -105,6 +105,7 @@ public class DebugUtil {
                     "   main guild: " + DiscordSRV.getPlugin().getMainGuild(),
                     "Environmental variables:",
                     "   discord main guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
+                    "   discord server owner: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getOwner()),
                     "   vault groups: " + Arrays.toString(VaultHook.getGroups()),
                     "   PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
                     "   Skripts: " + String.join(", ", SkriptHook.getSkripts()),
