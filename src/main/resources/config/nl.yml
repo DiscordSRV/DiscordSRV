@@ -87,7 +87,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # Insluiten & webhook afbeelding/avatar url-formaat
 # Alternatieve ingesloten avatar-url voor offline servers:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafthead.net/avatar/{uuid-nodashes}/{size}#{texture}
+AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 
 # Reserializer
 # Converteert opmaak (vetgedrukt, cursief, onderstreept) tussen Minecraft en Discord
