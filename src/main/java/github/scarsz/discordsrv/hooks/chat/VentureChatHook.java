@@ -275,5 +275,17 @@ public class VentureChatHook implements ChatHook {
     public Plugin getPlugin() {
         return PluginUtil.getPlugin("VentureChat");
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        if (!ChatHook.super.isEnabled()) {
+        	return false;
+        }
+        try {
+            Class.forName("mineverse.Aust1n46.chat.api.events.VentureChatEvent;");
+        } catch (final ClassNotFoundException ignore) {
+            return false;
+        }
+        return true;
+    }
 }

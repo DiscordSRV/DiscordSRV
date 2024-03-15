@@ -35,7 +35,8 @@ import org.bukkit.event.Event;
  * the final message. You could change what they said using the {@link #setMessage(String)} method or use
  * {@link #setCancelled(boolean)} to cancel it from being processed altogether</p>
  * 
- * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePreProcessEvent} would be called instead, due to the lack of the Player object</p>
+ * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePreProcessEvent} or 
+ * {@link UpdatedVentureChatMessagePreProcessEvent} (depending on VentureChat version) would be called instead, due to the lack of the Player object</p>
  */
 public class GameChatMessagePreProcessEvent extends GameEvent<Event> implements Cancellable {
 
