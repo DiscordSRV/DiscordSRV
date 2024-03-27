@@ -331,7 +331,7 @@ public class DiscordChatListener extends ListenerAdapter {
             url = entry.getKey().matcher(url).replaceAll(entry.getValue());
             if (StringUtils.isBlank(url)) {
                 DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Not processing Discord message addon because its URL was cleared by a filter: " + entry.getKey().pattern());
-                return;
+                return false;
             }
         }
 
