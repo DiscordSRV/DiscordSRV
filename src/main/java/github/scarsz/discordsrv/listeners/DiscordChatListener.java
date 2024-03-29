@@ -326,6 +326,15 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private boolean handleMessageAddons(GuildMessageReceivedEvent event, DiscordGuildMessagePreProcessEvent preEvent, List<Role> selectedRoles, Role topRole, String url) {
+        // apply regex filters to url
+        for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
+            url = entry.getKey().matcher(url).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(url)) {
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Not processing Discord message addon because its URL was cleared by a filter: " + entry.getKey().pattern());
+                return false;
+            }
+        }
+
         // get the correct format message
         String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
         String placedMessage = MessageFormatResolver.getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
