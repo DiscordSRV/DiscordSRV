@@ -215,6 +215,22 @@ public class LangUtil {
                     "6. Zrestartuj serwer\n" +
                     "\n" +
                     "\n");
+            put(Language.PT,
+                    "\n" +
+                    "\n" +
+                    "Você está tentando usar o DiscordSRV no ASM 4. DiscordSRV requer ASM 5 para funcionar.\n" +
+                    "O DiscordSRV NÃO FUNCIONARÁ sem o ASM 5. Culpe os desenvolvedores do software do seu servidor por terem bibliotecas desatualizadas.\n" +
+                    "\n" +
+                    "Instruções para atualizar para o ASM 5:\n" +
+                    "1. Navegue até a pasta {specialsourcefolder} do servidor\n" +
+                    "2. Exclua o arquivo jar SpecialSource-1.7-SNAPSHOT.jar\n" +
+                    "3. Baixe o SpecialSource v1.7.4 de https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "4. Copie o arquivo jar para a pasta {specialsourcefolder} do servidor para onde você navegou anteriormente\n" +
+                    "5. Renomeie o arquivo jar que você acabou de copiar para SpecialSource-1.7-SNAPSHOT.jar\n" +
+                    "6. Reinicie o servidor\n" +
+                    "\n" +
+                    "\n");
+
             put(Language.DA,
                     "\n" +
                     "\n" +
