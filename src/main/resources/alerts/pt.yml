@@ -8,7 +8,7 @@
 #  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
 #  https://dzone.com/articles/learn-spring-expression-language-with-examples
 #
-# Você pode usar os seguintes espaços reservados:
+# Você pode usar os seguintes placeholders:
 #  {tps} - TPS do servidor
 #  {time} - hora formatada
 #  {date} - data formatada
@@ -22,7 +22,7 @@
 #  {embedavatarurl} - se o alerta for para um evento de jogador, a URL do avatar para a cabeça do jogador, caso contrário, a URL do avatar do bot
 #  {botavatarurl} - URL do avatar do bot
 #  {botname} - nome do bot
-#  %placeholder% - quaisquer espaços reservados do PlaceholderAPI, só pode usar os do jogador quando o alerta é para um evento de jogador
+#  %placeholder% - quaisquer placeholders do PlaceholderAPI, só pode usar os do jogador quando o alerta é para um evento de jogador
 #
 # Você também pode usar expressões SpEL com ${expression...}, como...
 #  - Obtendo o IP de um jogador: ${#player.address.address.hostAddress}
@@ -32,7 +32,7 @@
 #  - Obtendo o status da conexão do DiscordSRV ao Discord: ${#jda.status.name()}
 #  - Verificando se um jogador está em um mundo específico: ${#player.world.name == 'world_the_end'}
 #  - Verificando se é dia no mundo em que o jogador está: ${#player.world.time > 0 && #player.world.time < 13000}
-#  Você pode usar os seguintes espaços reservados de expressão, como visto acima:
+#  Você pode usar os seguintes placeholders de expressão, como visto acima:
 #   #plugins.<plugin> - a instância do plugin especificado, nulo se não existir
 #   #event - o evento que está acionando o alerta se este alerta for um alerta de evento
 #   #server - a instância do servidor da API do Bukkit, equivalente a Bukkit#getServer

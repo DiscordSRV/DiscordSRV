@@ -114,7 +114,7 @@ MinecraftMentionSound: true
 #
 # DisabledPluginHooks: ganchos de plugins que não serão usados (geralmente apenas o nome do plugin).
 # VentureChatBungee: habilita a funcionalidade BungeeCord do gancho VentureChat (mensagens são recebidas de todos os servidores, requer pelo menos 1 jogador online)
-# EnablePresenceInformation: informações de presença ativadas, necessárias para alguns de nossos espaços reservados do PlaceholderAPI. Lembre-se de que isso requer o "Intenção de Presença" do portal do desenvolvedor do Discord
+# EnablePresenceInformation: informações de presença ativadas, necessárias para alguns de nossos placeholders do PlaceholderAPI. Lembre-se de que isso requer o "Intenção de Presença" do portal do desenvolvedor do Discord
 # UseModernPaperChatEvent: use isso apenas se você tiver plugins de chat que utilizam ESPECIFICAMENTE o "AsyncChatEvent" do Paper
 DisabledPluginHooks: []
 VentureChatBungee: false
@@ -125,7 +125,7 @@ UseModernPaperChatEvent: false
 # Define o indicador "Jogando: ______" para o bot.
 # Pode ser um único valor estático ou ciclo por várias opções diferentes
 # Você pode prefigurar o status com "jogando", "assistindo" ou "ouvindo" para definir o tipo de atividade
-# Os espaços reservados do PlaceholderAPI são suportados
+# Os placeholders do PlaceholderAPI são suportados
 #
 # DiscordGameStatus: Texto a ser exibido. Pode ser um único valor, por exemplo, "Minecraft", ou vários valores, por exemplo, ["Minecraft", "seuip.changeme.com"]
 # DiscordOnlineStatus: Status de atividade a ser exibido. Este deve ser um dos seguintes: ONLINE, DND, IDLE ou INVISIBLE
@@ -190,7 +190,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelUsageLog:
 #    %date%: data atual
 #              exemplo: 2017-01-01
-#    Os espaços reservados do PlaceholderAPI são suportados
+#    As Placeholders do PlaceholderAPI são suportados
 # DiscordConsoleChannelBlacklistActsAsWhitelist: se a lista de comandos bloqueados age como uma lista branca em vez de uma lista negra
 # DiscordConsoleChannelBlacklistedCommands: frases envoltas em aspas que os usuários não devem poder enviar como comandos para o console
 # DiscordConsoleChannelFilters: filtros de regex a serem aplicados às linhas do console enviadas para o Discord, se o resultado for vazio, a mensagem não será enviada de jeito nenhum
@@ -261,10 +261,10 @@ ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
 # Atualizador de canal
-# Esta funcionalidade muda o nome dos canais especificados para cumprir com espaços reservados do jogo
+# Esta funcionalidade muda o nome dos canais especificados para cumprir com placeholders do jogo
 # Opções:
 #   ChannelId: O ID do canal a ser alterado (obrigatório)
-#   Format: O formato para o canal (obrigatório). Espaços reservados disponíveis:
+#   Format: O formato para o canal (obrigatório). Placeholders disponíveis:
 #     %playercount%:   contagem de jogadores atual
 #     %playermax%:     contagem máxima de jogadores
 #     %date%:          data e hora atual
