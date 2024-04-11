@@ -149,6 +149,8 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 return member.getActivities().stream().findFirst().map(Activity::getName).orElse("");
             case "user_game_url":
                 return member.getActivities().stream().findFirst().map(Activity::getUrl).orElse("");
+            case "user_boost_status":
+                return getBoolean(member.getTimeBoosted() != null);
         }
 
         if (member.getRoles().isEmpty()) return "";
