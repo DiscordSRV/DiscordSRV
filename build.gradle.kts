@@ -187,19 +187,19 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
         exclude("commons-lang") // Exclude lang in favor of our own lang3
     }
-    
+
     // JDA
     api("net.dv8tion:JDA:4.4.0_352.fix-5") {
         exclude(module = "opus-java") // we don't use voice features
     }
-    
+
     // Config
     api("github.scarsz:configuralize:1.3.2") {
         // already provided by bukkit
         exclude(module = "json-simple")
         exclude(module = "snakeyaml")
     }
-    
+
     // Logging
     implementation("me.scarsz.jdaappender:jda4:1.2.0")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
@@ -222,11 +222,11 @@ dependencies {
 
     // Annotations
     compileOnlyApi("org.jetbrains:annotations:23.0.0")
-    
+
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
-    
+
     // Apache Commons, guava
     implementation("commons-io:commons-io:2.11.0")
     implementation("commons-collections:commons-collections:3.2.2")
@@ -238,10 +238,10 @@ dependencies {
     runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1-SNAPSHOT")
     compileOnly("dev.vankka:dynamicproxy:1.0.0")
     annotationProcessor("dev.vankka:dynamicproxy:1.0.0")
-    
+
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
-    
+
     // Misc libraries
     api("com.vdurmont:emoji-java:5.1.1")
     implementation("org.bstats:bstats-bukkit:2.2.1")
@@ -258,7 +258,7 @@ dependencies {
     ///
     /// Plugin Hooks
     ///
-    
+
     // chat hooks
     compileOnly("ru.mrbrikster:chatty-api:2.18.2")
     compileOnly("br.com.finalcraft:fancychat:1.0.2")
@@ -269,22 +269,22 @@ dependencies {
     compileOnly("com.palmergames.bukkit:TownyChat:0.45")
     compileOnly("mineverse.aust1n46:venturechat:2.20.1")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
-    
+
     // vanish hooks
     compileOnly("de.myzelyam:SuperVanish:6.2.0")
-    
+
     // permissions hooks
     compileOnly("net.luckperms:api:5.4")
-    
+
     // world hooks
     compileOnly("com.onarandombox.MultiverseCore:Multiverse-Core:2.4")
-    
+
     // misc hooks
     compileOnly("org.dynmap:dynmap-api:2.0")
     compileOnly("com.gmail.nossr50:mcmmo:1.5.07")
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
     compileOnly("me.clip:placeholderapi:2.10.7")
-    
+
     // debug hooks
     compileOnly("ch.njol:skript:2.5")
 
