@@ -236,8 +236,8 @@ dependencies {
 
     // DynamicProxy
     runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1-SNAPSHOT")
-    compileOnly("dev.vankka:dynamicproxy:1.0.0")
-    annotationProcessor("dev.vankka:dynamicproxy:1.0.0")
+    compileOnly("dev.vankka:dynamicproxy:1.0.1-SNAPSHOT")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.1-SNAPSHOT")
 
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
