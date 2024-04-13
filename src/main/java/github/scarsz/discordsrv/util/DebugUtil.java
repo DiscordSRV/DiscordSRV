@@ -280,7 +280,7 @@ public class DebugUtil {
 
             for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getChannels().entrySet()) {
                 TextChannel textChannel = DiscordUtil.getTextChannelById(entry.getValue());
-                if (textChannel == null) {
+                if (textChannel == null || !textChannel.getId().equals(entry.getValue())) {
                     messages.add(new Message(Message.Type.INVALID_CHANNEL, "{" + entry.getKey() + ":" + entry.getValue() + "}"));
                     continue;
                 }
