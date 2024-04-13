@@ -235,9 +235,7 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     // DynamicProxy
-    runtimeOnly("dev.vankka:dynamicproxy:1.0.0:runtime") {
-        exclude(module = "javaparser-symbol-solver-core")
-    }
+    runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1-SNAPSHOT")
     compileOnly("dev.vankka:dynamicproxy:1.0.0")
     annotationProcessor("dev.vankka:dynamicproxy:1.0.0")
     
