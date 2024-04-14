@@ -114,12 +114,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitWorker;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.minidns.DnsClient;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
 
-import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.io.*;

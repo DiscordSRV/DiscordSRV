@@ -40,9 +40,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
+import org.jetbrains.annotations.NotNull;
 
 public class LuckPermsHook implements PluginHook, net.luckperms.api.context.ContextCalculator<Player> {
 
@@ -117,7 +117,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     }
 
     @Override
-    public void calculate(@NonNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
+    public void calculate(@NotNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
         UUID uuid = target.getUniqueId();
         AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
         if (!accountLinkManager.isInCache(uuid)) {
