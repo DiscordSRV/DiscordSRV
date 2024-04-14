@@ -142,6 +142,10 @@ tasks {
         exclude("META-INF/*.RSA")
         exclude("META-INF/maven/**")
         exclude("META-INF/proguard/**")
+
+        // TODO: temporarily exclude rogue annotations from jdaappender
+        exclude("org/jetbrains/annotations/**")
+        exclude("org/intellij/lang/annotations/**")
     }
 }
 
