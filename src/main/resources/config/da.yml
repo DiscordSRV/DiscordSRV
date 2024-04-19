@@ -92,9 +92,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Embed & webhook billede/avatar url format
-# Alternativ integreret avatar-url til offlineservere:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
+# Lad stå tomt for at bruge en standardværdi
+# Tilgængelige pladsholdere: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # Konverterer formatering (fed, kursiv, understregning, gennemstregning) mellem Minecraft og Discord

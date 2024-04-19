@@ -93,9 +93,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # 埋め込みと Webhook の画像/アバター URLの形式
-# オフラインサーバー用の代替埋め込みアバターURL:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
+# デフォルト値を使用する場合は空白のままにします
+# 利用可能なプレースホルダー: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # 書式の再変換
 # MinecraftとDiscord間の書式設定（太字、斜体、下線、取り消し線）を変換する
