@@ -23,6 +23,7 @@ package github.scarsz.discordsrv.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
+import java.util.regex.Pattern;
 
 public class UpdateUtil {
 
@@ -66,8 +67,7 @@ public class UpdateUtil {
 
             // build is ahead of minimum so that's good
 
-            String masterHash = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/git/refs/heads/master"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
-            JsonObject masterComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + masterHash + "..." + buildHash + "?per_page=1"), JsonObject.class);
+            JsonObject masterComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/master..." + buildHash + "?per_page=1"), JsonObject.class);
             String masterStatus = masterComparisonResult.get("status").getAsString();
             switch (masterStatus.toLowerCase()) {
                 case "ahead":
@@ -75,8 +75,7 @@ public class UpdateUtil {
                     if (!verbose) {
                         return false;
                     }
-                    String developHash = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/git/refs/heads/develop"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
-                    JsonObject developComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + developHash + "..." + buildHash + "?per_page=1"), JsonObject.class);
+                    JsonObject developComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/develop..." + buildHash + "?per_page=1"), JsonObject.class);
                     String developStatus = developComparisonResult.get("status").getAsString();
                     switch (developStatus.toLowerCase()) {
                         case "ahead":
