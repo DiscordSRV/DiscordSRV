@@ -184,7 +184,7 @@ DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "0000
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
-DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRolesSelection: ["Bana gösterme!", "Çeşitli rol"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # Konsol kanalı bilgileri
