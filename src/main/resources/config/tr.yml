@@ -2,11 +2,18 @@
 # Yardıma mı ihtiyacınız var? Discord'umuza katılın, https://discordsrv.com/discord
 
 # Lütfen dokunmayın
-ConfigVersion: 1.26.0
+ConfigVersion: ${version}
 
 # Bot jetonu; bunun ne olduğunu bilmiyor musun? Talimatlar için eklenti sayfasındaki videoya bakın
 # Bu seçeneği değiştirdikten sonra sunucunuzu yeniden başlatmalısınız
 BotToken: "BOTTOKEN"
+
+# The proxy to be used for Discord  
+# Leave this alone if you don't understand what it does  
+ProxyHost: "https://example.com"  
+ProxyPort: 1234  
+ProxyUser: "USERNAME"  
+ProxyPassword: "PASSWORD"  
 
 # Oyundan Discord'a kanal bağlantıları
 # Sözdizimi Kanallar'dır: {"Minecraft'tan oyun içi kanal adı": "Discord'dan sayısal kanal kimliği", "Minecraft'tan başka bir oyun içi kanal adı": "Discord'dan başka bir sayısal kanal kimliği"}
@@ -87,7 +94,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # Embed & webhook için resim/avatar url formatı
 # Çevrimdışı sunucular için alternatif yerleştirme avatar URL'si:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 
 # Yeniden serileştirici
 # Biçimlendirmeyi dönüştürür (bold, italics, underline, strikethrough) Minecraft ve Discord arasında
@@ -196,7 +203,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: Discord'a gönderilen konsol hatlarına regex filtreleri uygulanacak, sonuç boşsa mesaj hiç gönderilmeyecek
 # DiscordConsoleChannelLevels: Ekleyici aracılığıyla konsol kanalına gönderilecek seviyeler
 # DiscordConsoleChannelUseCodeBlocks: Konsolun kod bloklarına sarılması ve renklendirilmesi gerekiyorsa
-# DiscordConsoleChannelAllowPluginUpload: Eklentileri konsol kanalına yüklemek onları otomatik olarak sunucuya eklemeli mi?
 # DiscordConsoleChannelBlockBots: Botların konsol kanalında komut göndermesine izin verilip verilmemesi gerektiği
 
 #
@@ -207,8 +213,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
-DiscordConsoleChannelBlockBots: false
+DiscordConsoleChannelBlockBots: true
 
 # Sohbet kanalı komutu yürütme komutu
 # Bu seçenekler, bir komutu çalıştırmak için "!c kick Notch" veya önek ne olursa olsun deme yeteneğini kontrol eder.
@@ -227,7 +232,7 @@ DiscordConsoleChannelBlockBots: false
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
@@ -253,7 +258,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: Minecraft'a gönderilen sohbet mesajlarına uygulanacak regex filtreleri, sonuç boşsa mesaj hiç gönderilmeyecek
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Kanal konusu güncelleyici ayarları
 #
