@@ -47,7 +47,7 @@
 #
 # Syntax/defaults:
 #  - Trigger: <event name or /command>
-#    Async: true # optional, defaults to true, you should almost never have to change this
+#    Async: true # isteğe bağlıdır, varsayılan değer true'dur, bunu neredeyse hiçbir zaman değiştirmeniz gerekmemelidir
 #    Conditions:
 #      - property == < > <= >= value etc
 #    Channel: <discordsrv channel name>
@@ -59,17 +59,17 @@
 #      Name: "{botname}"
 #    Embed:
 #      Enabled: true
-#      Color: "#00ff00" # onaltılı renk kodunu kabul eder (eg. "#ffffff") veya bir RGB tamsayı (eg. 0)
+#      Color: "#00ff00" # orantılı renk kodunu kabul eder (eg. "#ffffff") veya bir RGB tamsayı (eg. 0)
 #      Author:
 #        ImageUrl: "{embedavatarurl}"
-#        Name: "{username} did... something."
+#        Name: "{username} bir şey yaptı."
 #        Url: ""
 #      ThumbnailUrl: ""
 #      Title:
 #        Text: ""
 #        Url: ""
 #      Description: ""
-#      Fields: [] # format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
+#      Fields: [] # format "title;value;inline" (örn. "Kim katıldı?;%displayname%;true") veya boş alan eklemek için "boş" şeklindedir
 #      ImageUrl: ""
 #      Footer:
 #        Text: ""
@@ -92,7 +92,7 @@ Alerts:
   #- Trigger: PlayerViolationEvent
   #  Channel: matrix
   #  Conditions:
-  #    - violations >= 5 # don't send events for players with < 5 violations
+  #    - violations >= 5 # 5'ten az ihlali olan oyunculara etkinlik göndermeyin
   #  Embed:
   #    Color: "#ff0000"
   #    Author:
@@ -108,7 +108,7 @@ Alerts:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} changed gamemode to ${#args.get(0)}"
+  #      Name: "{username} oyun modunu şu şekilde değiştirdim ${#args.get(0)}"
 
   # /me komutlarını göndermek için örnek yapılandırma
   #- Trigger: /me
