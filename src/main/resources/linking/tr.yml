@@ -48,11 +48,11 @@ Require linked account to play:
     Require subscriber role to join: false
     Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
     Require all of the listed roles: false # false olduğunda yukarıdaki rollerden yalnızca biri gereklidir
-    Kick message: "&cYou must be subscribed on Twitch to be able to play."
+    Kick message: "&cOynayabilmek için Twitch'e abone olmanız gerekir."
 
   Messages:
-    DiscordSRV still starting: "&cCurrently unavailable to check link status because the server is still connecting to Discord.\n\nTry again in a minute."
-    Not in server: "&cYou are currently not a part of our Discord server.\n\nJoin at {INVITE}!"
-    Failed to find subscriber role: "&cFailed to find any subscriber role on Discord.\n\nContact your server admins about this issue."
-    Failed for unknown reason: "&cAn error occurred while trying to verify your account.\n\nContact your server admin about this issue."
-    Kicked for unlinking: "&cYou have been kicked from the server for unlinking your accounts.\n\nPlease rejoin the server to link your accounts again."
+    DiscordSRV still starting: "&cSunucu hâlâ Discord'a bağlı olduğundan bağlantı durumunu kontrol etmek şu anda kullanılamıyor.\n\nBir dakika sonra tekrar deneyin.."
+    Not in server: "&cŞu anda Discord sunucumuzun bir parçası değilsiniz.\n\nŞu adresten katılın: {INVITE}!"
+    Failed to find subscriber role: "&cDiscord'da herhangi bir abone rolü bulunamadı.\n\nBu sorunla ilgili olarak sunucu yöneticilerinizle iletişime geçin."
+    Failed for unknown reason: "&cHesabınız doğrulanmaya çalışılırken bir hata oluştu.\n\nBu sorunla ilgili olarak sunucu yöneticinizle iletişime geçin."
+    Kicked for unlinking: "&cHesaplarınızın bağlantısını kaldırdığınız için sunucudan atıldınız.\n\nHesaplarınızı yeniden bağlamak için lütfen sunucuya yeniden katılın."
