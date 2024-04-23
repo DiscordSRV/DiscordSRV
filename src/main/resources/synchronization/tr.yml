@@ -51,5 +51,5 @@ GroupRoleSynchronizationCycleCompletely: false
 # BanSynchronizationMinecraftToDiscord: İnsanların Minecraft sunucusundan yasaklanmaları durumunda Discord sunucusunda yasaklanıp yasaklanmayacağı
 #
 BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cYou have been banned until further notice from the server because you were banned on our Discord server."
+BanSynchronizationDiscordToMinecraftReason: "&cDiscord sunucumuzda yasaklandığınız için sunucudan bir sonraki duyuruya kadar yasaklandınız.."
 BanSynchronizationMinecraftToDiscord: false
