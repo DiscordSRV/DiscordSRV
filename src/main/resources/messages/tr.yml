@@ -1,0 +1,444 @@
+# Discord -> Minecraft Mesajı
+#
+# DiscordToMinecraftChatMessageFormat: Discord'dan Minecraft'a mesaj gönderirken kullanılan format
+# DiscordToMinecraftChatMessageFormatNoRole: Kişinin herhangi bir rolü olmadığında Discord'dan Minecraft'a mesaj gönderirken kullanılan format
+#
+# Kanal başına farklı bir format belirleyebilirsiniz. Diyelim ki adında bir kanalınız var: "mychannel".
+# Global olarak tanımlanan formattan farklı bir formata sahip olmasını istiyorsanız aşağıdaki özellikleri ekleyebilirsiniz.:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
+# Mevcut yer tutucular(Placeholders):
+# %allroles%:       Kişinin tüm rolleri, aralarında DiscordToMinecraftAllRolesSeparator ile birleştirildi
+#                    Örnek: Owner | Developer | Boss man
+# %message%:        Mesaj içeriği
+#                    Örnek: Hello!
+# %toprole%:        Kişinin en yüksek rütbeli rolü
+#                    Örnek: Owner
+# %toprolealias%:   DiscordChatChannelRoleAliases'teki rolün takma adı, aksi takdirde rolün adı
+#                    Örnek: Dev
+# %toproleinitial%: Kişinin en yüksek rütbeli rolünün ilk harfi
+#                    Örnek: O
+# %toprolecolor%:   Kişinin en üst düzey rolünün yaklaşık rengi
+#                    Örnek: &4
+# %name%:           Kişinin Discord'daki etkin adı (varsa takma ad, değilse kullanıcı adı)
+#                    Örnek: NotchIsMe
+# %username%:       Kişinin Discord'daki kullanıcı adı
+#                    Örnek: Notch
+# %channelname%:    Mesajın geldiği kanalın adı
+#                    Örnek: server-chat
+# %reply%:         Mesaj başka bir mesaja yanıt olduğunda görüntülenen mesaj.
+#                    Mesaj formatı DiscordToMinecraftMessageReplyFormat ile yapılandırılabilir,
+#                    Mesaj başka bir mesaja cevap değilse bu boş olacaktır
+#
+# DiscordToMinecraftAllRolesSeparator: Roller arasında kullanılan ayırıcı %allroles%
+#
+# DiscordToMinecraftMessageReplyFormat: Mesajın bir yanıt olduğunu belirtmek için görüntülenen mesajın biçimi
+#
+# Mevcut yer tutucular(Placeholders):
+# %name%:          Discord'da yanıtlanan kullanıcının etkin adı (varsa takma ad, değilse kullanıcı adı)
+#                   Örnek: NotchIsMe
+# %username%:      Discord'da yanıtlanan kullanıcının kullanıcı adı
+#                   Örnek: Notch
+# %message%:       Yanıtlanan mesajın içeriği
+#
+# NOT: DiscordToMinecraftMessageReplyFormat'ın mesajınızda görüntülenmesini istiyorsanız %reply% yer tutucusunun bu formatta mevcut olması gerekir.
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (replying to %name%)"
+
+# Minecraft -> Discord Mesajı
+#
+# MinecraftChatToDiscordMessageFormat: Minecraft'tan Discord'a mesaj gönderirken kullanılan format
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: MinecraftChatToDiscordMessageFormat yerine kullanılır
+#                                                    Oyuncu için birincil grup bulunamadığında
+#
+# Mevcut yer tutucular(Placeholders):
+# %username%:     Ham oyuncu kullanıcı adı
+#                  Örnek: jeb_
+# %displayname%:  Takma adlar gibi şeylerden görünen ad
+#                  Örnek: BigBossManJeb
+# %usernamenoescapes%:     Discord formatından kaçmadan ham oynatıcı kullanıcı adı (satır içi kod ve kod bloğu işaretlemesinde kullanım için)
+#                  Örnek: jeb_
+# %displaynamenoescapes%:  Takma adlar gibi şeylerden, uyumsuzluk biçiminden kaçmadan adın görüntülenmesi (satır içi kod ve kod bloğu işaretlemesinde kullanım için)
+#                  Örnek: BigBossManJeb
+# %message%:     Mesaj içeriği
+#                  Örnek: Hello!
+# %primarygroup%: Kullanıcının birincil grubunun adı
+# %world%:        Dünya oyuncusunun adı burada
+#                  Örnek: world
+# %worldalias%:   Multiverse-Core aracılığıyla dünya oyuncusunun takma adı eklendi
+#                  Örnek: Mainland
+# %date%:         Geçerli tarih ve saat
+#                  Örnek: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  Mesaj herhangi bir kanalda gönderilmişse, mesajın gönderildiği kanalın adı
+#                  Örnek: Global
+# PlaceholderAPI yer tutucuları da desteklenir
+#
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+
+# Sohbet kanalı eklentisi mesajı
+# Bu, yalnızca desteklenen bir sohbet kanalı eklentisi bağlandığında kullanılan özel bir mesajdır
+# Mesajın geldiği kanalla ilgili bilgileri içerecek şekilde mesajın oyun içinde nasıl olacağını değiştirir
+#
+# Mevcut yer tutucular(Placeholders):
+# %channelcolor%:    Kanala karşılık gelen renk karakteri
+#                     Örnek: Kanaldan gelen mesajlar kırmızı renktedir, bu kırmızı renkle değiştirilecektir
+# %channelname%:     Kanalın gerçek adı; genellikle yalnızca sunucunun dahili olarak gördüğü ad
+#                     Örnek: staff
+# %channelnickname%: Kanalın resmi takma adı, genellikle oyuncuların gördüğü kanalın adı
+#                     Örnek: Staff
+# %message%:         DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole aracılığıyla işlendikten sonra mesaj
+#                     Örnek: jeb_ > Hello from the server!
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap Mesajları
+#
+# DynmapNameFormat: Dynmap'e gönderilen mesajın kullanıcı adı kısmının formatı (bu, dynmap ayarlarına bağlı olarak gizlenebilir)
+# DynmapChatFormat: Dynmap'e gönderilen mesajın mesaj kısmının formatı
+#
+# Mevcut yer tutucular(Placeholders):
+# Discord ile aynı -> Minecraft yer tutucuları(Placeholders)
+#
+# DynmapDiscordFormat: Discord'a giden Dynmap mesajlarının formatı
+#
+# Mevcut yer tutucular(Placeholders):
+# %message%:  Mesaj içeriği
+#              Örnek: Hello!
+# %name%:     Dynmap web sohbetinde gönderilen mesajın kullanıcı adı (boş olabilir)
+#              Örnek: Notch
+# PlaceholderAPI yer tutucuları da desteklenir
+#
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
+
+# Discord konsolu kanal mesajı
+# Bu, eğer etkinleştirilirse, konsoldan konsol kanalına bir hat gönderilirken kullanılan formattır.
+#
+# Mevcut yer tutucular(Placeholders):
+# {level}:    Mesaj önem düzeyi
+#              Örnek: INFO, WARN, ERROR
+# {name}:     Kaydedici adı
+#              Örnek: Server
+# {datetime}: Geçerli tarih ve saat
+#              Örnek: Sun Jan 1 15:30:45 PDT 2017
+# PlaceholderAPI yer tutucuları da desteklenir
+#
+# DiscordConsoleChannelTimestampFormat: {date} ve {datetime} yer tutucuları için kullanılacak tarih biçimi
+# DiscordConsoleChannelPrefix: Başa eklenecek önek(Prefix)
+# DiscordConsoleChannelSuffix: Eklenecek son ek(Suffix)
+#
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
+
+# Discord sohbet kanalı !c komut hata mesajı
+# Komutun çalıştırılmasında bir hata değil, oynatıcının komutu çalıştırma izinlerinde bir hata oluştuğunda kullanılırf
+# Bu kullanıcıya PM(Özel Mesaj Kutusu) olarak gönderilir
+#
+# Mevcut yer tutucular(Placeholders):
+# %user%:  Komutu çalıştırmayı deneyen kullanıcının adı
+#           Örnek: Notch
+# %error%: Hatanın nedeni
+#           Örnek: no permission
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried running a command. Unfortunately, there was an error: %error%"
+
+# Discord sohbet kanalı oynatıcı listesi komutu
+# Birisi bir sohbet kanalında oynatıcı listesi komutunu çalıştırdığında kullanılan mesajlar
+#
+# DiscordChatChannelListCommandFormatOnlinePlayers: Listenin başında tüm oyuncu adlarından önce yer alan mesaj
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: Hiçbir oyuncu çevrimiçi olmadığında bunun yerine kullanılır
+# DiscordChatChannelListCommandPlayerFormat: Her oyuncunun listede nasıl görünmesi gerektiğinin formatı
+#   Mevcut yer tutucular(Placeholders):
+#   %username%:     Ham oyuncu kullanıcı adı
+#   %displayname%:  Takma adlar gibi şeylerden görünen ad
+#   %primarygroup%: Kullanıcının birincil grubunun adı
+#   %world%:        Dünya oyuncusunun adı burada
+#   %worldalias%:   Multiverse-Core aracılığıyla dünya oyuncusunun takma adı eklendi
+#   PlaceholderAPI yer tutucuları da desteklenir
+# DiscordChatChannelListCommandAllPlayersSeparator: Oyuncular arasında kullanılan ayırıcı
+#
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Online players (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
+
+# Minecraft -> Discord Bildirim Mesajları
+#
+#
+# Embed information(Bilgileri yerleştir): 
+# Color:      Onaltılık renk kodunu (örn. "#ffffff") veya rgb tamsayısını (örn. 0) kabul eder
+# Fields:     Format "title;value;inline içi" (örn. "Kim katıldı?;%displayname%;true") veya boş alan eklemek için "boş" şeklindedir
+# Timestamp:  İletinin gönderildiği zamanı kullanmak veya belirli bir zaman için dönem zaman damgasını kullanmak için true olarak ayarlayın (https://www.epochconverter.com/)
+#
+# Mevcut yer tutucular(Placeholders) for PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
+# %displayname%:         Takma adlar gibi şeylerden görünen ad
+# %username%:            Ham oyuncu kullanıcı adı
+# %displaynamenoescapes%:         Takma adlar gibi şeylerden, uyumsuzluk biçiminden kaçmadan adın görüntülenmesi (satır içi kod ve kod bloğu işaretlemesinde kullanım için)
+# %usernamenoescapes%:            Discord formatından kaçmadan ham oynatıcı kullanıcı adı (satır içi kod ve kod bloğu işaretlemesinde kullanım için)
+# %date%:                Geçerli tarih ve saat
+# %embedavatarurl%:      Kullanıcının avatarı
+# %botavatarurl%:        Botun avatarı
+# %botname%:             Botun adı
+# PlaceholderAPI yer tutucuları da desteklenir
+#
+# Mevcut yer tutucular(Placeholders) PlayerJoin(Giriş) mesajları için:
+# %message%:        Oyun içinde görülen mesaja katılın
+#
+MinecraftPlayerJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Mevcut yer tutucular(Placeholders) PlayerFirstJoin(İlk Giriş) mesajları için:
+# %message%:        Oyun içinde görülen mesaja katılın
+#
+MinecraftPlayerFirstJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server for the first time"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Mevcut yer tutucular(Placeholders) PlayerLeave(Çıkış) mesajları için:
+# %message%:        Oyunda görüldüğü gibi mesaj bırakın
+#
+MinecraftPlayerLeaveMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% left the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Mevcut yer tutucular(Placeholders) PlayerDeath(Ölüm Mesajı) mesajları için:
+# %deathmessage%: Ölüm mesajı
+# %world%:        Kullanıcının öldüğü dünyanın adı
+#
+MinecraftPlayerDeathMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Mevcut yer tutucular(Placeholders) PlayerAchievement(Oyuncu Başarısı) mesajları için:
+# %achievement%: Başarının/ilerlemenin başlığı
+# %world%:       Kullanıcının bulunduğu dünyanın adı
+#
+MinecraftPlayerAchievementMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% has made the advancement %achievement%!"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+# Kanal konusu güncelleyici mesajları
+# Bunlar, sohbet veya konsol kanalı konularının sunucu bilgileriyle otomatik olarak güncellenmesiyle ilgili şeylerdir
+#
+# ChannelTopicUpdater______ChannelTopicFormat: Kanalın konusunu her X saniyede bir olarak ayarlamak için mesaj
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Sunucu kapatıldığında kanalın konusunu ayarlama mesajı
+#
+# Mevcut yer tutucular(Placeholders):
+# %playercount%:   Mevcut oyuncu sayısı
+# %playermax%:     Maksimum oyuncu sayısı
+# %date%:          Geçerli tarih
+# %totalplayers%:  Ana dünyaya katılacak toplam oyuncu sayısı
+# %uptimemins%:    DiscordSRV'nin başlamasından bu yana geçen dakika sayısı
+# %uptimehours%:   DiscordSRV'nin başlamasından bu yana geçen saat sayısı
+# %motd%:          Sunucu gününün sloganı
+# %serverversion%: Spigot-1.9 gibi sunucu sürümü
+# %freememory%:    MB cinsinden JVM'nin boş belleği
+# %usedmemory%:    JVM'nin MB cinsinden kullanılan belleği
+# %totalmemory%:   MB cinsinden JVM'nin toplam belleği
+# %maxmemory%:     JVM'nin MB cinsinden maksimum belleği
+# %freememorygb%:  JVM'nin GB cinsinden boş belleği
+# %usedmemorygb%:  GB cinsinden JVM'nin kullanılan belleği
+# %totalmemorygb%: JVM'nin GB cinsinden toplam belleği
+# %maxmemorygb%:   JVM'nin GB cinsinden maksimum belleği
+# %tps%:           Sunucunun ortalama TPS'si
+# PlaceholderAPI yer tutucuları da desteklenir
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
+# YALNIZCA AtServerShutdownFormats destekler %totalplayers%, %serverversion%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+
+# Discord komut mesajı
+# Bu, oyunculara "/discord" komutunu çalıştırdıklarında gönderilen mesajdır. Bunun bir parçası olarak komut söz dizimini bırakmanız önerilir
+# İnsanların Discord sunucusuna katılmaları için ihtiyaç duydukları davet bağlantısı için yer tutucu olarak {INVITE} kullanın, DiscordInviteLink'i şu şekilde yapılandırır: config.yml
+#
+DiscordCommandFormat: "&bJoin us on Discord at {INVITE}&b. For command help, do \"/discord ?\""
+
+# İzin mesajı yok
+NoPermissionMessage: "&cYou do not have permission to perform this command."
+
+# Bilinmeyen komut mesajı
+UnknownCommandMessage: "&bThat command doesn't exist!"
+
+# Sunucu başlatma/kapatma mesajları
+# DiscordChatChannelServerStartupMessage: Sunucu başladığında gönderilecek mesaj; devre dışı bırakmak için boş bırakın
+# DiscordChatChannelServerShutdownMessage: Sunucu kapatıldığında gönderilecek mesaj; devre dışı bırakmak için boş bırakın
+#
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server has started**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped**"
+
+# Sunucu gözlemcisi mesajı
+#
+# Watchdog, sunucunuzun en son ne zaman bir oyun işareti gerçekleştirdiğini sürekli olarak izler
+# Son tıklamadan bu yana geçen süre saniye cinsinden ayarlanan aralığın üzerine çıkarsa Discord mesajları tetiklenebilir
+#
+# ServerWatchdogMessage: Ana sohbet kanalına gönderilecek mesaj.
+#                        Kullanarak kullanıcılardan @bahsedebilirsiniz. "<@USERID>", i.e. "<@12345678901234567890>"
+#                        Kullanarak rollerden @bahsedebilirsiniz. "<@&ROLEID>", i.e. "<@&12345678901234567890>"; rol kimlikleri için discordsrv yüklendiğinde konsolu görün
+#                        Kullanarak sunucunun sahibinden @bahsedebilirsiniz. "%guildowner%"
+#                        Kullanarak iletiye kilitlenmenin tarihini ve saatini girebilirsiniz. %date%
+#                        Kullanarak ServerWatchdogTimeout'u yer tutucu olarak kullanabilirsiniz. %timeout%
+#                        Discord'un zaman damgası biçiminde kullanmak için %timestamp% yer tutucusunu kullanabilirsiniz
+#
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, the server hasn't ticked in %timeout% seconds :fire::bangbang:"
+
+# Hesap bağlantısı mesajları
+# Bunlar, hesaplar bağlandığında kullanılan mesajlardır
+#
+# Mevcut yer tutucular(Placeholders):
+# CodeGenerated:                %code%:         Oyuncunun hesabını bağlaması için oluşturulan kod
+#                               %botname%:      Discord'daki botun adı
+# UnknownCode/InvalidCode:      %code%:         Oyuncunun hesabını bağlaması için oluşturulan kod
+#                               %mention%:      Discord hesabına bahsedilme
+# DiscordAccountLinked:         %name%:         Kullanıcının Discord hesabının bağlı olduğu Minecraft oynatıcısının adı
+#                               %displayname%:  Kullanıcının Discord hesabının bağlı olduğu Minecraft oynatıcısının görünen adı
+#                               %uuid%:         Kullanıcının Discord hesabının bağlı olduğu Minecraft oynatıcısının kullanıcı kimliği
+#                               %mention%:      Discord hesabına bahsedilme
+# DiscordAccountAlreadyLinked:  %uuid%:         Kullanıcının bağlı Minecraft hesabının Minecraft kullanıcı kimliği
+#                               %username%:     Kullanıcının bağlı Minecraft hesabının Minecraft kullanıcı adı
+#                               %mention%:      Discord hesabına bahsedilme
+# DiscordLinkedAccountRequired  %message%:      Kullanıcının bağlı olmadığı için gönderemediği mesaj
+# MinecraftAccountLinked:       %id%:           Kullanıcının Minecraft hesabının bağlı olduğu Discord kullanıcısının discord kimliği
+#                               %username%:     Kullanıcının Minecraft hesabının bağlı olduğu Discord kullanıcısının discord adı
+# LinkedCommandSuccess:         %name%:         Kullanıcının Minecraft hesabının bağlı olduğu Discord kullanıcısının discord kullanıcı adı
+# UnlinkCommandSuccess:         %name%:         Kullanıcının Minecraft hesabının bağlı olduğu Discord kullanıcısının discord kullanıcı adı
+# MinecraftNobodyFound:         %target%:       Hiçbir sonucun bulunmamasına yol açan girdi
+#
+# Discord
+CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
+UnknownCode: "I don't know of such a code, try again."
+InvalidCode: "Are you sure that's your code? Link codes are 4 numbers long."
+DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "You are already linked to %username% (%uuid%)"
+DiscordLinkedAccountRequired: "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Unable to check if your account is linked, please try again later"
+# Minecraft
+ClickToCopyCode: "Click to copy"
+MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bYour Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink."
+LinkedCommandSuccess: "&bYour Minecraft account is associated with %name%."
+UnlinkCommandSuccess: "&bYour Minecraft account is no longer associated with %name%."
+MinecraftNoLinkedAccount: "&cYour Minecraft account isn't associated with a Discord account."
+LinkingError: "&cCurrently unable to link accounts due to an internal error. Contact your server administration team."
+MinecraftNobodyFound: "&cNobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"%target%\" to look up."
