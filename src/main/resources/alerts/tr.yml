@@ -1,0 +1,122 @@
+# Bu, bir oyun etkinliği gerçekleştiğinde Discord'a mesaj göndermenize olanak tanıyan DiscordSRV'nin /gelişmiş/ özelliğidir
+# veya bir komut çalıştırıldığında. Bukkit etkinliklerinin nasıl çalıştığına ve özelliklerine ilişkin yeterli bilgiye ihtiyacınız olacak.
+# Burada ne yaptığınızdan emin değilseniz, bir geliştiriciye sorabilir veya @discordsrv.com/discord destek sunucumuza katılabilirsiniz.
+#
+# Kullanılacak olayları ve özellikleri bulmak için Bukkit API javadoc'a bakın:
+#  https://hub.spigotmc.org/javadocs/bukkit
+# SpEL'in nasıl kullanılacağını öğrenmek için faydalı kaynaklar:
+#  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
+#  https://dzone.com/articles/learn-spring-expression-language-with-examples
+#
+# Aşağıdaki yer tutucuları(PlaceHolders) kullanabilirsiniz:
+#  {tps} - Sunucu TPS
+#  {time} - Biçimlendirilmiş zaman
+#  {date} - Biçimlendirilmiş tarih
+#  {name} - Uyarı bir oyuncu etkinliği içinse oyuncunun adı
+#  {ping} - Uyarı bir oyuncu olayı içinse oyuncunun ping'i
+#  {username} - Uyarı bir oyuncu etkinliği içinse oyuncunun kullanıcı adı
+#  {displayname} - Uyarı bir oyuncu etkinliği içinse oyuncunun görünen adı
+#  {usernamenoescapes} - Uyarı bir oyuncu etkinliği içinse, oyuncunun discord formatından kaçmadan kullanıcı adı (satır içi kod ve kod bloğu işaretlemesinde kullanım için)
+#  {displaynamenoescapes} - Uyarı bir oyuncu etkinliği içinse, oyuncunun discord formatından kaçmadan görünen adı (satır içi kod ve kod bloğu işaretlemesinde kullanım için)
+#  {world} - Uyarı bir oyuncu etkinliği içinse oyuncunun bulunduğu dünya
+#  {embedavatarurl} - Uyarı bir oyuncu etkinliği içinse oyuncunun kafasına ait avatar URL'si, aksi takdirde botun avatar URL'si
+#  {botavatarurl} - Botun avatar URL'si
+#  {botname} - Botun adı
+#  %placeholder% - Herhangi bir PlaceholderAPI yer tutucusu, yalnızca uyarı bir oyuncu etkinliği için olduğunda oyuncu yer tutucularını kullanabilir
+#
+#  SpEL ifadelerini ${expression...} ile de kullanabilirsiniz, örneğin...
+#  - Bir oyuncunun IP'sini alma: ${#player.address.address.hostAddress}
+#  - Bir oyuncunun oyun modunu alma: ${#player.gameMode.name()}
+#  - Bir oyuncunun bağlantılı Discord hesap kimliğini alma : ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - Çevrimiçi oyuncu sayısını alma : ${#server.onlinePlayers.size()}
+#  - DiscordSRV'nin Discord'a bağlantısının durumunu alma: ${#jda.status.name()}
+#  - Bir oyuncunun belirli bir dünyada olup olmadığını kontrol etme: ${#player.world.name == 'world_the_end'}
+#  - Oyuncunun bulunduğu dünyanın gündüz olup olmadığı kontrol ediliyor: ${#player.world.time > 0 && #player.world.time < 13000}
+#  Yukarıda görüldüğü gibi aşağıdaki ifade yer tutucularını kullanabilirsiniz:
+#   #plugins.<plugin> - Belirtilen eklenti örneği, yoksa null
+#   #event - Bu uyarı bir etkinlik uyarısıysa, uyarıyı tetikleyen olay
+#   #server - Bukkit#getServer'a eşdeğer Bukkit API sunucu örneği
+#   #discordsrv - DiscordSRV eklenti örneği
+#   #player - Etkinliğin hangi oyuncu için olduğu, eğer bu bir oyuncu etkinliği veya komutuysa
+#   #sender - Komut göndereni, eğer bu bir komut uyarısıysa
+#   #command - Bu bir komut uyarısıysa, başında eğik çizgi olmadan tam komut
+#   #args - Komut argümanları, eğer bu bir komut uyarısıysa
+#   #allArgs - Komut argümanları tek bir dize olarak, eğer bu bir komut uyarısıysa
+#   #channel - Bu uyarının hedef kanalı
+#   #jda - DiscordSRV'nin Discord ile iletişim kurmak için kullandığı JDA örneği
+#
+# Syntax/defaults:
+#  - Trigger: <event name or /command>
+#    Async: true # optional, defaults to true, you should almost never have to change this
+#    Conditions:
+#      - property == < > <= >= value etc
+#    Channel: <discordsrv channel name>
+#    IgnoreCancelled: true # Yalnızca etkinlik uyarıları için
+#    Content: ""
+#    Webhook:
+#      Enabled: false
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{botname}"
+#    Embed:
+#      Enabled: true
+#      Color: "#00ff00" # onaltılı renk kodunu kabul eder (eg. "#ffffff") veya bir RGB tamsayı (eg. 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{username} did... something."
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # İletinin gönderildiği zamanı kullanmak veya belirli bir zaman için dönem zaman damgasını kullanmak için true olarak ayarlayın (https://www.epochconverter.com/)
+#
+Alerts:
+  # Bir oyuncu başarıyla balık yakaladığında "balık" DiscordSRV kanalına mesaj göndermek için örnek yapılandırma
+  #- Trigger: PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+
+  # Matrix hile karşıtı mesajları göndermek için örnek yapılandırma
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # don't send events for players with < 5 violations
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} failed ${hackType.name().toLowerCase()} check | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+  # /Gamemode mesajlarını göndermek için örnek yapılandırma
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} changed gamemode to ${#args.get(0)}"
+
+  # /me komutlarını göndermek için örnek yapılandırma
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"
