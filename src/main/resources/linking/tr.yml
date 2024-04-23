@@ -26,7 +26,7 @@ Require linked account to play:
   # Botun adı için yer tutucu olarak {BOT} kullanın
   # İnsanların bota DM göndermesi gereken kod için yer tutucu olarak {CODE} kullanın
   # İnsanların Discord sunucusuna katılmaları için ihtiyaç duydukları davet bağlantısı için yer tutucu olarak {INVITE} kullanın, DiscordInviteLink'i şu şekilde yapılandırır: config.yml
-  Not linked message: "&7You must link your &9Discord &7account to play.\n\n&7Send a DM to &b{BOT}&7 in the Discord server containing just &b{CODE}&7 to link your account.\n\n&7Discord Invite » &b{INVITE}"
+  Not linked message: "&7Oynamak için &9Discord &7hesabınızı bağlamanız gerekir.\n\n&7Hesabınızı bağlamak için Discord sunucusundaki &b{BOT}&7 botuna yalnızca &b{CODE}&7 içeren bir DM gönderin.\n\n&7Discord Davetiyesi » &b{INVITE}"
 
   # Etkinleştirilirse, oyuncuların yalnızca hesaplarını bağlamaları gerekmeyecek, aynı zamanda
   # Botun da bulunduğu bir Discord sunucusuna üye olmak.
