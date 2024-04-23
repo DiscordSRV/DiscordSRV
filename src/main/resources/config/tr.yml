@@ -258,7 +258,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: Minecraft'a gönderilen sohbet mesajlarına uygulanacak regex filtreleri, sonuç boşsa mesaj hiç gönderilmeyecek
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Çevrimiçi oyuncular \\(.*": "", ".*\\*\\*Çevrimiçi oyuncu yok\\*\\*.*": ""}
 
 # Kanal konusu güncelleyici ayarları
 #
@@ -299,12 +299,12 @@ ChannelTopicUpdaterRateInMinutes: 10
 #   UpdateInterval: Kanal adının güncellenmesi arasında beklenecek dakika cinsinden süre (hız sınırları nedeniyle minimum 10'dur)
 ChannelUpdater:
   - ChannelId: "0000000000000000"
-    Format: "%playercount% players online"
-    ShutdownFormat: "Server is offline"
+    Format: "%playercount% Oyuncu Aktif"
+    ShutdownFormat: "Sunucu Kapalı"
     UpdateInterval: 10
   - ChannelId: "0000000000000000"
-    Format: "Current TPS: %tps%"
-    ShutdownFormat: "Server is offline"
+    Format: "TPS: %tps%"
+    ShutdownFormat: "Sunucu Kapalı"
     UpdateInterval: 10
 
 # Discord hazır yanıtları
