@@ -2094,8 +2094,7 @@ public class DiscordSRV extends JavaPlugin {
             avatarUrl = !offline ? defaultUrl : offlineUrl;
             DiscordSRV.config().setRuntimeValue("AvatarUrl", avatarUrl);
 
-            DiscordSRV.error("Your AvatarUrl config option uses crafatar.com which no longer supports Discord.");
-            DiscordSRV.error("An alternative provider will be used instead.");
+            DiscordSRV.error("Your AvatarUrl config option uses crafatar.com which no longer supports Discord so an alternative provider will be used.");
             DiscordSRV.error("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this error.");
         }
 
