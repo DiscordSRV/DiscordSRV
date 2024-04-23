@@ -48,7 +48,7 @@
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " (replying to %name%)"
+DiscordToMinecraftMessageReplyFormat: " (yanıtla %name%)"
 
 # Minecraft -> Discord Mesajı
 #
@@ -175,7 +175,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 #
 #
 # Embed information(Bilgileri yerleştir): 
-# Color:      Onaltılık renk kodunu (örn. "#ffffff") veya rgb tamsayısını (örn. 0) kabul eder
+# Color:      örn. "#ffffff" renk kodunu rgb renk kodlarını kabul eder
 # Fields:     Format "title;value;inline içi" (örn. "Kim katıldı?;%displayname%;true") veya boş alan eklemek için "boş" şeklindedir
 # Timestamp:  İletinin gönderildiği zamanı kullanmak veya belirli bir zaman için dönem zaman damgasını kullanmak için true olarak ayarlayın (https://www.epochconverter.com/)
 #
