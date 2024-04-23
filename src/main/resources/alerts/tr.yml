@@ -59,7 +59,7 @@
 #      Name: "{botname}"
 #    Embed:
 #      Enabled: true
-#      Color: "#00ff00" # orantılı renk kodunu kabul eder (eg. "#ffffff") veya bir RGB tamsayı (eg. 0)
+#      Color: "#00ff00" # #ffffff orantılı renk kodunu kabul eder veya RGB renkleri
 #      Author:
 #        ImageUrl: "{embedavatarurl}"
 #        Name: "{username} bir şey yaptı."
