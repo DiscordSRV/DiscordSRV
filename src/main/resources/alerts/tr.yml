@@ -77,7 +77,7 @@
 #      Timestamp: false # İletinin gönderildiği zamanı kullanmak veya belirli bir zaman için dönem zaman damgasını kullanmak için true olarak ayarlayın (https://www.epochconverter.com/)
 #
 Alerts:
-  # Bir oyuncu başarıyla balık yakaladığında "balık" DiscordSRV kanalına mesaj göndermek için örnek yapılandırma
+  # Bir oyuncu balık yakaladığında "Balık" adlı DiscordSRV kanalına mesaj göndermek için örnek yapılandırma
   #- Trigger: PlayerFishEvent
   #  Channel: fish
   #  Conditions:
@@ -86,7 +86,7 @@ Alerts:
   #    Color: "#00ff00"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+  #      Name: "{name} yakalandı ${caught.itemStack.type.name()}!"
 
   # Matrix hile karşıtı mesajları göndermek için örnek yapılandırma
   #- Trigger: PlayerViolationEvent
