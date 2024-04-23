@@ -149,7 +149,7 @@ DiscordConsoleChannelPadding: 0
 # %error%: Hatanın nedeni
 #           Örnek: no permission
 #
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried running a command. Unfortunately, there was an error: %error%"
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, Bir komut çalıştırmayı denediniz. Maalesef bir hata oluştu: %error%"
 
 # Discord sohbet kanalı oynatıcı listesi komutu
 # Birisi bir sohbet kanalında oynatıcı listesi komutunu çalıştırdığında kullanılan mesajlar
@@ -166,8 +166,8 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried runni
 #   PlaceholderAPI yer tutucuları da desteklenir
 # DiscordChatChannelListCommandAllPlayersSeparator: Oyuncular arasında kullanılan ayırıcı
 #
-DiscordChatChannelListCommandFormatOnlinePlayers: "**Online players (%playercount%):**"
-DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Aktif Oyuncu (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Aktif Oyuncu Bulunamadı**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
@@ -205,7 +205,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% joined the server"
+      Name: "%username% Sunucuya Giriş Yaptı"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -234,7 +234,7 @@ MinecraftPlayerFirstJoinMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% joined the server for the first time"
+      Name: "%username% Sunucuya İlk Kez Katıldı"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -263,7 +263,7 @@ MinecraftPlayerLeaveMessage:
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% left the server"
+      Name: "%username% Sunucudan Ayrıldı"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -323,7 +323,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% has made the advancement %achievement%!"
+      Name: "%username% ilerleme kaydetti %achievement%!"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -363,30 +363,30 @@ MinecraftPlayerAchievementMessage:
 # %tps%:           Sunucunun ortalama TPS'si
 # PlaceholderAPI yer tutucuları da desteklenir
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Çevrimiçi Oyuncular | %totalplayers% Bugüne Kadar Katılmış Benzersiz Oyuncular | Sunucu %uptimemins% Dakika Boyunca Çevrimiçi | Son Güncelleme: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
 # YALNIZCA AtServerShutdownFormats destekler %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Sunucu Kapalı | %totalplayers% Bugüne Kadar Katılmış Benzersiz Oyuncular"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Sunucu Kapalı | %serverversion%"
 
 # Discord komut mesajı
 # Bu, oyunculara "/discord" komutunu çalıştırdıklarında gönderilen mesajdır. Bunun bir parçası olarak komut söz dizimini bırakmanız önerilir
 # İnsanların Discord sunucusuna katılmaları için ihtiyaç duydukları davet bağlantısı için yer tutucu olarak {INVITE} kullanın, DiscordInviteLink'i şu şekilde yapılandırır: config.yml
 #
-DiscordCommandFormat: "&bJoin us on Discord at {INVITE}&b. For command help, do \"/discord ?\""
+DiscordCommandFormat: "&bDiscord'da {INVITE}&bde bize katılın. Komut yardımı için \"/discord ?\""
 
 # İzin mesajı yok
-NoPermissionMessage: "&cYou do not have permission to perform this command."
+NoPermissionMessage: "&cBu komutu gerçekleştirme izniniz yok."
 
 # Bilinmeyen komut mesajı
-UnknownCommandMessage: "&bThat command doesn't exist!"
+UnknownCommandMessage: "&bBu komut mevcut değil!"
 
 # Sunucu başlatma/kapatma mesajları
 # DiscordChatChannelServerStartupMessage: Sunucu başladığında gönderilecek mesaj; devre dışı bırakmak için boş bırakın
 # DiscordChatChannelServerShutdownMessage: Sunucu kapatıldığında gönderilecek mesaj; devre dışı bırakmak için boş bırakın
 #
-DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server has started**"
-DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped**"
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Sunucu Başladı**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Sunucu durduruldu**"
 
 # Sunucu gözlemcisi mesajı
 #
@@ -401,7 +401,7 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 #                        Kullanarak ServerWatchdogTimeout'u yer tutucu olarak kullanabilirsiniz. %timeout%
 #                        Discord'un zaman damgası biçiminde kullanmak için %timestamp% yer tutucusunu kullanabilirsiniz
 #
-ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, the server hasn't ticked in %timeout% seconds :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, sunucuya girmedi %timeout% saniye :fire::bangbang:"
 
 # Hesap bağlantısı mesajları
 # Bunlar, hesaplar bağlandığında kullanılan mesajlardır
@@ -426,20 +426,19 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, the server hasn't ticked
 # MinecraftNobodyFound:         %target%:       Hiçbir sonucun bulunmamasına yol açan girdi
 #
 # Discord
-CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
-UnknownCode: "I don't know of such a code, try again."
-InvalidCode: "Are you sure that's your code? Link codes are 4 numbers long."
-DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
-DiscordAccountAlreadyLinked: "You are already linked to %username% (%uuid%)"
-DiscordLinkedAccountRequired: "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`. \n```%message%```"
-DiscordLinkedAccountCheckFailed: "Unable to check if your account is linked, please try again later"
+UnknownCode: "Böyle bir kod bilmiyorum, tekrar deneyin."
+InvalidCode: "Kodunuzun bu olduğuna emin misiniz? Bağlantı kodları 4 rakam uzunluğundadır."
+DiscordAccountLinked: "Discord hesabınız şuraya bağlandı: %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "Zaten bağlısınız %username% (%uuid%)"
+DiscordLinkedAccountRequired: "Oyun sohbetine aşağıdaki mesajı söylemeye çalıştınız ancak bu sunucu, Minecraft hesabınızın Discord hesabınıza bağlı olmasını gerektiriyor. Oyun içinde yazarak bağlayın `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Hesabınızın bağlı olup olmadığı kontrol edilemiyor. Lütfen daha sonra tekrar deneyin."
 # Minecraft
-CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
-ClickToCopyCode: "Click to copy"
-MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"
-MinecraftAccountAlreadyLinked: "&bYour Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink."
-LinkedCommandSuccess: "&bYour Minecraft account is associated with %name%."
-UnlinkCommandSuccess: "&bYour Minecraft account is no longer associated with %name%."
-MinecraftNoLinkedAccount: "&cYour Minecraft account isn't associated with a Discord account."
-LinkingError: "&cCurrently unable to link accounts due to an internal error. Contact your server administration team."
-MinecraftNobodyFound: "&cNobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"%target%\" to look up."
+CodeGenerated: "Bağlantı kodunuz %code%. Hesaplarınızı bağlamak için mesaj olarak yalnızca bu kodu içeren Discordda ki bota (%botname%) DM gönderin."
+ClickToCopyCode: "Kopyalamak için tıklayın"
+MinecraftAccountLinked: "&bUUID'niz Discord kullanıcısına bağlandı %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bMinecraft hesabınız zaten bir Discord hesabıyla ilişkilendirilmiş. İzniniz varsa, hesabınızın bağlantısını kaldırabilirsiniz. /discord unlink."
+LinkedCommandSuccess: "&bMinecraft hesabınız şunlarla ilişkilidir: %name%."
+UnlinkCommandSuccess: "&bMinecraft hesabınız artık ile ilişkili değil %name%."
+MinecraftNoLinkedAccount: "&cMinecraft hesabınız bir Discord hesabıyla ilişkili değil."
+LinkingError: "&cŞu anda dahili bir hata nedeniyle hesaplar bağlanamıyor. Sunucu yönetim ekibinizle iletişime geçin."
+MinecraftNobodyFound: "&cDiscord Kimliği/Discord adı/Minecraft adı/Minecraft UUID ile eşleşen \"%target%\" aranacak kimse bulunamadı."
