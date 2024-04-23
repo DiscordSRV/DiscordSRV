@@ -97,7 +97,7 @@ Alerts:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} failed ${hackType.name().toLowerCase()} check | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+  #      Name: "{username} adlı oyuncu arızalı ${hackType.name().toLowerCase()} kontrol etmelisin | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
 
   # /Gamemode mesajlarını göndermek için örnek yapılandırma
   #- Trigger: /gamemode
