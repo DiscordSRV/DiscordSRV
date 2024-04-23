@@ -1,0 +1,55 @@
+# Minecraft -> Discord Takma Ad Senkronizasyonu
+#
+# NicknameSynchronizationEnabled: Discord kullanıcısının takma adının otomatik olarak takma ad biçimine ayarlanıp ayarlanmayacağı
+# NicknameSynchronizationCycleTime: Tüm çevrimiçi oyuncular için senkronizasyonun art arda tetiklenmesi arasındaki dakika miktarı
+# NicknameSynchronizationFormat: Takma ad biçimi (bunun 32 karakteri geçmemesi gerektiğini unutmayın)
+# %displayname%:            Oyuncunun görünen adı
+#                             Örnek: Jeb
+# %username%:               Oyuncunun kullanıcı adı
+#                             Örnek: Jeb_
+# %discord_name%:           Oyuncunun discord kullanıcı adı
+#                             Örnek: Jeb
+# %discord_discriminator%:  Oyuncunun anlaşmazlık ayırıcısı
+#                             Örnek: 4988
+# Değerler için PlaceholderAPI yer tutucuları desteklenir
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Minecraft Grup <-> Discord Rol Senkronizasyonu
+# Gereklilikler: Vault
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: Bunlar Discord ve Minecraft arasında senkronize edilmesini istediğiniz roller/gruplardır
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} daha fazla grup/rol çifti eklerken kullanılacak formattır
+#                                               Discord loncanızın rol kimliklerini almak için "/discord debug" komutunu çalıştırın ve ilk bölüme bakın
+# GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraft grubu değişikliklerinin Discord rolü değişikliklerini geçersiz kılıp kılmayacağı
+
+# GroupRoleSynchronizationOneWay: Yalnızca tek bir yolla senkronize edilip edilmeyeceği, senkronize edilme şekli değere bağlıdır
+#                                 oda GroupRoleSynchronizationMinecraftIsAuthoritative.
+# GroupRoleSynchronizationEnableDenyPermission: discordsrv.sync.deny.<group> izinlerinin etkin olup olmadığı
+# GroupRoleSynchronizationPrimaryGroupOnly: Doğruysa senkronizasyon için yalnızca oynatıcının birincil grubu sayılır;
+#                                           aksi takdirde grup senkronizasyonu, ebeveyn grupları da dahil olmak üzere oyuncunun bulunduğu tüm grupları sayar
+# GroupRoleSynchronizationOnLink: Bir oynatıcı bağlandığında yeniden senkronize edilip edilmeyeceği
+# GroupRoleSynchronizationCycleTime: Tüm çevrimiçi oyuncular için senkronizasyonun art arda tetiklenmesi arasındaki dakika miktarı
+# GroupRoleSynchronizationCycleCompletely: Bir zamanlayıcıda çalışan senkronizasyonların, botların Discord sunucularındaki her üyeyi senkronize etmesi gerekip gerekmediği
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
+
+# Yasaklama Senkronizasyonu
+# Bağlı bir Discord hesabı olan bir oyuncu sunucuda yasaklandığında, isteğe bağlı olarak onu Discord sunucusunda da yasaklayabilirsiniz (veya tam tersi)
+#
+# BanSynchronizationDiscordToMinecraft: Discord sunucusundan yasaklanmaları durumunda kişilerin Minecraft sunucusunda yasaklanıp yasaklanmayacağı
+# BanSynchronizationDiscordToMinecraftReason: Oyuncuların Minecraft sunucusundan yasaklanması için yasaklama nedeni olarak kullanılacak mesaj
+# BanSynchronizationMinecraftToDiscord: İnsanların Minecraft sunucusundan yasaklanmaları durumunda Discord sunucusunda yasaklanıp yasaklanmayacağı
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cYou have been banned until further notice from the server because you were banned on our Discord server."
+BanSynchronizationMinecraftToDiscord: false
