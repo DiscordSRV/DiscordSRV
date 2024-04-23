@@ -8,8 +8,8 @@ ConfigVersion: ${version}
 # Bu seçeneği değiştirdikten sonra sunucunuzu yeniden başlatmalısınız
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord  
-# Leave this alone if you don't understand what it does  
+# Discord için kullanılacak proxy
+# Ne işe yaradığını anlamıyorsanız bunu bırakın  
 ProxyHost: "https://example.com"  
 ProxyPort: 1234  
 ProxyUser: "USERNAME"  
@@ -93,7 +93,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Embed & webhook için resim/avatar url formatı
 # Çevrimdışı sunucular için alternatif yerleştirme avatar URL'si:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+# https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 
 # Yeniden serileştirici
