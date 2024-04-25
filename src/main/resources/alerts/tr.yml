@@ -45,12 +45,12 @@
 #   #channel - Bu uyarının hedef kanalı
 #   #jda - DiscordSRV'nin Discord ile iletişim kurmak için kullandığı JDA örneği
 #
-# Syntax/defaults:
-#  - Trigger: <event name or /command>
+# Syntax/varsayılan:
+#  - Trigger: <etkinlik adı /komut>
 #    Async: true # isteğe bağlıdır, varsayılan değer true'dur, bunu neredeyse hiçbir zaman değiştirmeniz gerekmemelidir
 #    Conditions:
-#      - property == < > <= >= value etc
-#    Channel: <discordsrv channel name>
+#      - özellik == < > <= >= değer vb.
+#    Channel: <discordsrv kanal ismi>
 #    IgnoreCancelled: true # Yalnızca etkinlik uyarıları için
 #    Content: ""
 #    Webhook:
@@ -86,9 +86,9 @@ Alerts:
   #    Color: "#00ff00"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{name} yakalandı ${caught.itemStack.type.name()}!"
+  #      Name: "{name}, ${caught.itemStack.type.name()} yakaladı!"
 
-  # Matrix hile karşıtı mesajları göndermek için örnek yapılandırma
+  # Matrix anti-cheat mesajları göndermek için örnek yapılandırma
   #- Trigger: PlayerViolationEvent
   #  Channel: matrix
   #  Conditions:
@@ -97,7 +97,7 @@ Alerts:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} adlı oyuncu arızalı ${hackType.name().toLowerCase()} kontrol etmelisin | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+  #      Name: "{username} adlı oyuncu ${hackType.name().toLowerCase()} korumasına takıldı | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
 
   # /Gamemode mesajlarını göndermek için örnek yapılandırma
   #- Trigger: /gamemode
@@ -108,7 +108,7 @@ Alerts:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} oyun modunu şu şekilde değiştirdim ${#args.get(0)}"
+  #      Name: "{username} oyun modunu ${#args.get(0)} olarak değiştirdi."
 
   # /me komutlarını göndermek için örnek yapılandırma
   #- Trigger: /me
