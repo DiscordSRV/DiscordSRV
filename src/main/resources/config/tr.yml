@@ -4,7 +4,7 @@
 # Lütfen dokunmayın
 ConfigVersion: ${version}
 
-# Bot jetonu; bunun ne olduğunu bilmiyor musun? Talimatlar için eklenti sayfasındaki videoya bakın
+# Bot Token; bunun ne olduğunu bilmiyor musun? Talimatlar için eklenti sayfasındaki videoya bakın
 # Bu seçeneği değiştirdikten sonra sunucunuzu yeniden başlatmalısınız
 BotToken: "BOTTOKEN"
 
@@ -16,19 +16,19 @@ ProxyUser: "USERNAME"
 ProxyPassword: "PASSWORD"  
 
 # Oyundan Discord'a kanal bağlantıları
-# Sözdizimi Kanallar'dır: {"Minecraft'tan oyun içi kanal adı": "Discord'dan sayısal kanal kimliği", "Minecraft'tan başka bir oyun içi kanal adı": "Discord'dan başka bir sayısal kanal kimliği"}
+# Kanallar: {"Minecraft'tan oyun içi kanal adı": "Discord'dan ID kanal kimliği", "Minecraft'tan başka bir oyun içi kanal adı": "Discord'dan başka bir ID kanal kimliği"}
 #
 # Bu tür mesajlar için tanımlanmış bir kanal olmadığı sürece DiscordSRV'nin tüm mesajları ilk kanala gidecektir:
 # Uyumlu bir sohbet eklentisi kullanıldığında kanal adı bu eklentideki kanal adı olacaktır (sohbet mesajları için)
-#  - TownyChat kullanıyorsanız, varsayılan kanala genellikle "global" yerine "genel" adı verilir
+#  - TownyChat kullanıyorsanız, varsayılan kanala genellikle "general" yerine "genel" adı verilir
 # Oyuncu sohbet mesajları için (sohbet eklentisi kullanılmadığında): global
 # Sunucu başlatma/durdurma mesajları için: status
 # Başarı/ilerleme mesajları için: awards
 # Ölüm mesajları için: deaths
 # Katılma mesajları için: join
-# Mesaj bırakmak için: leave
+# Ayrılma mesajları için: leave
 # Dynmap mesajları için: dynmap
-# Bekçi mesajları için: watchdog
+# Watchdog mesajları için: watchdog
 # /discord duyuru için: broadcasts (komutta belirtilmediği sürece)
 # Hesap bağlamak için: link
 #
@@ -39,8 +39,8 @@ Channels: {"global": "000000000000000000"}
 # Konsol kanalı sayısal kimliği (İSİM DEĞİL), konsol kanalını tamamen devre dışı bırakmak için boş bırakın
 DiscordConsoleChannelId: "000000000000000000"
 
-# /discord kullanıldığında oyunculara gösterilen davet bağlantısı ve bağlantı zorunlu kılındığında bağlantısı kaldırılan oyunculara gösterilen mesajda
-DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
+# /discord kullanıldığında ve bağlantı zorunlu kılındığında oyunculara gösterilen davet bağlantısı
+DiscordInviteLink: "https://discord.gg/bunudeğiştir"
 
 # Hata ayıklama bilgileri
 # Bir sorunu bulmaya çalışmadığınız sürece bunları etkinleştirmeyin
@@ -49,24 +49,24 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # MINECRAFT_TO_DISCORD  - Minecraft'tan gelen mesajlar
 # DISCORD_TO_MINECRAFT  - Discord'dan gelen mesajlar
 # GROUP_SYNC            - Grup senkronizasyonu
-# PRESENCE              - Botun oyun durumu veya varlığı
-# VOICE                 - Ses modülü (Görmek için voice.yml)
-# REQUIRE_LINK          - Modüle katılmak için gereken bağlantı (Görmek için linking.yml)
+# PRESENCE              - Botun oyun durumu
+# VOICE                 - Ses modülü (voice.yml dosyasına göz atın)
+# REQUIRE_LINK          - Modüle katılmak için gereken bağlantı (linking.yml dosyasına göz atın)
 # NICKNAME_SYNC         - Takma ad senkronizasyonu
-# ALERTS                - Uyarılar (Görmek için alerts.yml)
-# WATCHDOG              - Bekçi köpeği
+# ALERTS                - Uyarılar (Galerts.yml dosyasına göz atın)
+# WATCHDOG              - Watchdog
 # BAN_SYNCHRONIZATION   - Yasaklama senkronizasyonu
-# LP_CONTEXTS           - LuckPerm'in bağlamları
+# LP_CONTEXTS           - LuckPerms bağlamları
 # ACCOUNT_LINKING       - discord/minecraft hesabı bağlama
 #
 # UNCATEGORIZED         - Yukarıdaki kategorilerin hiçbirinde olmayan herhangi bir şey
 # ALL                   - Yukarıdaki kategorilerin tümü (KATEGORİLENMEMİŞLER dahil)
 #
 # JDA                   - JDA'nın hata ayıklama mesajları
-# JDA_REST_ACTIONS      - JDA'nın dinlenme eylemlerinde hata ayıklamak için
+# JDA_REST_ACTIONS      - JDA Rest Actions hata ayıklamak için
 # CALLSTACKS            - DiscordSRV hata ayıklama çağrıları için yığın izlemeyi görüntüler
 #
-# Eski. "Hata ayıklama: [GROUP_SYNC, PRESENCE]"
+# Örnek: "Debug: [GROUP_SYNC, PRESENCE]"
 #
 Debug: []
 
@@ -74,7 +74,7 @@ Debug: []
 # bunu 0'ın üzerinde bir değere ayarlamak, Hata Ayıklama'yı [TÜMÜ] olarak ayarlamakla aynıdır
 DebugLevel: 0
 
-# Deneyler
+# Deneysel
 # Bu özellikler tam olarak optimize edilmemiştir; riski size ait olmak üzere kullanın
 
 # JDBC (MySQL/MariaDB)
@@ -83,7 +83,7 @@ Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 
-# Webhook Delivery
+# Webhook
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
@@ -96,8 +96,8 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 
-# Yeniden serileştirici
-# Biçimlendirmeyi dönüştürür (bold, italics, underline, strikethrough) Minecraft ve Discord arasında
+# Yeniden biçimlendirici
+# Minecraft ve Discord arasında biçimlendirmeyi dönüştürür (kalın, italik, alt çizgi, üstü çizilmiş)
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
@@ -121,21 +121,21 @@ MinecraftMentionSound: true
 #
 # DisabledPluginHooks: Kullanılmayacak eklenti kancaları (genellikle yalnızca eklentinin adı).
 # VentureChatBungee: VentureChat kancasının BungeeCord işlevselliğini etkinleştirir (mesajlar her sunucudan alınır, en az 1 oyuncunun çevrimiçi olması gerekir)
-# EnablePresenceInformation: Bazı PlaceholderAPI yer tutucularımız için gerekli olan etkin iletişim durumu bilgileri. Bunun için Discord geliştirici portalından "Mevcudiyet Niyeti(Presence Intent)"nin gerekli olduğunu unutmayın.
-# UseModernPaperChatEvent: bunu yalnızca Paper'ın "AsyncChatEvent" özelliğini ÖZEL OLARAK kullanan bir sohbet eklentiniz varsa kullanın.
+# EnablePresenceInformation: Bazı PlaceholderAPI yer tutucularımız için gerekli olan etkin iletişim durumu bilgileri. Bunun için Discord geliştirici portalından "Presence Intent"nin gerekli olduğunu unutmayın.
+# UseModernPaperChatEvent: bunu yalnızca Paper'ın "AsyncChatEvent" özelliğini ÖZELLİKLE kullanan bir sohbet eklentiniz varsa kullanın.
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Oyun Bilgileri
-# Bot için "Oynatılıyor: ______" göstergesini ayarlar.
+# Bot için "Oynuyor: ______" göstergesini ayarlar.
 # Tek bir statik değer olabilir veya birden fazla farklı seçenek arasında geçiş yapılabilir
-# Etkinlik türünü ayarlamak için durumun önüne "oynuyor", "izliyor" veya "dinliyor" ifadesini ekleyebilirsiniz
+# Etkinlik türünü ayarlamak için durumun önüne ("playing" -> "oynuyor", "watching" -> "izliyor", "listening to" -> "dinliyor") ifadesini ekleyebilirsiniz
 # PlaceholderAPI yer tutucuları desteklenir
 #
 # DiscordGameStatus: Görüntülenecek metin. Tek bir değer olabilir; "Minecraft" veya birden fazla değer ör. ["Minecraft", "play.ip.com"]
-# DiscordOnlineStatus: Görüntülenecek etkinlik durumu. Bu aşağıdakilerden biri olmalı: ÇEVRİMİÇİ, DND, BOŞTA veya GÖRÜNMEZ
+# DiscordOnlineStatus: Görüntülenecek etkinlik durumu. Bu aşağıdakilerden biri olmalı: ("ONLINE" -> "ÇEVRİMİÇİ", "IDLE" -> "BOŞTA", "INVISIBLE" -> "GÖRÜNMEZ")
 # StatusUpdateRateInMinutes: Durumun ne sıklıkla değiştirileceği
 DiscordGameStatus: ["Minecraft"]
 DiscordOnlineStatus: ONLINE
@@ -150,19 +150,19 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: Discord'dan Minecraft'a gönderilecek maksimum mesaj uzunluğu
 # DiscordChatChannelTranslateMentions: Minecraft için @Person gibi sözlerin Discord mesajlarına çevrilip çevrilmeyeceği
 # DiscordChatChannelAllowedMentions: Minecraft'tan Discord mesajlarına izin verilen bahsetme türleri; Varsayılan değerde eksik olan türler "role", "here" ve "everyone"dir
-# DiscordChatChannelEmojiBehavior: Minecraft'a emojilerin nasıl gönderilmesi gerektiği. Olabilir "show", "name" or "hide"
-# DiscordChatChannelEmoteBehavior: Minecraft'a ifadelerin nasıl gönderilmesi gerektiği. Olabilir "name" or "hide"
+# DiscordChatChannelEmojiBehavior: Minecraft'a emojilerin nasıl gönderilmesi gerektiği. "show", "name" or "hide" Olabilir
+# DiscordChatChannelEmoteBehavior: Minecraft'a ifadelerin nasıl gönderilmesi gerektiği. "name" or "hide" Olabilir
 # DiscordChatChannelPrefixRequiredToProcessMessage: Minecraft'tan Discord'a gönderilecek bir mesajın önüne eklenecek karakterler (example "!")
 # DiscordChatChannelPrefixActsAsBlacklist: Ön ekin kara liste görevi görüp görmemesi
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Discord'dan Minecraft sohbetine renk/biçim kodları kullanmasına izin verilen rollerin listesi
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: İşlenmiş discord mesajlarının konsola yazdırılıp yazdırılmayacağı
 # DiscordChatChannelRequireLinkedAccount: Oyuncuların Discord mesajlarının Minecraft'a gönderilmesi için Discord hesaplarının Minecraft'larına bağlı olmasının gerekli olup olmayacağı
 # DiscordChatChannelBlockBots: Botların Discord'dan engellenip engellenmemesi gerektiği -> MC sohbeti
-# DiscordChatChannelBlockWebhooks: Web kancalarının Discord'dan engellenip engellenmemesi gerektiği -> MC sohbeti
+# DiscordChatChannelBlockWebhooks: Webhook Discord'dan engellenip engellenmemesi gerektiği -> MC sohbeti
 # DiscordChatChannelBlockedIds: Mesajlarının işlenmemesi ve MC'ye gönderilmemesi gereken discord kullanıcılarının (veya botların) kimlikleri
-# DiscordChatChannelBlockedRolesAsWhitelist: Aşağıdaki listenin beyaz liste (true) veya kara liste (false) olarak değerlendirilmesi gerekiyorsa
+# DiscordChatChannelBlockedRolesAsWhitelist: Aşağıdaki listenin beyaz liste (true) veya kara liste (false) olarak değerlendirilmesi
 # DiscordChatChannelBlockedRolesIds: Mesajlarının işlenmemesi ve MC'ye gönderilmemesi gereken discord rollerinin kimlikleri
-# DiscordChatChannelRolesSelectionAsWhitelist: Aşağıdaki listenin beyaz liste (true) veya kara liste (false) olarak değerlendirilmesi gerekiyorsa
+# DiscordChatChannelRolesSelectionAsWhitelist: Aşağıdaki listenin beyaz liste (true) veya kara liste (false) olarak değerlendirilmesi
 # DiscordChatChannelRolesSelection: Kullanıcının tüm rollerinden filtrelenmesi gereken rollerin listesi
 # DiscordChatChannelRoleAliases: Rol takma adlarının listesi (Minecraft mesajlarında kullanılacak roller için alternatif adlar)
 #
@@ -200,7 +200,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 #    PlaceholderAPI yer tutucuları desteklenir
 # DiscordConsoleChannelBlacklistActsAsWhitelist: Kara listeye alınan komutlar listesinin kara liste yerine beyaz liste görevi görüp görmediği
 # DiscordConsoleChannelBlacklistedCommands: Kullanıcıların konsola komut olarak gönderememesi gereken, tırnak içine alınmış ifadeler
-# DiscordConsoleChannelFilters: Discord'a gönderilen konsol hatlarına regex filtreleri uygulanacak, sonuç boşsa mesaj hiç gönderilmeyecek
+# DiscordConsoleChannelFilters: Discord'a gönderilen konsol hatlarına regex filtreleri uygulanacak, eğer sonuç boşsa mesaj hiç gönderilmeyecek
 # DiscordConsoleChannelLevels: Ekleyici aracılığıyla konsol kanalına gönderilecek seviyeler
 # DiscordConsoleChannelUseCodeBlocks: Konsolun kod bloklarına sarılması ve renklendirilmesi gerekiyorsa
 # DiscordConsoleChannelBlockBots: Botların konsol kanalında komut göndermesine izin verilip verilmemesi gerektiği
@@ -220,7 +220,7 @@ DiscordConsoleChannelBlockBots: true
 # Konsol olarak kayıtlı bir sohbet kanalından.
 #
 # DiscordChatChannelConsoleCommandEnabled: Bir sohbet kanalından gelen konsol komutlarına izin verilip verilmeyeceği.
-# DiscordChatChannelConsoleCommandNotifyErrors: İzni olmayan bir komutu izinsiz çalıştırmaya çalışan bir kullanıcıya gönderilip gönderilmeyeceği
+# DiscordChatChannelConsoleCommandNotifyErrors: Yetkisi olmayan bir komutu, yetkisiz şekilde çalıştırmaya çalışan bir kullanıcıya hata mesajının gönderilip gönderilmeyeceği
 # DiscordChatChannelConsoleCommandPrefix: Konsol komutları için kullanılacak önek. Örneğin. "!c tps"
 # DiscordChatChannelConsoleCommandRolesAllowed: Sohbet kanalından sunucu komutlarını yürütmesine izin verilen kullanıcı rolleri
 # DiscordChatChannelConsoleCommandWhitelist: Çalıştırılabilecek komutların listesi DiscordChatChannelConsoleCommandPrefix
@@ -239,7 +239,7 @@ DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 
-# Sohbet kanalı oynatıcı listesi komutu
+# Sohbet kanalı oyuncu listesi komutu
 # Oyuncu listesi komutuna ilişkin tüm yapılandırma öğeleri
 #
 # DiscordChatChannelListCommandEnabled: Komutun etkin olup olmadığı
@@ -254,8 +254,8 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # Sohbet kanalı kara listeye alınan ifadeler ve normal ifadeler
 #
-# DiscordChatChannelGameFilters: Discord'a gönderilen sohbet mesajlarına normal ifade filtreleri uygulanacak, sonuç boşsa mesaj hiç gönderilmeyecek
-# DiscordChatChannelDiscordFilters: Minecraft'a gönderilen sohbet mesajlarına uygulanacak regex filtreleri, sonuç boşsa mesaj hiç gönderilmeyecek
+# DiscordChatChannelGameFilters: Discord'a gönderilen sohbet mesajlarına regex filtreleri uygulanacak, sonuç boşsa mesaj hiç gönderilmeyecek
+# DiscordChatChannelDiscordFilters: Minecraft'tın sohbetine uygulanacak regex filtresi, eğer sonuç boşsa mesaj hiç gönderilmeyecek
 #
 DiscordChatChannelGameFilters: {}
 DiscordChatChannelDiscordFilters: {".*Çevrimiçi oyuncular \\(.*": "", ".*\\*\\*Çevrimiçi oyuncu yok\\*\\*.*": ""}
