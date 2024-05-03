@@ -213,7 +213,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         }
 
         // in some versions between 1.17.x and 1.18.x, bukkit api doesn't include AdvancementDisplay but paper api does
-        if (!advancementDisplay.getClass().getSimpleName().equals("PaperAdvancementDisplay") && advancementDisplay instanceof org.bukkit.advancement.AdvancementDisplay) {
+        if (advancementDisplay != null && !advancementDisplay.getClass().getSimpleName().equals("PaperAdvancementDisplay") && advancementDisplay instanceof org.bukkit.advancement.AdvancementDisplay) {
             return !((org.bukkit.advancement.AdvancementDisplay) advancementDisplay).shouldAnnounceChat();
         } else if (advancementDisplay instanceof io.papermc.paper.advancement.AdvancementDisplay) {
             return !((io.papermc.paper.advancement.AdvancementDisplay) advancementDisplay).doesAnnounceToChat();
