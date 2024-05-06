@@ -22,7 +22,7 @@ java {
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
 
-    disableAutoTargetJvm() // required because paper-api uses Java 17 (w/ gradle metadata)
+    disableAutoTargetJvm() // required because paper-api uses Java 21 (w/ gradle metadata)
 }
 
 license {
