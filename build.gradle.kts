@@ -6,11 +6,11 @@ plugins {
     idea
     `java-library`
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.github.goooler.shadow") version "8.1.7"
     id("org.cadixdev.licenser") version "0.6.1"
     id("net.kyori.indra.git") version "2.1.1"
     id("net.researchgate.release") version "3.0.2"
-    id("xyz.jpenilla.run-paper") version "2.2.0"
+    id("xyz.jpenilla.run-paper") version "2.3.0"
 }
 
 group = "com.discordsrv"
@@ -228,8 +228,8 @@ dependencies {
     compileOnlyApi("org.jetbrains:annotations:23.0.0")
 
     // Lombok
-    compileOnly("org.projectlombok:lombok:1.18.24")
-    annotationProcessor("org.projectlombok:lombok:1.18.24")
+    compileOnly("org.projectlombok:lombok:1.18.30")
+    annotationProcessor("org.projectlombok:lombok:1.18.30")
 
     // Apache Commons, guava
     implementation("commons-io:commons-io:2.11.0")
