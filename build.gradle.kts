@@ -183,6 +183,7 @@ repositories {
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
+    maven("https://repo.granny.dev/snapshots/") // TODO: remove once JDAAppender is properly updated in scarsz' nexus
     maven("https://nexus.scarsz.me/content/groups/public/")
 }
 
@@ -205,7 +206,7 @@ dependencies {
     }
 
     // Logging
-    implementation("me.scarsz.jdaappender:jda4:1.2.0")
+    implementation("me.scarsz.jdaappender:jda4:1.2.0-SNAPSHOT")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9
