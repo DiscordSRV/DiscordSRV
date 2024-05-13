@@ -8,6 +8,13 @@ ConfigVersion: ${version}
 # Vous devez redémarrer votre serveur après avoir modifié cette option
 BotToken: "BOTTOKEN"
 
+# The proxy to be used for Discord  
+# Leave this alone if you don't understand what it does  
+ProxyHost: "https://example.com"  
+ProxyPort: 1234  
+ProxyUser: "USERNAME"  
+ProxyPassword: "PASSWORD"  
+
 # Liens de chaîne du jeu vers Discord
 # la syntaxe est Channels: {"nom de chaîne dans le jeu de Minecraft": "ID de chaîne numérique de Discord", "autre nom de chaîne de jeu de Minecraft": "autre ID de chaîne numérique de Discord"}
 #
@@ -85,9 +92,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Format d'URL d'image/avatar d'intégration et de webhook
-# URL d'avatar d'intégration alternative pour les serveurs hors ligne:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+# Laisser vide pour utiliser une valeur par défaut
+# Espaces réservés disponibles: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # Convertit le formatage (gras, italique, souligné) entre Minecraft et Discord
@@ -221,7 +228,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
@@ -319,7 +326,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         Nom Discord du joueur
 #                         Exemple: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: le nom ou ID d'un rôle à mettre au joueur qui vient de lié son compte
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: le nom ou ID d'un rôle à mettre au joueur qui vient de lié son compte
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
 # MinecraftDiscordAccountLinkedUsePM: Lier des comptes à l'aide de PMs

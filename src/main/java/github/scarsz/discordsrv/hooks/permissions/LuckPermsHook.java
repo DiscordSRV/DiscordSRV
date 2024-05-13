@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -40,9 +40,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
+import org.jetbrains.annotations.NotNull;
 
 public class LuckPermsHook implements PluginHook, net.luckperms.api.context.ContextCalculator<Player> {
 
@@ -108,7 +108,6 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         );
     }
 
-
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPluginDisable(PluginDisableEvent event) {
         if (event.getPlugin() instanceof DiscordSRV) {
@@ -118,7 +117,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     }
 
     @Override
-    public void calculate(@NonNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
+    public void calculate(@NotNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
         UUID uuid = target.getUniqueId();
         AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
         if (!accountLinkManager.isInCache(uuid)) {

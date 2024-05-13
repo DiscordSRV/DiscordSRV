@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -31,7 +31,10 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.ErrorResponse;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -54,6 +57,10 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         if (reply != null) event.getMessage().reply(reply).queue();
     }
 
+    private final ErrorHandler ignoreFailedToDeleteMessage = new ErrorHandler()
+            .ignore(ErrorResponse.UNKNOWN_MESSAGE)
+            .ignore(ErrorResponse.MISSING_ACCESS);
+
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         // don't process messages sent by bots
@@ -66,15 +73,19 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         Message receivedMessage = event.getMessage();
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(receivedMessage.getContentRaw(), event.getAuthor().getId());
         if (reply != null) {
-            receivedMessage.reply(reply).queue(replyMessage -> {
-                // delete the message after a delay if the config option is enabled
-                int deleteSeconds = DiscordSRV.config().getIntElse("MinecraftDiscordAccountLinkedMessageDeleteSeconds", 0);
-                if (deleteSeconds > 0) {
-                    // delete the message after a delay
-                    replyMessage.delete().queueAfter(deleteSeconds, TimeUnit.SECONDS);
-                    receivedMessage.delete().queueAfter(deleteSeconds, TimeUnit.SECONDS);
-                }
-            });
+            int deleteSeconds = DiscordSRV.config().getIntElse("MinecraftDiscordAccountLinkedMessageDeleteSeconds", 0);
+            MessageAction repliedMessage = receivedMessage.reply(reply);
+
+            // delete the message after a delay if the config option is enabled
+            if (deleteSeconds > 0) {
+                // delete the message after a delay
+                repliedMessage.delay(deleteSeconds, TimeUnit.SECONDS).queue(replyMessage -> {
+                    replyMessage.delete().queue(null, ignoreFailedToDeleteMessage);
+                    receivedMessage.delete().queue(null, ignoreFailedToDeleteMessage.handle(ErrorResponse.MISSING_PERMISSIONS,
+                            e -> DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Failed to delete " + receivedMessage.getAuthor() + "'s message in the link channel because of missing permissions.")));
+                });
+            }
+
         }
     }
 

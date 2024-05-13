@@ -1,7 +1,7 @@
 /*
  * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
  *
- * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2024 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -169,6 +169,8 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 return member.getActivities().stream().findFirst().map(Activity::getName).orElse("");
             case "user_game_url":
                 return member.getActivities().stream().findFirst().map(Activity::getUrl).orElse("");
+            case "user_boost_status":
+                return getBoolean(member.getTimeBoosted() != null);
         }
 
         if (member.getRoles().isEmpty()) return "";

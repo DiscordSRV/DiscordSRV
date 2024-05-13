@@ -8,6 +8,13 @@ ConfigVersion: ${version}
 # Після зміни цього параметра необхідно перезавантажити сервер.
 BotToken: "BOTTOKEN"
 
+# The proxy to be used for Discord  
+# Leave this alone if you don't understand what it does  
+ProxyHost: "https://example.com"  
+ProxyPort: 1234  
+ProxyUser: "USERNAME"  
+ProxyPassword: "PASSWORD"  
+
 # Посилання на канали з гри в Discord
 # синтаксис: Channels: {"назва внутрішньоігрового каналу з Minecraft": "числовий ідентифікатор каналу з Discord", "інша назва внутрішньоігрового каналу з Minecraft": "інший числовий ідентифікатор каналу з Discord"}
 #
@@ -85,9 +92,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Вбудовування та формат URL-адреси зображення / аватара веб-перехоплювача
-# Альтернативна URL-адреса для вбудовування аватара для офлайн-серверів:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+# Залиште поле порожнім, щоб використовувати значення за умовчанням
+# Доступні заповнювачі: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # Перетворює форматування (жирний, курсив, підкреслення) між Minecraft та Discord
@@ -224,7 +231,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
