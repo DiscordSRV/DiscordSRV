@@ -162,20 +162,8 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     @SneakyThrows
     public void link(String discordId, UUID uuid) {
         super.link(discordId, uuid);
-        User user = DiscordUtil.getJda().getUserById(discordId);
-        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 
-        FileUtils.writeStringToFile(
-                getFile(),
-                String.format("%s %s // %s %s\n",
-                        discordId,
-                        uuid,
-                        user != null ? user.getName() : "<discord username unknown>",
-                        player.getName() != null ? player.getName() : "<player username unknown>"
-                ),
-                "UTF-8",
-                true
-        );
+        FileUtils.writeStringToFile(getFile(), discordId + " " + uuid + "\n", "UTF-8", true);
     }
 
     @Override
