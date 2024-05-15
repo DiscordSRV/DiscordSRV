@@ -38,7 +38,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  */
 public class DiscordChatChannelListCommandMessageEvent extends Event {
 
-    @Getter @Setter private Result result;
+    @Getter private Result result;
 
     @Getter private final TextChannel channel;
     @Getter private final Guild guild;
@@ -46,7 +46,7 @@ public class DiscordChatChannelListCommandMessageEvent extends Event {
     @Getter private final GuildMessageReceivedEvent triggeringJDAEvent;
 
     @Getter @Setter private String playerListMessage;
-    @Getter @Setter private int expiration;
+    @Getter private int expiration;
 
     public DiscordChatChannelListCommandMessageEvent(TextChannel channel, Guild guild, String message, GuildMessageReceivedEvent triggeringJDAEvent, String playerListMessage, int expiration, Result result) {
         this.channel = channel;
@@ -56,6 +56,14 @@ public class DiscordChatChannelListCommandMessageEvent extends Event {
         this.playerListMessage = playerListMessage;
         this.expiration = expiration;
         this.result = result;
+    }
+
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
+    public void setExpiration(int expiration) {
+        this.expiration = expiration;
     }
 
     public enum Result {

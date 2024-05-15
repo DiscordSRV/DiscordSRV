@@ -49,7 +49,7 @@ public class DiscordGuildMessagePostProcessEvent extends DiscordEvent<GuildMessa
     /**
      * The message that will be sent to players in-game
      */
-    @Getter @Setter private Component minecraftMessage;
+    @Getter private Component minecraftMessage;
 
     @Deprecated
     public DiscordGuildMessagePostProcessEvent(GuildMessageReceivedEvent jdaEvent, boolean cancelled, String processedMessage) {
@@ -86,4 +86,7 @@ public class DiscordGuildMessagePostProcessEvent extends DiscordEvent<GuildMessa
         return MessageUtil.toLegacy(minecraftMessage);
     }
 
+    public void setMinecraftMessage(Component minecraftMessage) {
+        this.minecraftMessage = minecraftMessage;
+    }
 }

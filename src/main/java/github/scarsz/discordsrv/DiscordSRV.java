@@ -157,7 +157,7 @@ public class DiscordSRV extends JavaPlugin {
     public static String version = "";
 
     // Managers
-    @Getter private AccountLinkManager accountLinkManager;
+    private AccountLinkManager accountLinkManager;
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private IncompatibleClientManager incompatibleClientManager = new IncompatibleClientManager();
@@ -2235,4 +2235,7 @@ public class DiscordSRV extends JavaPlugin {
         return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 
+    public AccountLinkManager getAccountLinkManager() {
+        return this.accountLinkManager;
+    }
 }

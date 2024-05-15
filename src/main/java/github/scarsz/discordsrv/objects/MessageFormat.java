@@ -84,4 +84,7 @@ public class MessageFormat {
         this.colorRaw = color.getRGB();
     }
 
+    public void setColorRaw(int colorRaw) {
+        this.colorRaw = colorRaw;
+    }
 }

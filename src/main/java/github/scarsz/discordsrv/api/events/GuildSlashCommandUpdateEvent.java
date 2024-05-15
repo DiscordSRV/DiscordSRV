@@ -43,11 +43,14 @@ public class GuildSlashCommandUpdateEvent extends Event implements Cancellable {
     @Getter @Setter private boolean cancelled;
 
     @Getter private final Guild guild;
-    @Getter private final Set<CommandData> commands;
+    private final Set<CommandData> commands;
 
     public GuildSlashCommandUpdateEvent(Guild guild, Set<CommandData> commands) {
         this.guild = guild;
         this.commands = commands;
     }
 
+    public Set<CommandData> getCommands() {
+        return this.commands;
+    }
 }

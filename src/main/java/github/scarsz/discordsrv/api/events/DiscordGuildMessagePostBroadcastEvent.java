@@ -33,7 +33,7 @@ import net.kyori.adventure.text.Component;
 public class DiscordGuildMessagePostBroadcastEvent extends Event {
 
     @Getter private final String channel;
-    @Getter private final Component message;
+    private final Component message;
 
     @Deprecated
     public DiscordGuildMessagePostBroadcastEvent(String channel, String processedMessage) {
@@ -51,4 +51,7 @@ public class DiscordGuildMessagePostBroadcastEvent extends Event {
         return MessageUtil.toLegacy(message);
     }
 
+    public Component getMessage() {
+        return this.message;
+    }
 }
