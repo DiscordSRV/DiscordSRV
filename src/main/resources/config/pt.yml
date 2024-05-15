@@ -8,6 +8,13 @@ ConfigVersion: ${version}
 # Você deve reiniciar seu servidor após alterar esta opção
 BotToken: "BOTTOKEN"
 
+# The proxy to be used for Discord  
+# Leave this alone if you don't understand what it does  
+ProxyHost: "https://example.com"  
+ProxyPort: 1234  
+ProxyUser: "USERNAME"  
+ProxyPassword: "PASSWORD"  
+
 # Links de canais do jogo para o Discord
 # A sintaxe é Canais: {"nome do canal no jogo do Minecraft": "ID do canal numérico do Discord", "outro nome do canal no jogo do Minecraft": "outro ID do canal numérico do Discord"}
 #
@@ -27,7 +34,7 @@ BotToken: "BOTTOKEN"
 #
 # A primeira parte dos pares de canais não é o nome do canal do Discord!
 # Execute "/discord reload" após alterar esta opção para aplicar
-Canais: {"global": "000000000000000000"}
+Channels: {"global": "000000000000000000"}
 
 # ID numérico do canal de console (NÃO NOME), deixe em branco para desabilitar completamente o canal de console
 DiscordConsoleChannelId: "000000000000000000"
@@ -87,7 +94,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # Formato de URL de avatar/imagem para incorporar e webhook
 # URL de avatar alternativo para servidores offline:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
 
 # Re-serializador
 # Converte formatação (negrito, itálico, sublinhado, riscado) entre Minecraft e Discord
@@ -224,7 +231,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
@@ -274,16 +281,30 @@ ChannelTopicUpdaterRateInMinutes: 10
 #     %motd%:          motd do servidor
 #     %serverversion%: versão do servidor como Spigot-1.9
 #     %freememory%:    memória livre do JVM em MB
-#     %tps%:           ticks por segundo atuais (de 20)
-#   ShouldRemove: Remove este canal da lista de canais para serem atualizados
-#   AllowUptimePlaceholderOverOneDay: Permite que placeholders que mostram tempo ultrapassem 1 dia (defina como false para suprimir "horas" se a %uptimehours% passar de 24 horas)
-#
-ChannelUpdaters:
-  - ChannelId: "000000000000000000"
-    Format: "Jogadores: %playercount%/%playermax%"
-    ShouldRemove: false
-    AllowUptimePlaceholderOverOneDay: false
-
+#     %usedmemory%:    used memory of the JVM in MB
+#     %totalmemory%:   total memory of the JVM in MB
+#     %maxmemory%:     max memory of the JVM in MB
+#     %freememorygb%:  free memory of the JVM in GB
+#     %usedmemorygb%:  used memory of the JVM in GB
+#     %totalmemorygb%: total memory of the JVM in GB
+#     %maxmemorygb%:   max memory of the JVM in GB
+#     %tps%:           average TPS of the server
+#     PlaceholderAPI placeholders are also supported
+#   ShutdownFormat: The format the channel should take when the server has shut down. Available placeholders:
+#     %time% or %date%: current date and time
+#     %serverversion%:  server version
+#     %totalplayers%:   total number of players to ever join the main world
+#     %timestamp%:      current unix timestamp
+#   UpdateInterval: Time in minutes to wait between updating the channel's name (minimum is 10 due to rate limits)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% players online"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Current TPS: %tps%"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
 
 # Respostas predefinidas do Discord
 # Esses são acionadores (comandos de certa forma) que acionarão uma "resposta predefinida" para ser enviada como resposta a eles
@@ -316,7 +337,7 @@ DiscordCannedResponses: {"!ip": "seuipservidor.com", "!site": "http://seusiteurl
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Vinculado"
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 MinecraftDiscordAccountLinkedUsePM: true
 MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0

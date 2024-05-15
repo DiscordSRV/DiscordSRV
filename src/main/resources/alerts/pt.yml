@@ -78,46 +78,46 @@
 #
 
 Alerts:
-# Exemplo de configuração para enviar mensagens para o canal "fish" do DiscordSRV quando um jogador pega um peixe com sucesso
-#- Trigger: PlayerFishEvent
-#  Channel: fish
-#  Conditions:
-#    - state.name() == 'CAUGHT_FISH'
-#  Embed:
-#    Color: "#00ff00"
-#    Author:
-#      ImageUrl: "{embedavatarurl}"
-#      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+  # Exemplo de configuração para enviar mensagens para o canal "fish" do DiscordSRV quando um jogador pega um peixe com sucesso
+  #- Trigger: PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
 
-# Exemplo de configuração para enviar mensagens do Matrix anti-cheat
-#- Trigger: PlayerViolationEvent
-#  Channel: matrix
-#  Conditions:
-#    - violations >= 5 # não envie eventos para jogadores com < 5 violações
-#  Embed:
-#    Color: "#ff0000"
-#    Author:
-#      ImageUrl: "{embedavatarurl}"
-#      Name: "{username} falhou ao check ${hackType.name().toLowerCase()} | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+  # Exemplo de configuração para enviar mensagens do Matrix anti-cheat
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # não envie eventos para jogadores com < 5 violações
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} falhou ao check ${hackType.name().toLowerCase()} | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
 
-# Exemplo de configuração para enviar mensagens quando alguém usar /gamemode
-#- Trigger: /gamemode
-#  Channel: gamemode
-#  Conditions:
-#    - '#player.hasPermission("minecraft.command.gamemode") == true'
-#  Embed:
-#    Color: "#ff0000"
-#    Author:
-#      ImageUrl: "{embedavatarurl}"
-#      Name: "{username} mudou o modo de jogo para ${#args.get(0)}"
+  # Exemplo de configuração para enviar mensagens quando alguém usar /gamemode
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} mudou o modo de jogo para ${#args.get(0)}"
 
-# Exemplo de configuração para enviar mensagens quando alguém usar /me
-#- Trigger: /me
-#  Channel: me
-#  Conditions:
-#    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
-#  Embed:
-#    Color: "#00ff00"
-#    Author:
-#      ImageUrl: "{embedavatarurl}"
-#      Name: "* {username} ${#allArgs}"
+  # Exemplo de configuração para enviar mensagens quando alguém usar /me
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"
