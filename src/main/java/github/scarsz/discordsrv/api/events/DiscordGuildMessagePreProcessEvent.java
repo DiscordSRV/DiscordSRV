@@ -21,8 +21,6 @@
 package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.api.Cancellable;
-import lombok.Getter;
-import lombok.Setter;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -32,13 +30,13 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  */
 public class DiscordGuildMessagePreProcessEvent extends DiscordEvent<GuildMessageReceivedEvent> implements Cancellable {
 
-    @Getter @Setter private boolean cancelled;
+    private boolean cancelled;
 
-    @Getter private final User author;
-    @Getter private final TextChannel channel;
-    @Getter private final Guild guild;
-    @Getter private final Member member;
-    @Getter private final Message message;
+    private final User author;
+    private final TextChannel channel;
+    private final Guild guild;
+    private final Member member;
+    private final Message message;
 
     public DiscordGuildMessagePreProcessEvent(GuildMessageReceivedEvent jdaEvent) {
         super(jdaEvent.getJDA(), jdaEvent);
@@ -49,4 +47,31 @@ public class DiscordGuildMessagePreProcessEvent extends DiscordEvent<GuildMessag
         this.message = jdaEvent.getMessage();
     }
 
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public User getAuthor() {
+        return this.author;
+    }
+
+    public TextChannel getChannel() {
+        return this.channel;
+    }
+
+    public Guild getGuild() {
+        return this.guild;
+    }
+
+    public Member getMember() {
+        return this.member;
+    }
+
+    public Message getMessage() {
+        return this.message;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
 }

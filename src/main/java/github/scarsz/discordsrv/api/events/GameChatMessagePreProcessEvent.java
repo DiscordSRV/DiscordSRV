@@ -21,8 +21,6 @@
 package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.util.MessageUtil;
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -34,15 +32,15 @@ import org.bukkit.event.Event;
  * <p>At the time this event is called, {@link #getMessage()} would return what the person <i>said</i>, not
  * the final message. You could change what they said using the {@link #setMessage(String)} method or use
  * {@link #setCancelled(boolean)} to cancel it from being processed altogether</p>
- * 
+ *
  * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePreProcessEvent} would be called instead, due to the lack of the Player object</p>
  */
 public class GameChatMessagePreProcessEvent extends GameEvent<Event> implements Cancellable {
 
-    @Getter @Setter private boolean cancelled;
+    private boolean cancelled;
 
-    @Getter @Setter private String channel;
-    @Getter @Setter private Component messageComponent;
+    private String channel;
+    private Component messageComponent;
 
     public GameChatMessagePreProcessEvent(String channel, Component message, Player player, Event event) {
         super(player, event);
@@ -70,4 +68,27 @@ public class GameChatMessagePreProcessEvent extends GameEvent<Event> implements 
         this.messageComponent = MessageUtil.toComponent(legacy, true);
     }
 
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public String getChannel() {
+        return this.channel;
+    }
+
+    public Component getMessageComponent() {
+        return this.messageComponent;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public void setMessageComponent(Component messageComponent) {
+        this.messageComponent = messageComponent;
+    }
 }

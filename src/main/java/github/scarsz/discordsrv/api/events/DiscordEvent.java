@@ -20,7 +20,6 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 
 /**
@@ -29,16 +28,24 @@ import net.dv8tion.jda.api.JDA;
  */
 abstract class DiscordEvent<T> extends Event {
 
-    @Getter private final JDA jda;
-    @Getter private final T rawEvent;
+    private final JDA jda;
+    private final T rawEvent;
 
     DiscordEvent(JDA jda) {
         this.jda = jda;
         this.rawEvent = null;
     }
+
     DiscordEvent(JDA jda, T rawEvent) {
         this.jda = jda;
         this.rawEvent = rawEvent;
     }
 
+    public JDA getJda() {
+        return this.jda;
+    }
+
+    public T getRawEvent() {
+        return this.rawEvent;
+    }
 }

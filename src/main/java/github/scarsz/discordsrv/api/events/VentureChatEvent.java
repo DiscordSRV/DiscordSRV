@@ -20,15 +20,17 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 
 abstract class VentureChatMessageEvent extends Event {
 
-    @Getter final private VentureChatEvent ventureChatEvent;
+    final private VentureChatEvent ventureChatEvent;
 
     VentureChatMessageEvent(VentureChatEvent ventureChatEvent) {
         this.ventureChatEvent = ventureChatEvent;
     }
 
+    public VentureChatEvent getVentureChatEvent() {
+        return this.ventureChatEvent;
+    }
 }

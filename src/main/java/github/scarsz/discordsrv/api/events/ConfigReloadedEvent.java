@@ -20,7 +20,6 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -28,10 +27,13 @@ import org.bukkit.command.CommandSender;
  */
 public class ConfigReloadedEvent extends Event {
 
-    @Getter private final CommandSender requester;
+    private final CommandSender requester;
 
     public ConfigReloadedEvent(CommandSender requester) {
         this.requester = requester;
     }
 
+    public CommandSender getRequester() {
+        return this.requester;
+    }
 }

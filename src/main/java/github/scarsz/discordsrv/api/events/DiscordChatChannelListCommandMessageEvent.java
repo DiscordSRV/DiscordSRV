@@ -20,8 +20,6 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -38,15 +36,15 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  */
 public class DiscordChatChannelListCommandMessageEvent extends Event {
 
-    @Getter private Result result;
+    private Result result;
 
-    @Getter private final TextChannel channel;
-    @Getter private final Guild guild;
-    @Getter private final String message;
-    @Getter private final GuildMessageReceivedEvent triggeringJDAEvent;
+    private final TextChannel channel;
+    private final Guild guild;
+    private final String message;
+    private final GuildMessageReceivedEvent triggeringJDAEvent;
 
-    @Getter @Setter private String playerListMessage;
-    @Getter private int expiration;
+    private String playerListMessage;
+    private int expiration;
 
     public DiscordChatChannelListCommandMessageEvent(TextChannel channel, Guild guild, String message, GuildMessageReceivedEvent triggeringJDAEvent, String playerListMessage, int expiration, Result result) {
         this.channel = channel;
@@ -58,8 +56,40 @@ public class DiscordChatChannelListCommandMessageEvent extends Event {
         this.result = result;
     }
 
+    public Result getResult() {
+        return this.result;
+    }
+
+    public TextChannel getChannel() {
+        return this.channel;
+    }
+
+    public Guild getGuild() {
+        return this.guild;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public GuildMessageReceivedEvent getTriggeringJDAEvent() {
+        return this.triggeringJDAEvent;
+    }
+
+    public String getPlayerListMessage() {
+        return this.playerListMessage;
+    }
+
+    public int getExpiration() {
+        return this.expiration;
+    }
+
     public void setResult(Result result) {
         this.result = result;
+    }
+
+    public void setPlayerListMessage(String playerListMessage) {
+        this.playerListMessage = playerListMessage;
     }
 
     public void setExpiration(int expiration) {

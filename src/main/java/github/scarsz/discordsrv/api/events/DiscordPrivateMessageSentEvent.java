@@ -20,7 +20,6 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.PrivateChannel;
@@ -31,9 +30,9 @@ import net.dv8tion.jda.api.entities.User;
  */
 public class DiscordPrivateMessageSentEvent extends DiscordEvent {
 
-    @Getter private final PrivateChannel channel;
-    @Getter private final Message message;
-    @Getter private final User recipient;
+    private final PrivateChannel channel;
+    private final Message message;
+    private final User recipient;
 
     public DiscordPrivateMessageSentEvent(JDA jda, Message message) {
         super(jda);
@@ -42,4 +41,15 @@ public class DiscordPrivateMessageSentEvent extends DiscordEvent {
         this.recipient = channel.getUser();
     }
 
+    public PrivateChannel getChannel() {
+        return this.channel;
+    }
+
+    public Message getMessage() {
+        return this.message;
+    }
+
+    public User getRecipient() {
+        return this.recipient;
+    }
 }

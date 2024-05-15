@@ -21,7 +21,6 @@
 package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.util.MessageUtil;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -32,7 +31,7 @@ import net.kyori.adventure.text.Component;
  */
 public class DiscordGuildMessagePostBroadcastEvent extends Event {
 
-    @Getter private final String channel;
+    private final String channel;
     private final Component message;
 
     @Deprecated
@@ -49,6 +48,10 @@ public class DiscordGuildMessagePostBroadcastEvent extends Event {
     @Deprecated
     public String getProcessedMessage() {
         return MessageUtil.toLegacy(message);
+    }
+
+    public String getChannel() {
+        return this.channel;
     }
 
     public Component getMessage() {

@@ -20,8 +20,6 @@
 
 package github.scarsz.discordsrv.api;
 
-import lombok.Getter;
-
 /**
  * <p>Completely inspired by the Bukkit API's EventPriority system</p>
  * <p>Event priorities mean the same as Bukkit's; it's in a separate enum to prevent
@@ -60,9 +58,12 @@ public enum ListenerPriority {
      */
     MONITOR(5);
 
-    @Getter private final int slot;
+    private final int slot;
     ListenerPriority(int slot) {
         this.slot = slot;
     }
 
+    public int getSlot() {
+        return this.slot;
+    }
 }

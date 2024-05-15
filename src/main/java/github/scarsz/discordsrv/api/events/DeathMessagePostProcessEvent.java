@@ -20,8 +20,6 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.entity.Player;
@@ -34,15 +32,15 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  */
 public class DeathMessagePostProcessEvent extends GameEvent<PlayerDeathEvent> implements Cancellable {
 
-    @Getter @Setter private boolean cancelled;
+    private boolean cancelled;
 
-    @Getter private final String deathMessage;
-    @Getter @Setter private String channel;
+    private final String deathMessage;
+    private String channel;
 
-    @Getter @Setter private Message discordMessage;
-    @Getter @Setter private boolean usingWebhooks;
-    @Getter @Setter private String webhookName;
-    @Getter @Setter private String webhookAvatarUrl;
+    private Message discordMessage;
+    private boolean usingWebhooks;
+    private String webhookName;
+    private String webhookAvatarUrl;
 
     public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, PlayerDeathEvent triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
         super(player, triggeringBukkitEvent);
@@ -86,4 +84,55 @@ public class DeathMessagePostProcessEvent extends GameEvent<PlayerDeathEvent> im
         this.discordMessage = new MessageBuilder(processedMessage).build();
     }
 
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public String getDeathMessage() {
+        return this.deathMessage;
+    }
+
+    public String getChannel() {
+        return this.channel;
+    }
+
+    public Message getDiscordMessage() {
+        return this.discordMessage;
+    }
+
+    public boolean isUsingWebhooks() {
+        return this.usingWebhooks;
+    }
+
+    public String getWebhookName() {
+        return this.webhookName;
+    }
+
+    public String getWebhookAvatarUrl() {
+        return this.webhookAvatarUrl;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public void setDiscordMessage(Message discordMessage) {
+        this.discordMessage = discordMessage;
+    }
+
+    public void setUsingWebhooks(boolean usingWebhooks) {
+        this.usingWebhooks = usingWebhooks;
+    }
+
+    public void setWebhookName(String webhookName) {
+        this.webhookName = webhookName;
+    }
+
+    public void setWebhookAvatarUrl(String webhookAvatarUrl) {
+        this.webhookAvatarUrl = webhookAvatarUrl;
+    }
 }

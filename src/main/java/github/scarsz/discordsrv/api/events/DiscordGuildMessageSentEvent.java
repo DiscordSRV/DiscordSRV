@@ -20,7 +20,6 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -32,9 +31,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
  */
 public class DiscordGuildMessageSentEvent extends DiscordEvent {
 
-    @Getter private final TextChannel channel;
-    @Getter private final Guild guild;
-    @Getter private final Message message;
+    private final TextChannel channel;
+    private final Guild guild;
+    private final Message message;
 
     public DiscordGuildMessageSentEvent(JDA jda, Message message) {
         super(jda);
@@ -43,4 +42,15 @@ public class DiscordGuildMessageSentEvent extends DiscordEvent {
         this.message = message;
     }
 
+    public TextChannel getChannel() {
+        return this.channel;
+    }
+
+    public Guild getGuild() {
+        return this.guild;
+    }
+
+    public Message getMessage() {
+        return this.message;
+    }
 }

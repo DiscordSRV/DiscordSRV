@@ -22,8 +22,6 @@ package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.api.Cancellable;
 import github.scarsz.discordsrv.util.MessageUtil;
-import lombok.Getter;
-import lombok.Setter;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.kyori.adventure.text.Component;
@@ -38,18 +36,15 @@ import net.kyori.adventure.text.Component;
  */
 public class DiscordGuildMessagePostProcessEvent extends DiscordEvent<GuildMessageReceivedEvent> implements Cancellable {
 
-    @Getter @Setter private boolean cancelled;
+    private boolean cancelled;
 
-    @Getter private final User author;
-    @Getter private final TextChannel channel;
-    @Getter private final Guild guild;
-    @Getter private final Member member;
-    @Getter private final Message message;
+    private final User author;
+    private final TextChannel channel;
+    private final Guild guild;
+    private final Member member;
+    private final Message message;
 
-    /**
-     * The message that will be sent to players in-game
-     */
-    @Getter private Component minecraftMessage;
+    private Component minecraftMessage;
 
     @Deprecated
     public DiscordGuildMessagePostProcessEvent(GuildMessageReceivedEvent jdaEvent, boolean cancelled, String processedMessage) {
@@ -84,6 +79,41 @@ public class DiscordGuildMessagePostProcessEvent extends DiscordEvent<GuildMessa
     @Deprecated
     public String getProcessedMessage() {
         return MessageUtil.toLegacy(minecraftMessage);
+    }
+
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public User getAuthor() {
+        return this.author;
+    }
+
+    public TextChannel getChannel() {
+        return this.channel;
+    }
+
+    public Guild getGuild() {
+        return this.guild;
+    }
+
+    public Member getMember() {
+        return this.member;
+    }
+
+    public Message getMessage() {
+        return this.message;
+    }
+
+    /**
+     * The message that will be sent to players in-game
+     */
+    public Component getMinecraftMessage() {
+        return this.minecraftMessage;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
     public void setMinecraftMessage(Component minecraftMessage) {
