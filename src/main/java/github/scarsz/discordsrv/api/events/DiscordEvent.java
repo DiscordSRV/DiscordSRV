@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.JDA;
  * <p>The superclass of all Discord-related events</p>
  * <p>Provides {@link #getJda()} and {@link #getRawEvent()}</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 abstract class DiscordEvent<T> extends Event {
 
     private final JDA jda;

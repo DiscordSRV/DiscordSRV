@@ -29,6 +29,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * <p>At the time this event is called, the command can still be changed, and event cancelled</p>
  * <p>Cancelling the event will stop the command from being sent to the server</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class DiscordConsoleCommandPreProcessEvent extends DiscordEvent<GuildMessageReceivedEvent> implements Cancellable {
 
     private boolean sentInConsoleChannel;

@@ -84,6 +84,7 @@ public class MessageFormat {
         this.colorRaw = color.getRGB();
     }
 
+    @SuppressWarnings("LombokSetterMayBeUsed")
     public void setColorRaw(int colorRaw) {
         this.colorRaw = colorRaw;
     }

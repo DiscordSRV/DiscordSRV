@@ -35,6 +35,7 @@ import org.bukkit.event.Event;
  *
  * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePreProcessEvent} would be called instead, due to the lack of the Player object</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class GameChatMessagePreProcessEvent extends GameEvent<Event> implements Cancellable {
 
     private boolean cancelled;

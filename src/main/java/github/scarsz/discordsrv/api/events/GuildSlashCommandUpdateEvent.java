@@ -36,6 +36,7 @@ import java.util.Set;
  * registering to this {@link Guild} altogether. Cancelling also leave slash commands originally registered in a
  * {@link Guild} untouched.</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class GuildSlashCommandUpdateEvent extends Event implements Cancellable {
 
     private boolean cancelled;

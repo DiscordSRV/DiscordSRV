@@ -32,6 +32,7 @@ import org.bukkit.event.Cancellable;
  * the final message. You could change what they said using the {@link #setMessage(String)} method or use
  * {@link #setCancelled(boolean)} to cancel it from being processed altogether</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class VentureChatMessagePreProcessEvent extends VentureChatMessageEvent implements Cancellable {
 
     private boolean cancelled;

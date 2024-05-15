@@ -30,6 +30,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  *
  * @see DiscordGuildMessagePreProcessEvent
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class DiscordGuildMessageReceivedEvent extends DiscordEvent<GuildMessageReceivedEvent> {
 
     private final User author;

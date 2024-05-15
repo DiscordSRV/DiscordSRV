@@ -28,6 +28,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 /**
  * <p>Called before DiscordSRV has processed a death message, modifications may be overwritten by DiscordSRV's processing.</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class DeathMessagePreProcessEvent extends GameEvent<PlayerDeathEvent> implements Cancellable {
 
     private boolean cancelled;

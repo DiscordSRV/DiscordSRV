@@ -30,6 +30,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  * <p>Called after DiscordSRV has processed a death message but before being sent to Discord.
  * Modification is allow and will effect the message sent to Discord.</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class DeathMessagePostProcessEvent extends GameEvent<PlayerDeathEvent> implements Cancellable {
 
     private boolean cancelled;

@@ -27,6 +27,7 @@ import org.bukkit.event.Cancellable;
  * <p>Called after DiscordSRV has processed a VentureChat message from Bungee (when the VentureChatBungee config option is enabled) but before being sent to Discord.
  * Modification is allow and will effect the message sent to Discord.</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class VentureChatMessagePostProcessEvent extends VentureChatMessageEvent implements Cancellable {
 
     private boolean cancelled;

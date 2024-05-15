@@ -23,6 +23,7 @@ package github.scarsz.discordsrv.api.commands;
 import java.util.Objects;
 import net.dv8tion.jda.api.entities.Guild;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 public final class CommandRegistrationError {
 
     private final Guild guild;

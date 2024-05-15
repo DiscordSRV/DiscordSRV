@@ -29,6 +29,7 @@ import org.bukkit.OfflinePlayer;
 /**
  * <p>Called directly after an account pair is linked via DiscordSRV's {@link AccountLinkManager}</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class AccountLinkedEvent extends Event {
 
     private final OfflinePlayer player;

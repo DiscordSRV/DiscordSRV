@@ -28,6 +28,7 @@ import org.bukkit.event.Event;
 /**
  * <p>Called before DiscordSRV has processed a achievement/advancement message, modifications may be overwritten by DiscordSRV's processing.</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class AchievementMessagePreProcessEvent extends GameEvent<Event> implements Cancellable {
 
     private boolean cancelled;

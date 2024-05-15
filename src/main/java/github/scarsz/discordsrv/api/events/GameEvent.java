@@ -22,6 +22,7 @@ package github.scarsz.discordsrv.api.events;
 
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 abstract class GameEvent<T extends org.bukkit.event.Event> extends Event {
 
     final private Player player;

@@ -25,6 +25,7 @@ import org.bukkit.command.CommandSender;
 /**
  * <p>Called directly after the configuration was reloaded and the requester was informed.</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class ConfigReloadedEvent extends Event {
 
     private final CommandSender requester;

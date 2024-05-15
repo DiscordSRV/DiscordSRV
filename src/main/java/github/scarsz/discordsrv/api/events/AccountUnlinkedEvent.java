@@ -30,6 +30,7 @@ import org.bukkit.OfflinePlayer;
 /**
  * <p>Called directly after an account pair is unlinked via DiscordSRV's {@link AccountLinkManager}</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class AccountUnlinkedEvent extends Event {
 
     private final OfflinePlayer player;

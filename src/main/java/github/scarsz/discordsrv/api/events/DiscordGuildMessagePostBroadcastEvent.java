@@ -29,6 +29,7 @@ import net.kyori.adventure.text.Component;
  * <p>At the time this event is called, {@link #getMessage()} would return what the final message
  * would look like in-game, including text like the author before the actual message</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class DiscordGuildMessagePostBroadcastEvent extends Event {
 
     private final String channel;

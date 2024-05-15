@@ -34,6 +34,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * @see Result#NO_ACTION
  * @see Result#TREAT_AS_REGULAR_MESSAGE
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class DiscordChatChannelListCommandMessageEvent extends Event {
 
     private Result result;

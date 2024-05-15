@@ -31,6 +31,7 @@ import java.util.Set;
 /**
  * {@link CommandData} wrapper that includes the originating {@link Plugin}
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public final class PluginSlashCommand {
 
     private final Plugin plugin;

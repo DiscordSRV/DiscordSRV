@@ -26,6 +26,7 @@ import org.bukkit.event.Cancellable;
  * <p>Called after DiscordSRV has processed a watchdog message but before being sent to Discord.
  * Modification is allow and will effect the message sent to Discord.</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class WatchdogMessagePostProcessEvent extends Event implements Cancellable {
 
     private boolean cancelled;

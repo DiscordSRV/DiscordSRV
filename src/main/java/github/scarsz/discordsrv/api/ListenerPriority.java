@@ -26,6 +26,7 @@ package github.scarsz.discordsrv.api;
  * depending on Bukkit classes when they might not be available</p>
  * <p>Defaults to {@link #NORMAL} in {@link Subscribe} annotations where it's not specifically set</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public enum ListenerPriority {
 
     /**

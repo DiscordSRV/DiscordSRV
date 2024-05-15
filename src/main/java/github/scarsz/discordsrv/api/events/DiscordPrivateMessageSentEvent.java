@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.entities.User;
 /**
  * <p>Called directly after a message is sent to a {@link PrivateChannel} by the bot</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class DiscordPrivateMessageSentEvent extends DiscordEvent {
 
     private final PrivateChannel channel;

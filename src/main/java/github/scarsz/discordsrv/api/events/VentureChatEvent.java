@@ -22,6 +22,7 @@ package github.scarsz.discordsrv.api.events;
 
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 abstract class VentureChatMessageEvent extends Event {
 
     final private VentureChatEvent ventureChatEvent;

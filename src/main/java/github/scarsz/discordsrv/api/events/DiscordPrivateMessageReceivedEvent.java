@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 /**
  * <p>Called directly after receiving a message through Discord from a {@link PrivateChannel}</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class DiscordPrivateMessageReceivedEvent extends DiscordEvent<PrivateMessageReceivedEvent> {
 
     private final User author;

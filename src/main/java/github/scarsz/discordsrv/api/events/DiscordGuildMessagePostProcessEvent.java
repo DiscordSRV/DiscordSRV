@@ -34,6 +34,7 @@ import net.kyori.adventure.text.Component;
  * {@link #setMinecraftMessage(Component)} to change the message that would be broadcasted in-game or
  * {@link #setCancelled(boolean)} to cancel it from being broadcasted altogether</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class DiscordGuildMessagePostProcessEvent extends DiscordEvent<GuildMessageReceivedEvent> implements Cancellable {
 
     private boolean cancelled;

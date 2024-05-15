@@ -31,6 +31,7 @@ import java.util.List;
  *
  * <p>At the time this event is called, the message, channel, and recipients can still be changed</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class DiscordGuildMessagePreBroadcastEvent extends Event {
 
     private String channel;

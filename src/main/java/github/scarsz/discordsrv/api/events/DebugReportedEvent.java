@@ -23,6 +23,7 @@ package github.scarsz.discordsrv.api.events;
 /**
  * <p>Called directly after a debug report was submitted to GitHub Gists and the requester was informed.</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class DebugReportedEvent extends Event {
 
     private final String requester;
