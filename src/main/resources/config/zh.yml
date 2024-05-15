@@ -92,9 +92,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # 嵌入和 webhook 图像/头像 url 格式
-# 离线服务器的替代嵌入头像网址:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}
+# 留空以使用默认值
+# 可用占位符: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # 转换格式，例如 Minecraft和Discord之间的粗体，斜体，下划线

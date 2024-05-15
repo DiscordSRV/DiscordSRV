@@ -212,7 +212,8 @@ public class PlayerAdvancementDoneListener implements Listener {
             }
         }
 
-        if (advancementDisplay instanceof org.bukkit.advancement.AdvancementDisplay) {
+        // in some versions between 1.17.x and 1.18.x, bukkit api doesn't include AdvancementDisplay but paper api does
+        if (advancementDisplay != null && !advancementDisplay.getClass().getSimpleName().equals("PaperAdvancementDisplay") && advancementDisplay instanceof org.bukkit.advancement.AdvancementDisplay) {
             return !((org.bukkit.advancement.AdvancementDisplay) advancementDisplay).shouldAnnounceChat();
         } else if (advancementDisplay instanceof io.papermc.paper.advancement.AdvancementDisplay) {
             return !((io.papermc.paper.advancement.AdvancementDisplay) advancementDisplay).doesAnnounceToChat();
@@ -252,7 +253,10 @@ public class PlayerAdvancementDoneListener implements Listener {
                 }
 
                 Field titleComponentField = Arrays.stream(advancementDisplay.getClass().getDeclaredFields())
-                        .filter(field -> field.getType().getSimpleName().equals("IChatBaseComponent") || field.getType().getSimpleName().equals("IChatMutableComponent"))
+                        .filter(field -> {
+                            String simpleFieldName = field.getType().getSimpleName();
+                            return simpleFieldName.equals("IChatBaseComponent") || simpleFieldName.equals("IChatMutableComponent") || simpleFieldName.equals("Component");
+                        })
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find advancement display properties field"));
                 titleComponentField.setAccessible(true);
                 Object titleChatBaseComponent = titleComponentField.get(advancementDisplay);
@@ -306,7 +310,10 @@ public class PlayerAdvancementDoneListener implements Listener {
                 if (method_getAdvancementDisplay == null) {
                     method_getAdvancementDisplay = Arrays.stream(holder.getClass().getMethods())
                             .filter(method -> method.getReturnType().getSimpleName().equals("Optional"))
-                            .filter(method -> method.getGenericReturnType().getTypeName().contains("AdvancementDisplay"))
+                            .filter(method -> {
+                                String displayInfoReturnName = method.getGenericReturnType().getTypeName();
+                                return displayInfoReturnName.contains("AdvancementDisplay") || displayInfoReturnName.contains("DisplayInfo");
+                            })
                             .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"));
                 }
 
@@ -317,7 +324,10 @@ public class PlayerAdvancementDoneListener implements Listener {
         } else {
             if (method_getAdvancementDisplay == null) {
                 method_getAdvancementDisplay = Arrays.stream(handle.getClass().getMethods())
-                        .filter(method -> method.getReturnType().getSimpleName().equals("AdvancementDisplay"))
+                        .filter(method -> {
+                            String simpleReturnName = method.getReturnType().getSimpleName();
+                            return simpleReturnName.equals("AdvancementDisplay") || simpleReturnName.equals("DisplayInfo");
+                        })
                         .filter(method -> method.getParameterCount() == 0)
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"));
             }
