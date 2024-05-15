@@ -482,7 +482,7 @@ public class LangUtil {
             put(Language.ZH, "API listener {listenername} 已訂閱 ({methodcount} 種方案)");
             put(Language.PL, "Odbiornik API {listenername} zasubskrybowano ({methodcount} metodą)");
             put(Language.DA, "API listener {listenername} abonneret ({methodcount} metoder)");
-            put(Language.UK, " API listener {listener name} підписано на ({methodcount} методи)");
+            put(Language.UK, " API listener {listenername} підписано на ({methodcount} методи)");
             put(Language.NB, "API-lytter {listername} abonnerte på ({methodcount} måter)");
         }}), API_LISTENER_UNSUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} unsubscribed");
