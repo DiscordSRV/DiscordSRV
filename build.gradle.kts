@@ -288,7 +288,7 @@ dependencies {
     compileOnly("org.dynmap:dynmap-api:2.0")
     compileOnly("com.gmail.nossr50:mcmmo:1.5.07")
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
-    compileOnly("me.clip:placeholderapi:2.10.7")
+    compileOnly("me.clip:placeholderapi:2.10.9")
 
     // debug hooks
     compileOnly("ch.njol:skript:2.5")
