@@ -16,8 +16,8 @@
 #  {ping} - si l'alert est pour un event d'un joueur, le ping du joueur
 #  {username} - si l'alert est pour un event d'un joueur, le nom d'utilisateur du joueur
 #  {displayname} - si l'alert est pour un event d'un joueur, le nom d'affichage du joueur
-#  {usernamenoescapes} - si l'alert est pour un event d'un joueur, le nom d'utilisateur du joueur sans échapper le format discord
-#  {displaynamenoescapes} - si l'alert est pour un event d'un joueur, le nom d'affichage du joueur sans échapper le format discord
+#  {usernamenoescapes} - si l'alert est pour un event d'un joueur, le nom d'utilisateur du joueur sans échapper le formattage discord
+#  {displaynamenoescapes} - si l'alert est pour un event d'un joueur, le nom d'affichage du joueur sans échapper le formattage discord
 #  {world} - si l'alert est pour un event d'un joueur, le monde actuel du joueur
 #  {embedavatarurl} - si l'alert est pour un event d'un joueur, l'avatar url du skin du joueur, sinon, l'avatar url du bot
 #  {botavatarurl} - l'avatar url du bot
