@@ -129,14 +129,14 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Game Information
-# Sets the "Playing: ______" indicator for the bot.
-# Can be a single, static value, or cycle through multiple different options
-# You can preface the status with "playing", "watching", or "listening to" to set the activity type
-# PlaceholderAPI placeholders are supported
+# Mets "En train de jouer à: ______" au statut du bot.
+# Il peut être un seul argument, une valeur fixe, ou un cycle qui alterne entre les valeurs.
+# Vous pouvez modifier "playing", "watching", or "listening to" pour changer le type de statut.
+# PlaceholderAPI placeholders sont supportés
 #
-# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
-# StatusUpdateRateInMinutes: How frequently to cycle the status
+# DiscordGameStatus: Texte à afficher. Peut être une valeur unique tel que "Minecraft",ou alors plusieurs valeurs tel que ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Le type de statut. Il doit FORCEMENT être l'une de ces options : ONLINE, DND, IDLE ou INVISIBLE
+# StatusUpdateRateInMinutes: Combien de temps avant que le statut ne soit mis à jour
 DiscordGameStatus: ["Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2

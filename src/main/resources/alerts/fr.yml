@@ -2,36 +2,36 @@
 # or when a command is run. You will need a working knowledge of how Bukkit events work and their properties.
 # If you aren't sure about what you're doing here, maybe ask a developer or join our support server @ discordsrv.com/discord
 #
-# Refer to the Bukkit API javadoc to find events & properties to use:
+# Référencez vous au Bukkit API javadoc pour trouver les events et leurs propriétés:
 #  https://hub.spigotmc.org/javadocs/bukkit
-# Helpful resources for learning how to use SpEL:
+# Ressources utiles pour apprendre les expressions SpEL:
 #  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
 #  https://dzone.com/articles/learn-spring-expression-language-with-examples
 #
-# You can use the following placeholders:
-#  {tps} - server TPS
-#  {time} - formatted time
-#  {date} - formatted date
-#  {name} - if alert is for a player event, the name of the player
-#  {ping} - if alert is for a player event, the ping of the player
-#  {username} - if alert is for a player event, the username of the player
-#  {displayname} - if alert is for a player event, the display name of the player
-#  {usernamenoescapes} - if alert is for a player event, the username of the player without escaping discord format (for use in inline code & code block markdown)
-#  {displaynamenoescapes} - if alert is for a player event, the display name of the player without escaping discord format (for use in inline code & code block markdown)
-#  {world} - if alert is for a player event, the world the player is in
-#  {embedavatarurl} - if alert is for a player event, the avatar url for the player's head, otherwise, the bot's avatar url
-#  {botavatarurl} - the bot's avatar url
-#  {botname} - the bot's name
-#  %placeholder% - any PlaceholderAPI placeholders, can only use player ones when alert is for a player event
+# Vous pouvez suivre ces placeholders:
+#  {tps} - TPS du serveur
+#  {time} - temps formatée
+#  {date} - date formatée
+#  {name} - si l'alert est pour un event d'un joueur, le nom du joueur
+#  {ping} - si l'alert est pour un event d'un joueur, le ping du joueur
+#  {username} - si l'alert est pour un event d'un joueur, le nom d'utilisateur du joueur
+#  {displayname} - si l'alert est pour un event d'un joueur, le nom d'affichage du joueur
+#  {usernamenoescapes} - si l'alert est pour un event d'un joueur, le nom d'utilisateur du joueur sans échapper le format discord
+#  {displaynamenoescapes} - si l'alert est pour un event d'un joueur, le nom d'affichage du joueur sans échapper le format discord
+#  {world} - si l'alert est pour un event d'un joueur, le monde actuel du joueur
+#  {embedavatarurl} - si l'alert est pour un event d'un joueur, l'avatar url du skin du joueur, sinon, l'avatar url du bot
+#  {botavatarurl} - l'avatar url du bot
+#  {botname} - le nom du bot
+#  %placeholder% - n'importe PlaceholderAPI placeholders, vous pouvez seulement utiliser les placeholders qui nécessitent un joueur lors d'un event d'un joueur
 #
-# You can also use SpEL expressions with ${expression...}, such as...
-#  - Getting a player's IP: ${#player.address.address.hostAddress}
-#  - Getting a player's game mode: ${#player.gameMode.name()}
-#  - Getting a player's linked Discord account ID: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
-#  - Getting the online player count: ${#server.onlinePlayers.size()}
-#  - Getting the status of DiscordSRV's connection to Discord: ${#jda.status.name()}
-#  - Checking if a player is in a specific world: ${#player.world.name == 'world_the_end'}
-#  - Checking if it's day in the world that the player is in: ${#player.world.time > 0 && #player.world.time < 13000}
+# Vous pouvez aussi utiliser les expressions SpEL avec ${expression...}, comme par exemple..
+#  - Avoir l'IP d'un joueur: ${#player.address.address.hostAddress}
+#  - Avoir le gamemode d'un joueur ${#player.gameMode.name()}
+#  - Avoir l'ID du compte discord liée d'un joueur: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - Avoir le nombre de joueurs connectés: ${#server.onlinePlayers.size()}
+#  - Avoir le statut de la connection entre DiscordSRV et Discord: ${#jda.status.name()}
+#  - Vérifier si un joueur est dans un monde: ${#player.world.name == 'world_the_end'}
+#  - Vérifier si il fait jour dans le monde où le joeur est: ${#player.world.time > 0 && #player.world.time < 13000}
 #  You can use the following expression placeholders, as seen above:
 #   #plugins.<plugin> - the specified plugin instance, null if doesn't exist
 #   #event - the event that's triggering the alert if this alert is an event alert

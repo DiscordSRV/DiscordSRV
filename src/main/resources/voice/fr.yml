@@ -26,6 +26,6 @@ Network:
   # Une fois qu'un joueur a rejoint un réseau, il peut être
   # strength + falloff avant d'être déconnecté
   Falloff: 5
-  # Whether voice network channels are visible to everyone, even those not connected
-  # Helps let players know if people are actually using the voice network at the moment
+  # Choisi ou non si les channels sont visibles par les membres, même ceux qui ne sont pas connectés
+  # Utile pour laisser les gens voir qui est dans le réseau vocal
   Channels are visible: false
