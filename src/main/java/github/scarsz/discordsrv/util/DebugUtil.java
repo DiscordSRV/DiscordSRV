@@ -74,7 +74,9 @@ import java.util.zip.ZipOutputStream;
 public class DebugUtil {
 
     public static final List<String> SENSITIVE_OPTIONS = Arrays.asList(
-            "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword"
+        "BotToken",
+        "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword",
+        "ProxyHost", "ProxyPort", "ProxyUser", "ProxyPassword"
     );
     public static int initializationCount = 0;
 
