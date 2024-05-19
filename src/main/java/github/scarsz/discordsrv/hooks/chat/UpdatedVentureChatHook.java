@@ -24,9 +24,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.FormattableUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -57,9 +55,7 @@ import venture.Aust1n46.chat.model.VentureChatPlayer;
 import venture.Aust1n46.chat.service.ConfigService;
 import venture.Aust1n46.chat.service.FormatService;
 import venture.Aust1n46.chat.service.PlayerApiService;
-import venture.Aust1n46.chat.utilities.FormatUtils;
 
-@SuppressWarnings("deprecation")
 public class UpdatedVentureChatHook implements ChatHook {
 	@Inject
 	private PluginMessageController pluginMessageController;
@@ -103,6 +99,7 @@ public class UpdatedVentureChatHook implements ChatHook {
 	 */
 	// TODO Remove experimental BungeeCord feature and delete this
 	// TODO Or refactor this logic into something neater inside of the main logic
+	@SuppressWarnings("deprecation")
 	private void processChatMessageWithNoPlayer(final VentureChatEvent event) {
 		final VentureChatPlayer chatPlayer = event.getVentureChatPlayer();
 		final ChatChannel chatChannel = event.getChannel();
