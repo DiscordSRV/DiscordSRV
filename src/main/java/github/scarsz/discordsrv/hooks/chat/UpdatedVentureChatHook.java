@@ -21,18 +21,16 @@
 package github.scarsz.discordsrv.hooks.chat;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.FormattableUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
-
-import com.comphenix.protocol.events.PacketContainer;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -84,7 +82,7 @@ public class UpdatedVentureChatHook implements ChatHook {
 			}
 		} else {
 			// since experimental bungee compatibility is disabled, we don't care about the second event fired
-			if (!event.isBungee() && event.getChannel().getBungee()) {
+			if (!event.isBungee() && event.getChannel().isBungeeEnabled()) {
 				DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event from BungeeCord; ignoring due to VentureChatBungee being disabled");
 				return;
 			}
@@ -103,10 +101,12 @@ public class UpdatedVentureChatHook implements ChatHook {
 	 * Copied from {@link DiscordSRV#processChatMessage} for supporting messages
 	 * with no player
 	 */
+	// TODO Remove experimental BungeeCord feature and delete this
+	// TODO Or refactor this logic into something neater inside of the main logic
 	private void processChatMessageWithNoPlayer(final VentureChatEvent event) {
 		final VentureChatPlayer chatPlayer = event.getVentureChatPlayer();
 		final ChatChannel chatChannel = event.getChannel();
-		final boolean bungeeReceive = !event.isBungee() && chatChannel.getBungee();
+		final boolean bungeeReceive = !event.isBungee() && chatChannel.isBungeeEnabled();
 		String message = event.getChat();
 		DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD,
 				"Processing VentureChat message without a Player object" + (bungeeReceive ? " (a BungeeCord receive)" : " (not a BungeeCord receive)"));
@@ -235,41 +235,20 @@ public class UpdatedVentureChatHook implements ChatHook {
 					"Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
 			return;
 		}
-		String channelColor = null;
-		try {
-			channelColor = ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString();
-		} catch (final Exception e) {
-			// if it has a section sign it's probably a already formatted color
-			if (chatChannel.getColor().contains(MessageUtil.LEGACY_SECTION.toString())) {
-				channelColor = MessageUtil.translateLegacy(chatChannel.getColor());
-			}
-		}
-		final String legacyMessage = MessageUtil.toLegacy(component);
 		final String message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
 				.replace("%channelname%", chatChannel.getName())
 				.replace("%channelnickname%", chatChannel.getAlias())
-				.replace("%message%", legacyMessage)
-				.replace("%channelcolor%", MessageUtil.translateLegacy(channelColor != null ? channelColor : ""));
-		if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
-			final String playerMessage = chatChannel.isFiltered() ? formatService.filterChat(message) : message;
+				.replace("%message%", MessageUtil.toLegacy(component))
+				.replace("%channelcolor%", chatChannel.getColor());
+		final String playerMessage = chatChannel.isFiltered() ? formatService.filterChat(message) : message;
+		if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.isBungeeEnabled()) {
 			pluginMessageController.sendDiscordSRVPluginMessage(chatChannel.getName(), playerMessage);
 			DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Sent a message to VentureChat via BungeeCord (channel: " + chatChannel.getName() + ")");
 		} else {
-			final List<VentureChatPlayer> playersToNotify = playerApiService.getOnlineMineverseChatPlayers()
+			formatService.createAndSendExternalChatMessage(playerMessage, chatChannel.getName(), "Discord");
+			PlayerUtil.notifyPlayersOfMentions(player -> playerApiService.getOnlineMineverseChatPlayers()
 					.stream()
-					.filter(p -> p.getListening().contains(chatChannel.getName()))
-					.filter(p -> !chatChannel.hasPermission() || p.getPlayer().hasPermission(chatChannel.getPermission()))
-					.toList();
-			for (final VentureChatPlayer player : playersToNotify) {
-				final String playerMessage = (chatChannel.isFiltered() && player.isFilter() ? formatService.filterChat(message) : message);
-				final String json = formatService.convertPlainTextToJson(playerMessage, true);
-				final int hash = FormatUtils.stripColor(playerMessage).hashCode();
-				final String finalJSON = formatService.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
-				final PacketContainer packet = formatService.createPacketPlayOutChat(finalJSON);
-				formatService.sendPacketPlayOutChat(player.getPlayer(), packet);
-			}
-			PlayerUtil.notifyPlayersOfMentions(player -> playersToNotify
-					.stream()
+					.filter(vcp -> configService.isListening(vcp, chatChannel.getName()))
 					.map(VentureChatPlayer::getPlayer)
 					.toList().contains(player), message);
 		}
