@@ -28,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -58,63 +57,46 @@ import venture.Aust1n46.chat.initiators.application.VentureChat;
 import venture.Aust1n46.chat.model.ChatChannel;
 import venture.Aust1n46.chat.model.VentureChatPlayer;
 import venture.Aust1n46.chat.service.ConfigService;
-import venture.Aust1n46.chat.service.VentureChatFormatService;
-import venture.Aust1n46.chat.service.VentureChatPlayerApiService;
+import venture.Aust1n46.chat.service.FormatService;
+import venture.Aust1n46.chat.service.PlayerApiService;
 import venture.Aust1n46.chat.utilities.FormatUtils;
 
+@SuppressWarnings("deprecation")
 public class UpdatedVentureChatHook implements ChatHook {
 	@Inject
 	private PluginMessageController pluginMessageController;
 	@Inject
-	private VentureChatFormatService formatService;
+	private FormatService formatService;
 	@Inject
 	private ConfigService configService;
 	@Inject
-	private VentureChatPlayerApiService apiService;
+	private PlayerApiService playerApiService;
 
 	private Plugin plugin;
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onVentureChat(final VentureChatEvent event) {
-		final ChatChannel chatChannel = event.getChannel();
-		if (chatChannel == null) {
-			// uh oh, ok then
-			DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received VentureChatEvent with a null channel");
-			return;
-		}
-		final boolean bungeeSend = event.isBungee();
-		final boolean bungeeReceive = !bungeeSend && chatChannel.getBungee();
-		final boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
-		if (shouldUseBungee) {
-			// event will fire again when received. don't want to process it twice for the
-			// sending server
-			if (bungeeSend) {
-				DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event that it to be sent to BungeeCord, ignoring due to VentureChatBungee being enabled");
+		if (DiscordSRV.config().getBoolean("VentureChatBungee")) {
+			// event will fire again when received. We don't want to process it twice for the sending server
+			if (event.isBungee()) {
+				DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event that is to be sent to BungeeCord; ignoring due to VentureChatBungee being enabled");
 				return;
 			}
 		} else {
-			// since bungee compatibility is disabled, we don't care about messages that we
-			// receive
-			if (bungeeReceive) {
-				DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event from BungeeCord, ignoring due to VentureChatBungee being disabled");
+			// since experimental bungee compatibility is disabled, we don't care about the second event fired
+			if (!event.isBungee() && event.getChannel().getBungee()) {
+				DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event from BungeeCord; ignoring due to VentureChatBungee being disabled");
 				return;
 			}
 		}
-		final VentureChatPlayer chatPlayer = event.getVentureChatPlayer();
-		DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChatEvent (player: " + (chatPlayer != null ? chatPlayer.getName() : "null") + ")");
-		if (chatPlayer != null) {
-			final Player player = chatPlayer.getPlayer();
-			if (player != null) {
-				// these events are never cancelled
-				DiscordSRV.getPlugin().processChatMessage(player, event.getChat(), chatChannel.getName(), false, event);
-				return;
-			}
+		final VentureChatPlayer ventureChatPlayer = event.getVentureChatPlayer();
+		DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChatEvent (player: " + (ventureChatPlayer != null ? ventureChatPlayer.getName() : "null") + ")");
+		if (ventureChatPlayer != null) {
+			// these events are never cancelled
+			DiscordSRV.getPlugin().processChatMessage(ventureChatPlayer.getPlayer(), event.getChat(), event.getChannel().getName(), false, event);
+		} else {
+			processChatMessageWithNoPlayer(event);
 		}
-		if (!shouldUseBungee) {
-			DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat message with a null MineverseChatPlayer or Player (and BungeeCord is disabled)");
-			return;
-		}
-		processChatMessageWithNoPlayer(event);
 	}
 
 	/**
@@ -269,21 +251,19 @@ public class UpdatedVentureChatHook implements ChatHook {
 				.replace("%message%", legacyMessage)
 				.replace("%channelcolor%", MessageUtil.translateLegacy(channelColor != null ? channelColor : ""));
 		if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
-			final String playerMessage = chatChannel.isFiltered() ? formatService.FilterChat(message) : message;
+			final String playerMessage = chatChannel.isFiltered() ? formatService.filterChat(message) : message;
 			pluginMessageController.sendDiscordSRVPluginMessage(chatChannel.getName(), playerMessage);
 			DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Sent a message to VentureChat via BungeeCord (channel: " + chatChannel.getName() + ")");
 		} else {
-			final List<VentureChatPlayer> playersToNotify = apiService.getOnlineMineverseChatPlayers()
+			final List<VentureChatPlayer> playersToNotify = playerApiService.getOnlineMineverseChatPlayers()
 					.stream()
 					.filter(p -> p.getListening().contains(chatChannel.getName()))
 					.filter(p -> !chatChannel.hasPermission() || p.getPlayer().hasPermission(chatChannel.getPermission()))
 					.toList();
 			for (final VentureChatPlayer player : playersToNotify) {
-				final String playerMessage = (player.isFilter() && chatChannel.isFiltered() ? formatService.FilterChat(message) : message);
-				// escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
-				final String escapedPlayerMessage = playerMessage.replace("\"", "\\\"");
-				final String json = formatService.convertPlainTextToJson(escapedPlayerMessage, true);
-				final int hash = FormatUtils.stripColor(escapedPlayerMessage).hashCode();
+				final String playerMessage = (chatChannel.isFiltered() && player.isFilter() ? formatService.filterChat(message) : message);
+				final String json = formatService.convertPlainTextToJson(playerMessage, true);
+				final int hash = FormatUtils.stripColor(playerMessage).hashCode();
 				final String finalJSON = formatService.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
 				final PacketContainer packet = formatService.createPacketPlayOutChat(finalJSON);
 				formatService.sendPacketPlayOutChat(player.getPlayer(), packet);
