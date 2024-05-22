@@ -155,10 +155,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         if (member.getRoles().isEmpty()) return "";
 
-        List<Role> selectedRoles = DiscordSRV.getPlugin().getSelectedRoles(member);
-        if (selectedRoles.isEmpty()) return "";
-
-        Role topRole = DiscordUtil.getTopRole(member);
+        Role topRole = DiscordSRV.getPlugin().getTopSelectedRole(member);
         if (topRole != null) {
             switch (identifier) {
                 case "user_top_role_id":
