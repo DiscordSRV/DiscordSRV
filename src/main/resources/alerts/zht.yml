@@ -1,0 +1,124 @@
+# DiscordSRV | 翻譯者: 510208
+#
+# 這是 DiscordSRV 的一個/高級/功能，可讓您在遊戲事件發生時向 Discord 發送訊息
+# 當使用它時。您需要了解 Bukkit 事件如何運作及其屬性的實用知識。
+# 如果您不確定自己在這裡做什麼，可以詢問開發人員或加入我們的支援伺服器@discordsrv.com/discord
+#
+# 請參閱 Bukkit API javadoc 尋找要使用的事件和屬性：
+# https://hub.spigotmc.org/javadocs/bukkit
+# 學習如何使用 SpEL 的有用資源：
+# https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
+# https://dzone.com/articles/learn-spring-expression-language-with-examples
+#
+# 您可以使用下列佔位符：
+# {tps} - 伺服器 TPS
+# {time} - 格式化時間
+# {date} - 格式化日期
+# {name} - 如果警報針對玩家事件，則為玩家的姓名
+# {ping} - 如果警報是針對玩家事件，則玩家的 ping
+# {username} - 如果警報針對玩家事件，則為玩家的使用者名
+# {displayname} - 如果警報針對玩家事件，則為玩家的顯示名稱
+# {usernamenoescapes} - 如果警報針對玩家事件，則為不轉義不和諧格式的玩家的使用者名稱（用於內聯程式碼和程式碼區塊 Markdown）
+# {displaynamenoescapes} - 如果警報針對玩家事件，則為不轉義不和諧格式的玩家的顯示名稱（用於內聯代碼和代碼塊降價）
+# {world} - 如果警報針對玩家事件，則為玩家所在的世界
+# {embedavatarurl} - 如果警報針對玩家事件，則為玩家頭部的頭像 url，否則為機器人的頭像 url
+# {botavatarurl} - 機器人的頭像網址
+# {botname} - 機器人的名稱
+# %placeholder% - 任何 PlaceholderAPI 佔位符，只能在針對玩家事件發出警報時使用玩家佔位符
+#
+# 也可以將SpEL表達式與${表達式...}一起使用，例如...
+# - 取得玩家的IP：${#player.address.address.hostAddress}
+# - 取得玩家的遊戲模式：${#player.gameMode.name()}
+# - 取得玩家關聯的 Discord 帳號 ID：${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+# - 取得線上玩家數量：${#server.onlinePlayers.size()}
+# - 取得 DiscordSRV 與 Discord 的連線狀態：${#jda.status.name()}
+# - 檢查玩家是否在特定世界：${#player.world.name == 'world_the_end'}
+# - 檢查玩家所在的世界是否為白天：${#player.world.time > 0 && #player.world.time < 13000}
+# 您可以使用下列表達式佔位符，如上所示：
+# #plugins.<plugin> - 指定的插件實例，如果不存在則為 null
+# #event - 如果此警報是事件警報，則觸發警報的事件
+# #server - Bukkit API 伺服器實例，相當於 Bukkit#getServer
+# #discordsrv - DiscordSRV 外掛實例
+# #player - 事件所屬的玩家（如果這是玩家事件或指令）
+# #sender - 命令發送者，如果這是命令警報
+# #command - 完整命令，不含前導斜線（如果這是命令警報）
+# #args - 命令參數（如果這是命令警報）
+# #allArgs - 如果這是命令警報，則命令參數作為一個字串
+# #channel - 此警報的目標頻道
+# #jda - DiscordSRV 的 JDA 實例，用於與 Discord 通訊
+#
+# Syntax/defaults:
+#  - Trigger: <event name or /command>
+#    Async: true # optional, defaults to true, you should almost never have to change this
+#    Conditions:
+#      - property == < > <= >= value etc
+#    Channel: <discordsrv channel name>
+#    IgnoreCancelled: true # only for event alerts
+#    Content: ""
+#    Webhook:
+#      Enabled: false
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{botname}"
+#    Embed:
+#      Enabled: true
+#      Color: "#00ff00" # accepts a hex color code (eg. "#ffffff") or a rgb integer (eg. 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{username} did... something."
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # set to true to use the time the message was sent or use a epoch timestamp for a specific time (https://www.epochconverter.com/)
+#
+Alerts:
+  # Example config to send messages to the "fish" DiscordSRV channel when a player successfully catches a fish
+  #- Trigger: PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+
+  # Example config to send Matrix anti-cheat messages
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # don't send events for players with < 5 violations
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} failed ${hackType.name().toLowerCase()} check | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+  # Example config to send /gamemode messages
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} changed gamemode to ${#args.get(0)}"
+
+  # Example config to send /me commands
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"
