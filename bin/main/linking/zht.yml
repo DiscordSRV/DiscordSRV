@@ -1,0 +1,59 @@
+# DiscordSRV | 翻譯者: 510208
+#
+Require linked account to play:
+  Enabled: false
+
+  # 如果您不知道這些是什麽意思，請不要觸摸它們
+  #
+  # 加入監聽器的優先級
+  # 按照從頭到尾的順序，可用值為LOWEST，LOW，NORMAL，HIGH，HIGHEST
+  # 您可能需要將此優先級更改為更高的優先級，以在DiscordSRV拒絕播放器之前將其插入播放器
+  Listener priority: LOWEST
+  # 帳號連接模組應監聽並禁止登錄的事件
+  # 一些白名單插件使用AsyncPlayerPreLoginEvent（很好），一些使用PlayerLoginEvent（不好）
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # 如果您不知道這些是什麽意思，請不要觸摸它們
+
+  # Minecraft IGN始終允許，忽略播放器是否連結或訂戶
+  Bypass names: [Scarsz, Vankka]
+  # 如果 Vanilla 白名單上的玩家不需要連接其帳戶或具有子角色
+  Whitelisted players bypass check: true
+  # 是否讓 Vanilla 禁止名單中的玩家能夠連接其帳戶
+  Check banned players: false
+  # 不在 Vanilla 黑名單中的玩家是否會繞過連結其帳戶/具有子角色的需要
+  Only check banned players: false
+
+  # 提示玩家連結其帳戶的消息
+  # 使用{BOT}作為機器人名稱的占位符
+  # 使用{CODE}作為占位符，以占人DM機器人所需的代碼
+  # 使用{INVITE}作為人們加入Discord服務器所需的邀請連結的占位符，使用config.yml中配置的DiscordInviteLink
+  Not linked message: "&7您必須連接您的&9Discord&7帳戶才能玩。\n\n&7將僅包含&b{CODE}&7的DM發送到Discord服務器中的&b{BOT}&7，以連結您的帳戶。\n\n&7Discord邀請 » &b{INVITE}"
+
+  # 如果啟用，玩家不僅需要關聯其帳戶，還需要
+  # 成為該機器人所在的Discord服務器的成員。
+  #
+  # 可接受的格式:
+  #   true/false: 關聯帳戶必須至少位於該漫遊器所在的一台Discord服務器中
+  #     前: true
+  #   <服務器ID>: 關聯帳戶必須位於給定的Discord服務器中
+  #     前: 135634590575493120
+  #   [<服務器ID>，<服務器ID>，...]：連結帳戶必須位於所有給定的Discord服務器中
+  #     前: [135634590575493120, 690411863766466590]
+  #
+  # 當您在下面強制執行了訂戶角色時，此選項的值將被取代。
+  Must be in Discord server: true
+
+  #（可選）要求人們不僅要連結，而且要擁有一個或所有指定角色（例如Twitch子角色）中的一個
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # 如果為false，則僅需要上述角色之一
+    Kick message: "&c您必須訂閱Twitch才能玩。"
+
+  Messages:
+    DiscordSRV still starting: "&c當前無法檢查帳戶連結狀態，因為服務器仍在連接到Discord。\n\n請稍後重試。"
+    Not in server: "&c您目前不屬於我們的Discord服務器。\n\n加入{INVITE}！"
+    Failed to find subscriber role: "&c在Discord上找不到任何訂戶角色。\n\n有關此問題，請與您的服務器管理員聯系。"
+    Failed for unknown reason: "&c嘗試驗證您的帳戶時發生錯誤。\n\n有關此問題，請與您的服務器管理員聯系。"
+    Kicked for unlinking: "&c您因取消帳戶關聯而被踢出服務器。\n\n請重新加入服務器以再次連結您的帳戶。"

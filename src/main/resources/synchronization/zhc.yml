@@ -1,0 +1,53 @@
+# Minecraft-> Discord昵称同步
+#
+# NicknameSynchronizationEnabled：是否将不和用户的昵称自动设置为昵称格式
+# NicknameSynchronizationCycleTime：重复触发所有在线播放器同步之间的分钟数
+# NicknameSynchronizationFormat：昵称格式（请注意，该长度不能超过32个字符）
+# %displayname%：          玩家的显示名称
+#                           例子：Jeb
+# %username%：             玩家的用户名
+#                           示例：Jeb_
+# %discord_name%：         玩家的不一致用户名
+#                           例子：Jeb
+# %discord_discriminator%：玩家的不一致识别符
+#                           示例：4988
+# 支持PlaceholderAPI占位符的值
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Minecraft 群組 <-> Discord 身分組 同步
+# 需要Vault
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: 这些是您希望在Discord和Minecraft之间同步的角色/组
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} 是添加更多组/角色对时要采用的格式
+#                                               若想取得Discord伺服器上的身分組ID 執行"/discord debug" 並查看第一區塊
+# GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraft组更改是否覆盖Discord角色更改
+# GroupRoleSynchronizationOneWay: whether to synchronise only one way, the way it is synchronised depends on the value
+#                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
+# GroupRoleSynchronizationEnableDenyPermission：是否启用了 discordsrv.sync.deny.<组> 权限
+# GroupRoleSynchronizationPrimaryGroupOnly: 如果为true，则仅计算玩家的主要组进行同步, 否则，群组同步会计算玩家所在的所有群组，包括上级群组
+# GroupRoleSynchronizationOnLink：播放器链接时是否重新同步
+# GroupRoleSynchronizationCycleTime: 更新間隔(分鐘)
+# GroupRoleSynchronizationCycleCompletely: 在计时器上运行的同步是否应该同步bots Discord服务器中的每个成员
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
+
+# 封鎖名單同步
+# 當已連結至Discord的玩家在Minecraft伺服器中被封鎖, 同時將其在Discord伺服器上封鎖。 反之亦同。
+#
+# BanSynchronizationDiscordToMinecraft: 是否將Discord的封鎖名單同步於Minecraft上封鎖
+# BanSynchronizationDiscordToMinecraftReason: 同步於Minecraft上封鎖時傳送給玩家的訊息
+# BanSynchronizationMinecraftToDiscord: 是否將Minecraft的封鎖名單同步於Discord上封鎖
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&c由於在Discord上被封鎖, 您的Minecraft帳號已被伺服器同步封鎖。"
+BanSynchronizationMinecraftToDiscord: false
