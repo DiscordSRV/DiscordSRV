@@ -224,7 +224,7 @@ DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
 DiscordChatChannelConsoleCommandRolesAllowed: ["插件師", "服主"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
-DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["插件師", "服主"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
@@ -248,7 +248,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: 正規表示式過濾器將套用於傳送至Minecraft的聊天訊息，如果結果為空，則根本不會傳送訊息
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*線上玩家： \\(.*": "", ".*\\*\\*目前無人在線\\*\\*.*": ""}
 
 # 頻道主題內容更新設定
 #
@@ -280,7 +280,7 @@ ChannelTopicUpdaterRateInMinutes: 10
 #     %totalmemorygb%:  JVM 的總內存 GB
 #     %maxmemorygb%:    JVM 的最大內存 GB
 #     %tps%:            服務器平均TPS
-#     PlaceholderAPI 占位符也受支持
+#     PlaceholderAPI 占位符受支持
 #   ShutdownFormat:當服務器關閉時通道應該采用的格式。可用占位符:
 #     %time% 或 %date%:  當前日期和時間
 #     %serverversion%:  服務器版本
@@ -289,12 +289,12 @@ ChannelTopicUpdaterRateInMinutes: 10
 #   UpdateInterval:更新頻道名稱之間的等待時間（由於速率限制，最小值為 10）
 ChannelUpdater:
   - ChannelId: "0000000000000000"
-    Format: "%playercount% 玩家在线"
-    ShutdownFormat: "服务器离线"
+    Format: "共 %playercount% 位玩家在線上"
+    ShutdownFormat: "伺服器已關機"
     UpdateInterval: 10
   - ChannelId: "0000000000000000"
-    Format: "当前 TPS: %tps%"
-    ShutdownFormat: "服务器离线"
+    Format: "目前 TPS: %tps%"
+    ShutdownFormat: "伺服器已離線"
     UpdateInterval: 10
 
 # Discord 自動回覆(指令)
@@ -322,9 +322,9 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         連結的Discord名稱
 #                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 當使用者已連結帳號時將其加入該身分組
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 當使用者已連結帳號時將其加入該身分組（請使用ID）
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允許向機器人發送新代碼以取消鏈接並與新代碼重新鏈接
-# MinecraftDiscordAccountLinkedUsePM: 使用PM鏈接賬戶
+# MinecraftDiscordAccountLinkedUsePM: 使用PM連接帳戶
 # MinecraftDiscordAccountLinkedMessageDeleteSeconds: 在文本通道中鏈接時，刪除信息前的時間（以秒為單位）。 如果你不想刪除信息，請設置為0。
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
