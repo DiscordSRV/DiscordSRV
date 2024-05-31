@@ -1,0 +1,352 @@
+# DiscordSRV-Konfiguration
+# Brauchen Sie Hilfe? Treten Sie unserem Discord bei, https://discordsrv.com/discord
+
+# Bitte nicht verändern!
+ConfigVersion: ${version}
+
+# Bot Token, du weißt nicht, was das ist? Schau dir das Video auf der Pluginseite an!
+# Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
+BotToken: "BOTTOKEN"
+
+# Kanalverbindungen vom Spiel zu Discord
+# Syntax ist Channels: {"Kanalname im Spiel von Minecraft": "numerische Kanal-ID von Discord", "ein anderer Kanalname im Spiel von Minecraft": "eine andere numerische Kanal-ID von Discord"}
+#
+# Alle Nachrichten von DiscordSRV werden an den ersten Kanal gesendet, es sei denn, für diesen Nachrichtentyp ist ein Kanal definiert:
+# Wenn Sie ein kompatibles Chat-Plugin verwenden, ist der Kanalname der Name dieses Plugins (für Chat-Nachrichten).
+#  - Wenn Sie TownyChat verwenden, wird der Standardkanal normalerweise "general" anstelle von "global" genannt.
+# für Spieler-Chat-Nachrichten (wenn kein Chat-Plugin verwendet wird): global
+# für Server-Start/Stop-Nachrichten: status
+# für Erfolgs- / Aufstiegsnachrichten: awards
+# für Todesmeldungen: deaths
+# für Join-Nachrichten: join
+# für Nachrichten hinterlassen: leave
+# für Dynmap-Nachrichten: dynmap
+# für Watchdog-Nachrichten: watchdog
+# for /discord broadcast: broadcasts (sofern nicht im Befehl angegeben)
+# für Account-Link: link
+#
+# Der erste Teil von Kanalpaaren ist nicht der Discord-Kanalname!
+# Führen Sie ein "/discord reload" aus, nachdem Sie diese Option zum Anwenden geändert haben
+Channels: {"global": "000000000000000000"}
+
+# Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
+DiscordConsoleChannelId: "000000000000000000"
+
+# Der Einladungslink wird den Spielern bei Verwendung von /discord und in der Nachricht angezeigt, die den nicht verbundenen Spielern angezeigt wird, wenn die Verknüpfung erzwungen wird
+DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
+
+# Debug-Informationen
+# Aktivieren Sie diese nur, wenn Sie versuchen, ein Problem zu finden
+#
+# Verfügbare Debug-Kategorien:
+# MINECRAFT_TO_DISCORD  - Nachrichten von Minecraft
+# DISCORD_TO_MINECRAFT  - Nachrichten von Discord
+# GROUP_SYNC            - Gruppensynchronisation
+# PRESENCE              - Der Spielstatus oder die Präsenz des Bots
+# VOICE                 - Das Sprachmodul (siehe voice.yml)
+# REQUIRE_LINK          - Der Link zum Beitritt zum Modul erforderlich (siehe linking.yml)
+# NICKNAME_SYNC         - Spitznamensynchronisation
+# ALERTS                - Waarschuwingen (siehe alerts.yml)
+# WATCHDOG              - Server-Watchdog
+# BAN_SYNCHRONIZATION   - Synchronisierung von Bans
+# LP_CONTEXTS           - Kontexte von LuckPerm
+# ACCOUNT_LINKING       - Discord/Minecraft-Kontoverknüpfung
+#
+# UNCATEGORIZED         - Alles, was keiner der oben genannten Kategorien angehört
+# ALL                   - Alle oben genannten Kategorien (einschließlich UNCATEGORIZED)
+#
+# JDA                   - Debug-Meldungen von JDA
+# JDA_REST_ACTIONS      - Zum Debuggen der Restaktionen von JDA
+# CALLSTACKS            - Zeigt den Stack-Trace für DiscordSRV-Debug-Aufrufe an
+#
+# Beispiel: "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 0 is the same as setting Debug to [ALL]
+DebugLevel: 0
+
+# Experimente
+# Diese Funktionen sind nicht vollständig optimiert. Benutzung auf eigene Gefahr
+
+# JDBC (MySQL/MariaDB)
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
+Experiment_JdbcTablePrefix: "discordsrv"
+Experiment_JdbcUsername: "username"
+Experiment_JdbcPassword: "password"
+
+# Webhook Lieferung
+Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageFormat: "%message%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
+
+# Einbetten und Webhook-Bild-/Avatar-URL-Format
+# Alternative Einbettungs-Avatar-URL für Offline-Server:
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}
+
+# Reserializer
+# Konvertiert die Formatierung (fett, kursiv, unterstreicht) zwischen Minecraft und Discord
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+
+# Andere
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
+PrintGuildsAndChannels: true
+ForceTLSv12: true
+NoopHostnameVerifier: false
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
+DateFormat: yyyy-MM-dd
+# https://docs.discordsrv.com/config/#Timezone
+Timezone: default
+# MinecraftMentionSound: Ob ein Ton an den Spieler in Minecraft gesendet werden soll, wenn er von Discord aus angesprochen wird
+MinecraftMentionSound: true
+
+# Plugin-Hooks
+# Sie müssen Ihren Server neu starten, nachdem Sie diese Optionen geändert haben
+#
+# DisabledPluginHooks: Plugin-Hooks, die nicht verwendet werden (normalerweise nur der Name des Plugins).
+# VentureChatBungee: Aktiviert die BungeeCord-Funktionalität des VentureChat-Hooks (Nachrichten werden von jedem Server empfangen, mindestens 1 Spieler muss online sein).
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
+DisabledPluginHooks: []
+VentureChatBungee: false
+EnablePresenceInformation: false
+UseModernPaperChatEvent: false
+
+# Game Information
+# Sets the "Playing: ______" indicator for the bot.
+# Can be a single, static value, or cycle through multiple different options
+# You can preface the status with "playing", "watching", or "listening to" to set the activity type
+# PlaceholderAPI placeholders are supported
+#
+# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
+# StatusUpdateRateInMinutes: How frequently to cycle the status
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
+StatusUpdateRateInMinutes: 2
+
+# Chat-Kanäle betreffende Einstellungen
+# Chat-Kanäle geben Spielernachrichten von Minecraft nach Discord und umgekehrt wieder. Mit einem Chat-Räume
+# unterstützendem Plugin lassen sich außerdem mehrere Kanal-Paare verbinden.
+#
+# DiscordChatChannelDiscordToMinecraft: legt fest ob Nachrichten von Discord nach Minecraft geschickt werden sollen
+# DiscordChatChannelMinecraftToDiscord: legt fest ob Nachrichten von Minecraft nach Discord geschickt werden sollen
+# DiscordChatChannelTruncateLength: maximale Länge einer Nachricht, die von Discord nach Minecraft versandt wird
+# DiscordChatChannelTranslateMentions: ob du Discord-Erwähnungen wie @Person für Nachrichten von Minecraft to Discord in Verbindung bringst
+# DiscordChatChannelAllowedMentions: Arten von Erwähnungen, die in Minecraft erlaubt sind, Nachrichten zu widersprechen; Typen, die im Standardwert fehlen, sind "role", "here" und "everyone".
+# DiscordChatChannelEmojiBehavior: Gibt an, wie Emojis nach Minecraft gesendet werden. Kann die Werte "show", "name" oder "hide" annehmen.
+# DiscordChatChannelEmoteBehavior: Gibt an, wie Emotes nach Minecraft gesendet werden. Kann die Werte "name" oder "hide" annehmen.
+# DiscordChatChannelPrefixRequiredToProcessMessage: nur Nachrichten mit diesem Präfix werden von Minecraft nach Discord geschickt (z.B. "!")
+# DiscordChatChannelPrefixActsAsBlacklist: Ob das Präfix als schwarze Liste fungieren soll oder nicht
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: Liste mit Gruppen, die bei Nachrichten von Discord nach Minecraft (Farb-)formatierungscodes benutzen dürfen
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: legt fest, ob Nachrichten von Discord nach Minecraft zusätzlich an die Konsole geschickt werden sollen
+# DiscordChatChannelRequireLinkedAccount: gibt an, ob Spieler ihren Discord und Minecraft Account erst verbinden müssen, damit sie Nachrichten von Discord nach Minecraft senden dürfen
+# DiscordChatChannelBlockBots: gibt an, ob Chat für alle Bots von Discord nach Minecraft blockiert werden soll
+# DiscordChatChannelBlockWebhooks: ob Bots für den Discord -> MC-Chat gesperrt werden sollen oder nicht
+# DiscordChatChannelBlockedIds: IDs von Discord Nutzern (oder Bots) deren Nachrichten nicht von Discord nach Minecraft gesendet werden
+# DiscordChatChannelBlockedRolesAsWhitelist: wenn die folgende Liste als Whitelist (true) oder als Blacklist (false) behandelt werden soll
+# DiscordChatChannelBlockedRolesIds: IDs von Discord rollen deren Nachrichten nicht von Discord nach Minecraft gesendet werden
+# DiscordChatChannelRolesSelectionAsWhitelist: wenn die folgende Liste als Whitelist (true) oder als Blacklist (false) behandelt werden soll
+# DiscordChatChannelRolesSelection: Liste der Rollen, die aus allen Rollen eines Benutzers herausgefiltert werden sollen
+# DiscordChatChannelRoleAliases: Liste der Rollen-Aliase (alternative Namen für Rollen, die in Minecraft-Nachrichten verwendet werden sollen)
+#
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelTruncateLength: 256
+DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
+DiscordChatChannelEmojiBehavior: "name"
+DiscordChatChannelEmoteBehavior: "name"
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+
+# Konsolenkanal betreffende Einstellungen
+# Der Konsolenkanal verbindet die Minecraft-Konsole mit einem Discord-Kanal. Somit lassen sich über diesen Kanal in
+# Discord Befehle abschicken und jegliche Ausgabe der Konsole wird wiederum nach Discord versandt.
+#
+# Sie können die Konsole Nachricht in messages.yml anpassen (einschließlich Entfernen des Zeitstempels)
+#
+# DiscordConsoleChannelLogRefreshRateInSeconds: Zeit in Sekunden zwischen dem Zusenden neuer Zeilen von der Konsole
+# DiscordConsoleChannelUsageLog:
+#    %date%:   aktuelles datum
+#              beispiel: 2017-01-01
+#    PlaceholderAPI Platzhalter werden unterstützt
+# DiscordConsoleChannelBlacklistActsAsWhitelist: gibt an, ob die Blacklist für Befehle als Whitelist fungieren soll
+# DiscordConsoleChannelBlacklistedCommands: Befehle, die über den Konsolenkanal nicht ausführbar sein sollen
+# DiscordConsoleChannelFilters: Regex-Filter, die auf Konsolenleitungen angewendet werden sollen, die an Discord gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
+# DiscordConsoleChannelLevels: Log-Level der Befehlsausgaben, die im Konsolenkanal angezeigt werden
+# DiscordConsoleChannelUseCodeBlocks: wenn die Konsole in Codeblöcke verpackt und eingefärbt werden soll
+# DiscordConsoleChannelBlockBots: ob es Bots erlaubt sein soll, Befehle im Konsolenkanal zu senden
+#
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
+DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelUseCodeBlocks: true
+DiscordConsoleChannelBlockBots: true
+
+# Befehle in Chat-Räumen
+# Über diese Funktion können auch in normalen Chat-Räumen Befehle versendet werden, indem sie mit einem Präfix wie z.B.
+# "!c kick notch" versehen werden.
+#
+# DiscordChatChannelConsoleCommandEnabled: gibt an, ob Befehle in Chat-Räumen möglich sind
+# DiscordChatChannelConsoleCommandNotifyErrors: gibt an, ob der Sender über fehlende Berechtigungen informiert werden soll, wenn er diese nicht hat
+# DiscordChatChannelConsoleCommandPrefix: Prefix zur Erkennung von Befehlen, z.B. "!c"
+# DiscordChatChannelConsoleCommandRolesAllowed: Liste mit Rollen, die Befehle über den Chat versenden dürfen
+# DiscordChatChannelConsoleCommandWhitelist: Liste mit Befehlen, die auf diesem Weg genutzt werden dürfen
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: Liste mit Rollen, die alle Befehle ausführen dürfen
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: gibt an, ob die Whitelist als Blacklist fungieren soll
+# DiscordChatChannelConsoleCommandExpiration: Zeit in Sekunden bis die Befehlsausgabe vom Bot aus dem Chat entfernt wird, zum Deaktivieren auf 0 setzen
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: gibt an, ob auch der eingegebene Befehl vom Bot gelöscht werden soll
+#
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandNotifyErrors: true
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
+DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+
+# Chat-Raum "playerlist" Befehl
+# Dieser Sonderbefehl braucht kein Präfix und zeigt eine Liste mit allen aktiven Spielern an.
+#
+# DiscordChatChannelListCommandEnabled: gibt an, ob dieser Befehl verfügbar sein soll
+# DiscordChatChannelListCommandMessage: der Befehl, den Spieler eingeben müssen, um die Spielerliste angezeigen zu lassen
+# DiscordChatChannelListCommandExpiration: Zeit in Sekunden bis die Spielerliste vom Bot aus dem Chat entfernt wird, zum Deaktivieren auf 0 setzen
+# DiscordChatChannelListCommandExpirationDeleteRequest: gibt an, ob auch der eingegebene Befehl vom Bot gelöscht werden soll
+#
+DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandMessage: "playerlist"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
+
+# Chat-Raum verbotene Phrasen & Regex
+#
+# DiscordChatChannelGameFilters: Regex-Filter, die auf Chat-Nachrichten angewendet werden sollen, die an Discord gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
+# DiscordChatChannelDiscordFilters: Regex-Filter, die auf Chat-Nachrichten angewendet werden sollen, die an Minecraft gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
+#
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+
+# Discord: Kanalbeschreibung-Updater
+# Die Beschreibung des Haupt-Chat-Kanals kann von dieser Funktion regelmäßig mit Informationen über den Server ersetzt werden.
+#
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: gibt an, ob die Kanalbeschreibung beim Serverstop angepasst werden soll
+# ChannelTopicUpdaterRateInMinutes: Intervall in Minuten, in dem die Kanalbeschreibung aktualisiert wird
+#
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInMinutes: 10
+
+# Kanal-Updater
+# Diese Funktion ändert den Namen bestimmter Kanäle, um den Platzhaltern im Spiel zu entsprechen
+# Optionen:
+#   ChannelId: Die ID des zu ändernden Kanals (erforderlich)
+#   Format: Das Format für den Kanal. Verfügbare Platzhalter:
+#     %playercount%:    aktuelle Spielerzahl
+#     %playermax%:      maximale Spieleranzahl
+#     %date%:           aktuelles Datum und Uhrzeit
+#     %totalplayers%:   Gesamtzahl der Spieler, die jemals der Hauptwelt beigetreten sind
+#     %uptimemins%:     Anzahl der Minuten seit dem Start von DiscordSRV
+#     %uptimehours%:    Anzahl der Stunden seit dem Start von DiscordSRV
+#     %motd%:           motd des Servers
+#     %serverversion%:  Serverversion wie Spigot-1.9
+#     %freememory%:     Freier Speicher der JVM in MB
+#     %usedmemory%:     belegter Speicher der JVM in MB
+#     %totalmemory%:    Gesamtspeicher der JVM in MB
+#     %maxmemory%:      Maximaler Arbeitsspeicher der JVM in MB
+#     %freememorygb%:   Freier Speicher der JVM in GB
+#     %usedmemorygb%:   verwendeter Speicher der JVM in GB
+#     %totalmemorygb%:  Gesamtspeicher der JVM in GB
+#     %maxmemorygb%:    Maximaler Arbeitsspeicher der JVM in GB
+#     %tps%:            durchschnittlicher TPS des Servers
+#     PlaceholderAPI-Platzhalter werden ebenfalls unterstützt
+#   ShutdownFormat: Das Format, das der Kanal annehmen soll, wenn der Server heruntergefahren ist. Verfügbare Platzhalter:
+#     %time% oder %date%: aktuelles Datum und Uhrzeit
+#     %serverversion%:    Serverversion
+#     %totalplayers%:     Gesamtzahl der Spieler, die jemals der Hauptwelt beigetreten sind
+#     %timestamp%:        aktueller Unix-Zeitstempel
+#   UpdateInterval: Wartezeit in Minuten zwischen der Aktualisierung des Kanalnamens (aufgrund von Ratenbegrenzungen mindestens 10)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% Spieler online"
+    ShutdownFormat: "Server ist offline"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Aktueller TPS: %tps%"
+    ShutdownFormat: "Server ist offline"
+    UpdateInterval: 10
+
+# In Discord: vorgefertigte Antworten
+# Diese Befehle/Trigger sorgen für eine automatisierte Antwort, sofern sie ausgelöst werden.
+# Du solltest die Vorgaben am besten an deinen Server anpassen oder komplett neue erstellen.
+#
+# Die Syntax ist {"TRIGGER": "ANTWORT", "TRIGGER": "ANTWORT", ...}
+# Zum Deaktivieren zu {] ändern
+# PlaceholderAPI-Platzhalter werden unterstützt
+#
+DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deineseite.net"}
+
+# Minecraft -> Discord: Accountverknüpfung
+# Dies sind die Optionen, die bestimmen, wie die Verknüpfung von Accounts zwischen Discord und Minecraft funktioniert.
+#
+# MinecraftDiscordAccountLinkedConsoleCommand: Befehl(e), die ausgeführt werden, wenn 2 Accounts verknüpft wurden
+# MinecraftDiscordAccountUnlinkedConsoleCommands: Befehle zum Ausführen, wenn ein Account-Link rückgängig gemacht wird, siehe unten für mögliche Platzhalter
+# Verfügbare Platzhalter:
+# %minecraftplayername%: Minecraft-Name des Spielers
+#                         z.B. Notch
+# %minecraftuuid%:       UUID des Spielers
+#                         z.B. 069a79f4-44e9-4726-a5be-fca90e38aaf5
+# %discordid%:           ID des Discord-Accounts
+#                         z.B. 12345678901234567890
+# %discordname%:         Name des Discord-Accounts
+#                         z.B. Notch
+#
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: der Name oder die ID einer Discord-Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: Ermöglicht das Senden eines neuen Codes an den Bot, um die Verknüpfung zu lösen und mit dem neuen Code erneut zu verknüpfen
+# MinecraftDiscordAccountLinkedUsePM: Verknüpfung von Konten über PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Zeit (in Sekunden) vor dem Löschen der Nachricht bei der Verknüpfung in einem Textkanal. Setzen Sie den Wert auf 0, wenn Sie die Nachricht nicht löschen wollen.
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
+
+# Server-Watchdog
+#
+# Der Server-Watchdog überprüft andauernd, wann der letzte Ingame-Tick passiert ist.
+# Wenn diese Zeit das eingestellte Maximum übersteigt, wird eine Discord-Nachricht gesendet.
+#
+# ServerWatchdogEnabled: gibt an, ob der Watchdog aktiv sein soll
+# ServerWatchdogTimeout: Zeit in Sekunden bis der Watchdog eine Nachricht sendet
+#                         Der Standardwert, ab dem Spigot es als Absturz behandelt, ist 60, der Minimalwert ist 10
+# ServerWatchdogMessageCount: Anzahl der Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, dass du es bemerkst
+#
+ServerWatchdogEnabled: true
+ServerWatchdogTimeout: 30
+ServerWatchdogMessageCount: 3

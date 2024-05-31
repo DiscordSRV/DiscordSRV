@@ -1,0 +1,56 @@
+# Minecraft -> Discord-Spitznamensynchronisation
+#
+# NicknameSynchronizationEnabled: Gibt an, ob der Spitzname des Discord-Benutzers automatisch auf das Spitznamenformat gesetzt werden soll
+# NicknameSynchronizationCycleTime: Anzahl der Minuten zwischen dem wiederholten Auslösen der Synchronisation für alle Online-Spieler
+# NicknameSynchronizationFormat: Das Nickname-Format (beachten Sie, dass dies nicht länger als 32 Zeichen sein sollte)
+# %displayname%:            Anzeigename des Spielers
+#                             beispiel: Jeb
+# %username%:               Benutzername des Spielers
+#                             beispiel: Jeb_
+# %discord_name%:           Discord-Benutzername des Spielers
+#                             beispiel: Jeb
+# %discord_discriminator%:  Discord-Diskriminator des Spielers
+#                             beispiel: 4988
+# PlaceholderAPI-Platzhalter werden für die Werte unterstützt
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Minecraft <-> Discord: Rollensynchronisation
+# Benötigt Vault
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: Dies sind Rollen / Gruppen, die zwischen Discord und Minecraft synchronisiert werden sollen
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} ist das Format, das beim Hinzufügen weiterer Gruppen- / Rollenpaare verwendet werden muss
+#                                               Um die Rollen-IDs der Discord-Gilde zu erhalten, nutze "/discord debug" und schau dir den ersten Abschnitt an
+# GroupRoleSynchronizationMinecraftIsAuthoritative: ob Änderungen an der Minecraft-Gruppe Änderungen an der Discord-Rolle überschreiben oder nicht
+# GroupRoleSynchronizationOneWay: whether to synchronise only one way, the way it is synchronised depends on the value
+#                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
+# GroupRoleSynchronizationEnableDenyPermission: Gibt an, ob die Berechtigungen discordsrv.sync.deny.<gruppe> aktiviert sind
+# GroupRoleSynchronizationPrimaryGroupOnly: Wenn true, wird nur die primäre Gruppe des Spielers für die Synchronisierung gezählt,
+#                                           Andernfalls zählt die Gruppensynchronisierung alle Gruppen, in denen sich der
+#                                           Spieler befindet, einschließlich der übergeordneten Gruppen
+# GroupRoleSynchronizationOnLink: Gibt an, ob beim Verknüpfen eines Players eine erneute Synchronisierung durchgeführt werden soll
+# GroupRoleSynchronizationCycleTime: Intervall in Minuten, in welchem regelmäßig alle aktiven Spieler synchronisiert werden
+# GroupRoleSynchronizationCycleCompletely: Ob auf einem Timer ausgeführte Synchronisierungen jedes Mitglied auf den
+#                                          Discord-Servern des Bots synchronisieren sollen oder nicht
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
+
+# Synchronisierung von Bans
+# Wenn ein Spieler, der Discord und Minecraft verbunden hat, von Discord gebannt wurde, kann er optional auch vom Minecraft-Server gebannt werden (in beide Richtungen).
+#
+# BanSynchronizationDiscordToMinecraft: gibt an, ob Spieler vom Minecraft-Server gebannt werden, wenn sie von Discord gebannt werden
+# BanSynchronizationDiscordToMinecraftReason: der Ban-Grund in Minecraft, wenn Spieler von Discord gebannt wurden
+# BanSynchronizationMinecraftToDiscord: gibt an, ob Spieler vom Discord-Server gebannt werden, wenn sie in Minecraft gebannt wurden
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cDu wurdest von diesem Server gebannt, da du vom zugehörigen Discord-Server gebannt wurdest."
+BanSynchronizationMinecraftToDiscord: false

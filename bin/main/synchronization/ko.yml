@@ -1,0 +1,54 @@
+# Minecraft-> Discord 닉네임 동기화
+#
+# NicknameSynchronizationEnabled : 불일치 사용자의 닉네임을 닉네임 형식으로 자동 설정할지 여부
+# NicknameSynchronizationCycleTime : 모든 온라인 플레이어에 대해 반복적으로 동기화를 트리거하는 간격 (분)
+# NicknameSynchronizationFormat : 닉네임 형식 (32자를 넘지 않아야 함을 명심하십시오)
+# %displayname%:            플레이어의 표시 이름
+#                            예: Jeb
+# %username%:               플레이어의 사용자 이름
+#                            예: Jeb_
+# %discord_name%:           플레이어의 discord 사용자 이름
+#                            예: 4Jeb
+# %discord_discriminator%: 플레이어의 불일치 판별 자
+#                            예: 4988
+# PlaceholderAPI 자리 표시자는 값에 대해 지원됩니다.
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# 마인크래프트 그룹 <-> 디스코드 역할 동기화
+# Vault 플러그인이 필요합니다.
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: 디스코드와 마인크래프트 간의 그룹과 역할을 지정합니다.
+#                                               {"마인크래프트 그룹 이름": "디스코드 역할 아이디"} 형식으로 작성하여 역할/그룹 쌍을 지정할 수 있습니다.
+#                                               디스코드 서버의 역할 ID를 보려면 "/discord debug"를 실행하고 첫번째 섹션을 확인하세요.
+# GroupRoleSynchronizationMinecraftIsAuthoritative: 마인크래프트 그룹의 변경 사항을 디스코드의 역할에 덮어씌울지 설정합니다.
+# GroupRoleSynchronizationOneWay: 그룹 동기화를 일방적으로 적용시킬것인지 설정합니다.
+#                                 동기화 방식은 GroupRoleSynchronizationMinecraftIsAuthoritative 설정에 따라 결정됩니다.
+# GroupRoleSynchronizationEnableDenyPermission: discordsrv.sync.deny.<group> 퍼미션을 활성화할것인지 설정합니다.
+# GroupRoleSynchronizationPrimaryGroupOnly: true로 지정하면 오직 플레이어의 메인 그룹만 동기화됩니다.
+#                                           그게 아니라면, 그룹 동기화는 상위 그룹을 포함한 모든 그룹을 동기화에 적용시킵니다.
+# GroupRoleSynchronizationOnLink: 플레이어가 디스코드와 마인크래프트를 연결하면 그룹을 다시 동기화할지 설정합니다.
+# GroupRoleSynchronizationCycleTime: 몇 분마다 동기화할지 설정합니다.
+# GroupRoleSynchronizationCycleCompletely: 동기화 타이머가 모든 사용자를 대상으로 동기화를 실행할지 설정합니다.
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
+
+# 차단 동기화
+# 만약 플레이어가 디스코드에서 차단당한 경우, 마인크래프트 서버에서도 동시에 밴을 진행합니다. 그 반대도 마찬가지입니다.
+#
+# BanSynchronizationDiscordToMinecraft: 디스코드 서버의 차단을 마인크래프트 서버에 동기화합니다.
+# BanSynchronizationDiscordToMinecraftReason: 디스코드 서버의 차단 사유를 마인크래프트 서버에 동기화합니다.
+# BanSynchronizationMinecraftToDiscord: 마인크래프트 서버의 차단을 디스코드 서버에 동기화합니다.
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&c디스코드 서버에서 차단되어 마인크래프트 서버에서도 차단되었습니다. 이 차단은 추후 공지 시까지 유지됩니다."
+BanSynchronizationMinecraftToDiscord: false

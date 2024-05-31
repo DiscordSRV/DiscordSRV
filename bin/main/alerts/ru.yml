@@ -1,0 +1,121 @@
+# Это - продвинутый функционал DiscordSRV, позволяющий отправлять сообщения в дискорд при каком-либо событии / вводе команды.
+# Вам нужно знать, как работают события в Bukkit.
+# Если вы не уверены в том, как это использовать - можете спросить знакомого разработчика, или присоединиться на наш дискорд-сервер @ discordsrv.com/discord
+#
+# Ссылка на документацию Bukkit API:
+#  https://hub.spigotmc.org/javadocs/bukkit
+# Полезные штуки, которые помогут понять как работает SpEL:
+#  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
+#  https://dzone.com/articles/learn-spring-expression-language-with-examples
+#
+# Вы можете использовать следующие заполнители:
+#  {tps} - Средний TPS серверп
+#  {time} - Текущее время
+#  {date} - Текущая дата
+#  {name} - (для PlayerEvent) имя игрока
+#  {ping} - (для PlayerEvent) пинг игрока
+#  {username} - (для PlayerEvent) имя игрока
+#  {displayname} - (для PlayerEvent) ник игрока
+#  {usernamenoescapes} - if alert is for a player event, the username of the player without escaping discord format (for use in inline code & code block markdown)
+#  {displaynamenoescapes} - if alert is for a player event, the display name of the player without escaping discord format (for use in inline code & code block markdown)
+#  {world} - (для PlayerEvent) мир, в котором находится игрок
+#  {embedavatarurl} - если PlayerEvent, то ссылка на аватар игрока, иначе на аватар бота
+#  {botavatarurl} - ссылка на аватар бота
+#  {botname} - имя бота
+#  %placeholder% - любые шаблоны PlaceholderAPI
+#
+# Вы также можете использовать выражения SpEL через ${expression...}, например...
+#  - Получить IP игрока: ${#player.address.address.hostAddress}
+#  - Получить игровой режим игрока: ${#player.gameMode.name()}
+#  - Получить id привязанного аккаунта в Discord у игрока: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - Получить количество игроков на сервере: ${#server.onlinePlayers.size()}
+#  - Проверить статус DiscordSRV: ${#jda.status.name()}
+#  - Проверить, находится ли игрок в определённом мире: ${#player.world.name == 'world_the_end'}
+#  - Проверить, светит ли солнце в том мире, в котором сейчас игрок: ${#player.world.time > 0 && #player.world.time < 13000}
+#  Вы можете использовать следующие плейсхолдеры:
+#   #plugins.<plugin> - указанный плагин (null, если не существует)
+#   #event - Событие, которое отправит уведомление (если это уведомление действительно отправляется событием)
+#   #server - Эквивалент Bukkit#getServer
+#   #discordsrv - объект плагина DiscordSRV
+#   #player - игрок, который вызвал событие / отправил команду
+#   #sender - отправитель команды
+#   #command - полная команда (без слеша в начале)
+#   #args - аргументы команды
+#   #allArgs - аргументы команды как единая строка
+#   #channel - канал, в который будет отправлено это уведомление
+#   #jda - объект DiscordSRV JDA, нужен чтобы общаться с дискордом
+#
+# Синтаксис/стандартное:
+#  - Trigger: <название события либо /команда>
+#    Conditions:
+#      - property == < > <= >= value и т. д.
+#    Channel: <discordsrv channel name>
+#    IgnoreCancelled: true # Только для событий
+#    Content: ""
+#    Webhook:
+#      Enabled: false
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{botname}"
+#    Embed:
+#      Enabled: true
+#      Color: "#00ff00" # принимает шестнадцатеричный цветовой код (напр. "#ffffff") либо RGB-число (напр. 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{username} сделал... Что-то."
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # Формат - "title;value;inline" (напр. "Кто вошёл?;%displayname%;true") либо "blank", чтобы добавить пустое поле
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # поставьте на true, чтобы использовать время, в которое было отправлено сообщение, иначе будет использоваться unix-timestamp для конкретного времени (https://www.epochconverter.com/)
+#
+Alerts:
+  # Конфиг-образец, отправляет сообщение в канал "fish", когда игрок ловит рыбу
+  #- Trigger: PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} поймал ${caught.itemStack.type.name()}!"
+
+  # Конфиг-образец, чтобы отправлять уведомления античита Matrix
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # Не отправлять инфу про тех, у кого меньше 5 нарушений
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} попался на проверке ${hackType.name().toLowerCase()} | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+  # Конфиг-образец, отправляет сообщение всякий раз, когда кто-то использует /gamemode
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} изменил игровой режим на ${#args.get(0)}"
+
+  # Конфиг-образец, отправляет сообщение всякий раз, когда кто-то использует /me
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"

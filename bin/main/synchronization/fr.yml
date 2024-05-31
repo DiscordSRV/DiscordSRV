@@ -1,0 +1,54 @@
+# Minecraft -> Synchronisation des pseudonymes Discord
+#
+# NicknameSynchronizationEnabled: définir automatiquement ou non le pseudonyme de l'utilisateur Discord au format pseudonyme
+# NicknameSynchronizationCycleTime: nombre de minutes entre le déclenchement répété de la synchronisation pour tous les joueurs en ligne
+# NicknameSynchronizationFormat: le format du surnom (gardez à l'esprit que cela ne doit pas dépasser 32 caractères)
+# %displayname%:            le nom d'affichage du joueur
+#                             Exemple: Jeb
+# %username%:               nom d'utilisateur du joueur
+#                             Exemple: Jeb_
+# %discord_name%:           nom d'utilisateur Discord du joueur
+#                             Exemple: Jeb
+# %discord_discriminator%:  discriminateur de Discorde du joueur
+#                             Exemple: 4988
+# Les espaces réservés PlaceholderAPI sont pris en charge pour les valeurs
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Synchronisation Groupe Minecraft <-> Rôle Discord
+# Nécessite Vault
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: ce sont des rôles / groupes que vous aimeriez synchroniser entre Discord et Minecraft
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} est le format à utiliser lors de l'ajout de paires de groupes / rôles supplémentaires
+#                                               pour obtenir les ID de rôle de votre Discord, exécutez "/discord debug" et regardez la première section
+# GroupRoleSynchronizationMinecraftIsAuthoritative: si les changements de groupe Minecraft remplacent ou non les changements de rôle de Discord
+# GroupRoleSynchronizationOneWay: whether to synchronise only one way, the way it is synchronised depends on the value
+#                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
+# GroupRoleSynchronizationEnableDenyPermission: si les autorisations discordsrv.sync.deny.<groupe> sont activées ou non
+# GroupRoleSynchronizationPrimaryGroupOnly: si vrai, seul le groupe principal du joueur est compté pour la synchronisation,
+#                                           sinon, la synchronisation de groupe compte tous les groupes dans lesquels se trouve le lecteur, y compris les groupes parents
+# GroupRoleSynchronizationOnLink: s'il faut ou non resynchroniser lorsqu'un joueur établit un lien
+# GroupRoleSynchronizationCycleTime: nombre de minutes entre le déclenchement de la synchronisation pour tous les joueurs en ligne
+# GroupRoleSynchronizationCycleCompletely: si les synchronisations effectuées sur un minuteur doivent synchroniser ou non chaque membre du serveur Discord
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
+
+# Synchronisation des bannissements
+# Lorsqu'un joueur est interdit sur le serveur quand ils ont un compte Discord lié, vous pouvez éventuellement les interdire sur le serveur Discord et vice versa
+#
+# BanSynchronizationDiscordToMinecraft: interdire ou non aux personnes sur le serveur Minecraft si elles sont interdites par le serveur Discord
+# BanSynchronizationDiscordToMinecraftReason: le message à utiliser comme motif d'interdiction pour les joueurs bannis du serveur Minecraft
+# BanSynchronizationMinecraftToDiscord: interdire ou non aux personnes sur le serveur Discord si elles sont interdites sur le serveur Minecraft
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cVous avez été banni du serveur Discord. Par conséquent vous êtes également banni sur le serveur Minecraft."
+BanSynchronizationMinecraftToDiscord: false

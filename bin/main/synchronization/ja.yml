@@ -1,0 +1,53 @@
+# Minecraft->Discordのニックネームの同期
+#
+# NicknameSynchronizationEnabled：Discordユーザーのニックネームをニックネーム形式に自動的に設定するかどうか
+# NicknameSynchronizationCycleTime：すべてのオンラインプレーヤーの同期を繰り返しトリガーする間の分数
+# NicknameSynchronizationFormat：ニックネームの形式（これは32文字を超えてはならないことに注意してください）
+# %displayname%:            プレイヤーの表示名
+#                             例: Jeb
+# %username%:               プレイヤーのユーザー名
+#                             例: Jeb_
+# %discord_name%:           プレイヤーのDiscordユーザー名
+#                             例: Jeb
+# %discord_discriminator%:  プレイヤーのDiscordディスクリミネーター
+#                             例: 4988
+# PlaceholderAPIプレースホルダーは値に対してサポートされています
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Minecraft <-> Discord ロール同期
+# Vaultが必要
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: これらはDiscordとMinecraftの間で同期したいロール/グループです
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} さらにグループ/ロールのペアを追加するときに使用する形式です
+#                                               ギルドの役割とそのIDのリストを取得するには、 "/discord debug"を実行して最初のブロックを表示してください
+# GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraftグループの変更がDiscordロールの変更をオーバーライドするかどうか
+# GroupRoleSynchronizationOneWay: whether to synchronise only one way, the way it is synchronised depends on the value
+#                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
+# GroupRoleSynchronizationEnableDenyPermission：discordsrv.sync.deny.<グループ> 権限が有効かどうか
+# GroupRoleSynchronizationPrimaryGroupOnly: trueの場合、プレーヤーのプライマリグループのみが同期のためにカウントされます、
+#                                           それ以外の場合、グループ同期は、親グループを含む、プレーヤーが属するすべてのグループをカウントします
+# GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
+# GroupRoleSynchronizationCycleCompletely: タイマーで実行されている同期がボットのDiscordサーバーのすべてのメンバーを同期する必要があるかどうか
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
+
+# BAN同期
+# プレーヤーがMinecraftとDiscordをリンクしているときに、Minecraft上でプレイヤーがBANされると、DiscordサーバーでもBANすることができます。その逆もできます。
+#
+# BanSynchronizationDiscordToMinecraft: DiscordサーバーからBANされているユーザーをMinecraftサーバー上でもBANするかどうか
+# BanSynchronizationDiscordToMinecraftReason: MinecraftサーバーからプレーヤーをBANするときに、BAN理由として使用されるメッセージ
+# BanSynchronizationMinecraftToDiscord: MinecraftサーバーからBANされているユーザーをDiscordサーバー上でもBANするかどうか
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cDiscordサーバーでBANされているため、Minecraftサーバーにも参加することができません。"
+BanSynchronizationMinecraftToDiscord: false

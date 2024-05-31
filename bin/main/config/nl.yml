@@ -1,0 +1,350 @@
+# DiscordSRV-configuratie
+# Hulp nodig? Word lid van onze Discord, https://discordsrv.com/discord
+
+# Niet veranderen graag. (Do not change!)
+ConfigVersion: ${version}
+
+# Bot token; Weet je niet wat dit is? Kijk de video op de plugin pagina voor instructies.
+# U moet uw server opnieuw opstarten nadat u deze optie hebt gewijzigd
+BotToken: "BOTTOKEN"
+
+# Kanaallinks van game naar Discord
+# syntaxis is Kanalen: {"in-game kanaalnaam van Minecraft": "numerieke kanaal-ID van Discord", "nog een in-game kanaalnaam van Minecraft": "nog een numerieke kanaal-ID van Discord"}
+#
+# Alle berichten van DiscordSRV gaan naar het eerste kanaal, tenzij er een kanaal is gedefinieerd voor dat type berichten:
+# bij gebruik van een van de compatibele chat-plug-ins, worden de kanaalnamen uit die plug-in gehaald (voor chatberichten)
+#  - Als je TownyChat gebruikt, wordt het standaardkanaal meestal "general" genoemd in plaats van "global"
+# voor chatberichten van spelers (als u geen chatplug-in gebruikt): global
+# voor server start / stopp-meldinger: status
+# voor prestatie- / voortgangsboodschappen: awards
+# voor overlijdensberichten: deaths
+# voor join-berichten: join
+# voor verlofberichten: leave
+# voor dynmap-berichten: dynmap
+# voor watchdog-berichten: watchdog
+# voor /discord broadcast: broadcasts (tenzij gespecificeerd in de opdracht)
+# Account link: link
+#
+# Het eerste deel van kanaalparen is niet de kanaalnaam van Discord!
+# Voer "/discord reload" uit nadat u deze optie hebt gewijzigd om toe te passen
+Channels: {"global": "000000000000000000"}
+
+# Console kanaal ID (NIET de naam!). Leeg laten om deze funtie uit te schakelen.
+DiscordConsoleChannelId: "000000000000000000"
+
+# Uitnodigingslink getoond aan spelers bij gebruik /discord en op het bericht getoond aan niet-gekoppelde spelers wanneer het koppelen wordt afgedwongen
+DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
+
+# Foutopsporingsinformatie
+# Schakel deze niet in tenzij u probeert een probleem op te sporen
+#
+# Beschikbare foutopsporingscategorieën:
+# MINECRAFT_TO_DISCORD  - Berichten afkomstig van Minecraft
+# DISCORD_TO_MINECRAFT  - Berichten afkomstig van Discord
+# GROUP_SYNC            - Groepssynchronisatie
+# PRESENCE              - De spelstatus of aanwezigheid van de bot
+# VOICE                 - De spraakmodule (zie voice.yml)
+# REQUIRE_LINK          - De vereiste link om deel te nemen aan de module (zie linking.yml)
+# NICKNAME_SYNC         - Synchronisatie van bijnamen
+# ALERTS                - Waarschuwingen (zie alerts.yml)
+# WATCHDOG              - Server watchdog
+# BAN_SYNCHRONIZATION   - Ban synchronisatie
+# LP_CONTEXTS           - De contexten van LuckPerm
+# ACCOUNT_LINKING       - discord/minecraft-account koppelen
+#
+# UNCATEGORIZED         - Alles wat niet in een van de bovenstaande categorieën valt
+# ALL                   - Alle bovenstaande categorieën (inclusief UNCATEGORIZED)
+#
+# JDA                   - JDA's foutopsporingsberichten
+# JDA_REST_ACTIONS      - Voor het debuggen van de rustacties van JDA
+# CALLSTACKS            - Geeft de stacktracering weer voor DiscordSRV-foutopsporingsoproepen
+#
+# e.g. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 0 is the same as setting Debug to [ALL]
+DebugLevel: 0
+
+# Experimenten
+# Deze functies zijn niet volledig geoptimaliseerd; gebruik op eigen risico
+
+# JDBC (MySQL/MariaDB)
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
+Experiment_JdbcTablePrefix: "discordsrv"
+Experiment_JdbcUsername: "username"
+Experiment_JdbcPassword: "password"
+
+# Webhook levering
+Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageFormat: "%message%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
+
+# Insluiten & webhook afbeelding/avatar url-formaat
+# Alternatieve ingesloten avatar-url voor offline servers:
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Reserializer
+# Converteert opmaak (vetgedrukt, cursief, onderstreept) tussen Minecraft en Discord
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+
+# Andere
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
+PrintGuildsAndChannels: true
+ForceTLSv12: true
+NoopHostnameVerifier: false
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
+DateFormat: yyyy-MM-dd
+# https://docs.discordsrv.com/config/#Timezone
+Timezone: default
+# MinecraftMentionSound: Of er een geluid naar de speler in Minecraft moet worden gestuurd als hij vanuit Discord wordt genoemd
+MinecraftMentionSound: true
+
+# Plugin-haken
+# U moet uw server opnieuw opstarten nadat u deze opties hebt gewijzigd
+#
+# DisabledPluginHooks: plug-inhaken die niet worden gebruikt (meestal alleen de naam van de plug-in).
+# VentureChatBungee: schakelt de BungeeCord-functionaliteit van de VentureChat-haak in (berichten worden ontvangen van elke server, er is minimaal 1 speler nodig om online te zijn)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
+DisabledPluginHooks: []
+VentureChatBungee: false
+EnablePresenceInformation: false
+UseModernPaperChatEvent: false
+
+# Game Information
+# Sets the "Playing: ______" indicator for the bot.
+# Can be a single, static value, or cycle through multiple different options
+# You can preface the status with "playing", "watching", or "listening to" to set the activity type
+# PlaceholderAPI placeholders are supported
+#
+# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
+# StatusUpdateRateInMinutes: How frequently to cycle the status
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
+StatusUpdateRateInMinutes: 2
+
+# Chat kanaal informatie.
+# Het chat kanaal is de text channel op Discord waar alle in-spel berichten komen.
+# Alle berichten die in de text channel op Discord worden gestuurd worden ook in-spel gestuurd.
+#
+# DiscordChatChannelDiscordToMinecraft: Of de berichten in het chat kanaal op Discord ook naar de server gestuurt moeten worden.
+# DiscordChatChannelMinecraftToDiscord: Of de berichten in de in-game chat ook naar het chat kanaal op Discord gestuurt moeten worden.
+# DiscordChatChannelTruncateLength: De maximale lengte van berichten op Discord die naar minecraft moeten worden gestuurd.
+# DiscordChatChannelTranslateMentions: Om al dan niet vermeldingen zoals @Person voor Minecraft naar Discord-berichten te vertalen
+# DiscordChatChannelAllowedMentions: typer pinger tillatt i Minecraft to Discord-meldinger; typer som mangler fra standardverdien er "rolle", "her" og "alle"
+# DiscordChatChannelEmojiBehavior: hoe emojis naar Minecraft gestuurd moeten worden. Kan "show", "name" of "hide" zijn.
+# DiscordChatChannelEmoteBehavior: hoe emotes naar Minecraft gestuurd moeten worden. Kan "show" of "hide" zijn.
+# DiscordChatChannelPrefixRequiredToProcessMessage: Het teken dat voor een bericht moet zitten iets van Minecraft naar Discord the sturen (Bijvoorbeeld "!" of "+")
+# DiscordChatChannelPrefixActsAsBlacklist: Of het voorvoegsel al dan niet als zwarte lijst moet fungeren
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: Lijst van 'roles' die kleuren codes mogen gebruiken in Discord naar Minecraft chat.
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: Of de berichten wel of niet ook nar de console moeten worden gestuurd.
+# DiscordChatChannelRequireLinkedAccount: Of spelers hun Discord account moeten hebben verbonden aan hun Minecraft account voordat ze iets kunnen sturen in Discord.
+# DiscordChatChannelBlockBots: Of bot(s) wel of niet berichten kunnen sturen in Minecraft chat.
+# DiscordChatChannelBlockWebhooks: of bots al dan niet geblokkeerd moeten worden van Discord -> MC chat
+# DiscordChatChannelBlockedIds: IDs van Discord gebruikters (of bots) die geen berichten naar de Minectraft chat mogen sturen.
+# DiscordChatChannelBlockedRolesAsWhitelist: als de volgende lijst moet worden behandeld als een witte lijst (waar) of een zwarte lijst (false)
+# DiscordChatChannelBlockedRolesIds: IDs van discord rollen waarvan de berichten niet verwerkt mogen worden en niet naar MC gestuurd mogen worden
+# DiscordChatChannelRolesSelectionAsWhitelist: als de volgende lijst moet worden behandeld als een witte lijst (waar) of een zwarte lijst (false)
+# DiscordChatChannelRolesSelection: lijst met 'roles' die moeten worden gefilterd uit alle rollen van een gebruiker
+# DiscordChatChannelRoleAliases: lijst met rolaliassen (alternatieve namen voor rollen om te gebruiken in Minecraft-berichten)
+#
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelTruncateLength: 256
+DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
+DiscordChatChannelEmojiBehavior: "name"
+DiscordChatChannelEmoteBehavior: "name"
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Eigenaarr", "Beheerder", "Moderator"]
+DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+
+# Console kanaal informatie
+# Het console kanaal is het text kanaal dat berichten ontvangt die ook in de console te zien zijn.
+# Commands die in het Discord console kanaal worden gestuurd worden ook naar de server gestuurd.
+#
+# Je kan alle berichten en alle 'timestamps' aanpassen in "messages.yml".
+#
+# DiscordConsoleChannelLogRefreshRateInSeconds: Tijd in secondes tussen het versturen van berichten van de console.
+# DiscordConsoleChannelUsageLog:
+#    %date%:  huidige datum
+#              voorbeeld: 2017-01-01
+#    PlaceholderAPI placeholders worden ondersteund
+# DiscordConsoleChannelBlacklistActsAsWhitelist: Of de 'blacklisted' commands als 'Whitelisted' commands moeten worden gezien.
+# DiscordConsoleChannelBlacklistedCommands: Deze commands kunnen niet worden uitgevoerd zolang "DiscordConsoleChannelBlacklistActsAsWhitelis:" "false" is.
+# DiscordConsoleChannelFilters: regex-filters die moeten worden toegepast op consolelijnen die naar Discord worden verzonden, als het resultaat leeg is, wordt het bericht helemaal niet verzonden
+# DiscordConsoleChannelLevels: Levels berichten om te versturen naar Discord console channel via appender
+# DiscordConsoleChannelUseCodeBlocks: als de console in codeblokken moet worden gewikkeld en gekleurd
+# DiscordConsoleChannelBlockBots: of bots commando's mogen sturen in het console kanaal
+#
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
+DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelUseCodeBlocks: true
+DiscordConsoleChannelBlockBots: true
+
+# Discord Chat kanaal command, uitvoering command
+# Deze opties zijn voor de mogelijkheid om "!c kick Notch", (of een andere prefix)to run a command,
+# Zo kan je commands als 'console' uitvoeren terwijl je ze in Discord text channel in voert.
+#
+# DiscordChatChannelConsoleCommandEnabled: Of er console commands in het chat kanaal gebruikt mogen worden.
+# DiscordChatChannelConsoleCommandNotifyErrors: Of een speler gewaarschuwd moet worden als hij geen rechten heeft voor een bepaald command.
+# DiscordChatChannelConsoleCommandPrefix: De prefix voor console commands in Discord chat kanaal (Bijvoorbeeld "!c tps")
+# DiscordChatChannelConsoleCommandRolesAllowed: De lijst van 'roles' die console commands mogen gebruiken in Discord chat kanaal.
+# DiscordChatChannelConsoleCommandWhitelist: Lijst van commands die kunnen worden gebruikt.
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: Lijst van mensen waarvoor de 'whitelist' niet geldt.
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: Moet de 'whitelist' als 'blacklist' gezien worden?
+# DiscordChatChannelConsoleCommandExpiration: Tijd in seconden voordat een command automatisch verwijderd moet worden. Verander naar "0" om het uit te schakelen.
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: Of het bericht van de persoon die als eerst de command uivoerde ook verwijderd moet worden.
+#
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandNotifyErrors: true
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Eigenaar"]
+DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Eigenaar", "Developer"]
+DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+
+# Chat kanaal speler lijst commands
+# Alle opties voor de spelers lijst.
+#
+# DiscordChatChannelListCommandEnabled: Het aan of uit zetten van de spelers lijst
+# DiscordChatChannelListCommandMessage: Het commands voor de spelers lijstthe command people can type to get the player list
+# DiscordChatChannelListCommandExpiration: Tijd in seconden voordat een command automatisch verwijderd moet worden. Verander naar "0" om het uit te schakelen.
+# DiscordChatChannelListCommandExpirationDeleteRequest: Of het bericht van de persoon die als eerst de command uivoerde ook verwijderd moet worden.
+#
+DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandMessage: "playerlist"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
+
+# Text kanaal 'blacklisted' woorden en filters.
+#
+# DiscordChatChannelGameFilters: regex-filters die moeten worden toegepast op chatberichten die naar Discord worden verzonden, als het resultaat leeg is, wordt het bericht helemaal niet verzonden
+# DiscordChatChannelDiscordFilters: regex-filters die moeten worden toegepast op chatberichten die naar Minecraft worden verzonden, als het resultaat leeg is, wordt het bericht helemaal niet verzonden
+#
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+
+# Kanaal topic update instellingen
+#
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: Of het kanaal 'topic' moet worden aangepast als de server stopt.
+# ChannelTopicUpdaterRateInMinutes: Tijd in minuten tussen updates van de kanaal 'topic' met nieuwe informatie.
+#
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInMinutes: 10
+
+# Kanaalupdater
+# Deze functie verandert de naam van gespecificeerde kanalen om te voldoen aan in-game placeholders
+# Opties:
+#   ChannelId: de ID van het te wijzigen kanaal (vereist)
+#   Format: Het formaat voor het kanaal (vereist). Beschikbare tijdelijke aanduidingen:
+#     %playercount%:    huidig aantal spelers
+#     %playermax%:      maximaal aantal spelers
+#     %date%:           huidige datum en tijd
+#     %totalplayers%:   totaal aantal spelers dat ooit lid zal worden van de hoofdwereld
+#     %uptimemins%:     aantal minuten sinds DiscordSRV is gestart
+#     %uptimehours%:    aantal uren sinds DiscordSRV is gestart
+#     %motd%:           motd van de server
+#     %serverversion%:  serverversie zoals Spigot-1.9
+#     %freememory%:     vrij geheugen van de JVM in MB
+#     %usedmemory%:     gebruikt geheugen van de JVM in MB
+#     %totalmemory%:    totaal geheugen van de JVM in MB
+#     %maxmemory%:      max geheugen van de JVM in MB
+#     %freememorygb%:   vrij geheugen van de JVM in GB
+#     %usedmemorygb%:   gebruikt geheugen van de JVM in GB
+#     %totalmemorygb%:  totaal geheugen van de JVM in GB
+#     %maxmemorygb%:    max geheugen van de JVM in GB
+#     %tps%:            gemiddelde TPS van de server
+#     PlaceholderAPI-placeholders worden ook ondersteund
+#   ShutdownFormat: Het formaat dat het kanaal moet aannemen als de server is uitgeschakeld. Beschikbare tijdelijke aanduidingen:
+#     %time% of %date%: huidige datum en tijd
+#     %serverversion%:  serverversie
+#     %totalplayers%:   totaal aantal spelers dat ooit lid zal worden van de hoofdwereld
+#     %timestamp%:      huidige Unix-tijdstempel
+#   UpdateInterval: Tijd in minuten om te wachten tussen het bijwerken van de naam van het kanaal (minimaal 10 vanwege snelheidslimieten)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% spelers online"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Huidige TPS: %tps%"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
+
+# Discord canned antwoorden
+# Dit zijn de de commands voor Discord waar een vast antwoord op is.
+# Je kan deze instellingen volledig aanpassen en bijvoorbeeld je eigen IP invullen.
+#
+# Volgorde is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
+# Als je geen commands in Discord wil verander het dan naar {}
+# PlaceholderAPI placeholders zijn ondersteund.
+#
+DiscordCannedResponses: {"!ip": "serverip.me", "!site": "http://jesiteulr.nl"}
+
+# Minecraft naar Discord account koppelen.
+# Dit zijn de opties die bepalen hoe het koppelen tussen Minecraft en Discord werkt.
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: Commands om uit te voeren als een account gekoppeld is, kijk onder voor placeholders.
+# MinecraftDiscordAccountUnlinkedConsoleCommands: Commands om uit te voeren als een account ontkoppeld is, kijk onder voor placeholders.
+# %minecraftplayername%: Speler's Minecraft username
+#                         Bijvoorbeeld: Notch
+# %minecraftuuid%:       Speler's uuid
+#                         Bijvoorbeeld: you know what a uuid looks like
+# %discordid%:           Gekoppeld Discord account ID
+#                         Bijvoorbeeld: 12345678901234567890
+# %discordname%:         Gekoppeld Discord account naam
+#                         Bijvoorbeeld: Notch
+#
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: De naam of id van de discord role als ze hun account gekoppeld hebben.
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
+# MinecraftDiscordAccountLinkedUsePM: Koppelen van rekeningen via PM's
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Tijd (in seconden) voor het wissen van het bericht bij het linken in een tekstkanaal. Stel in op 0 als u het bericht niet wilt verwijderen.
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
+
+# Server watchdog
+#
+# De watchdog kijkt de hele tijd naar de laatste keer dat de server een 'game tick' heeft gedaan.
+# Als de tijd boven een bepaald punt komt (in secondes), Kan Discord een bericht sturen.
+#
+# ServerWatchdogEnabled: Of whatchdog aan staat of niet.
+# ServerWatchdogTimeout: Tijd in secondes voordat whatchdog iets doet (Spigot's crash detection gebruikt 60 voor dit)
+#                        Het minimun getal is 10
+# ServerWatchdogMessageCount: Het aantal keer dat ServerWatchdogMessage wordt verstuurd. Handig als je *echt* wil weten als er iets aan de hand is.
+#
+ServerWatchdogEnabled: true
+ServerWatchdogTimeout: 30
+ServerWatchdogMessageCount: 3
