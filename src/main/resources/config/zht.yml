@@ -130,7 +130,7 @@ UseModernPaperChatEvent: false
 # 支援PlaceholderAPI佔位符
 #
 # DiscordGameStatus：要顯示的文字。可以是單一值，例如“Minecraft”，或多個值，例如[“我的世界”，“yourip.changeme.com”]
-# DiscordOnlineStatus：要顯示的活動狀態。必須是以下其中之一：在線、免受打擾、空閒或不可見
+# DiscordOnlineStatus：要顯示的活動狀態。必須是以下其中之一：ONLINE, DND, IDLE or INVISIBLE，分別代表在線、免受打擾、空閒或不可見
 # StatusUpdateRateInMinutes：循環狀態的頻率
 DiscordGameStatus: ["Minecraft"]
 DiscordOnlineStatus: ONLINE
