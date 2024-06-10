@@ -8,7 +8,14 @@ ConfigVersion: ${version}
 # 更改此選項後必須重新啟動服務器
 BotToken: "BOTTOKEN"
 
-# 从游戏到不和谐的频道链接
+# 使用代理服务器连接到Discord 
+# 如果你不知道它的功能，请不要修改参数
+ProxyHost: "https://example.com"  
+ProxyPort: 1234  
+ProxyUser: "USERNAME"  
+ProxyPassword: "PASSWORD"  
+
+# 从游戏到Discord的频道链接
 # 语法为 Channels: {"来自Minecraft的游戏中频道名称": "来自Discord的数字频道ID", "来自Minecraft的另一个游戏中频道名称": "来自Discord的另一个数字频道ID”}
 #
 # DiscordSRV的所有消息将转到第一个通道，除非为该消息定义了一个通道:
@@ -85,9 +92,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # 嵌入和 webhook 图像/头像 url 格式
-# 离线服务器的替代嵌入头像网址:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+# 留空以使用默认值
+# 可用占位符: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # 转换格式，例如 Minecraft和Discord之间的粗体，斜体，下划线
@@ -223,7 +230,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false

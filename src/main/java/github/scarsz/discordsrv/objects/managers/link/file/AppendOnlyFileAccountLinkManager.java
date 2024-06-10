@@ -58,7 +58,17 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
 
     private void readAOF() throws IOException {
         File file = getFile();
-        if (!file.exists() || file.length() == 0) return;
+        if (!file.exists()) {
+            File temporaryFile = getTemporaryFile();
+            if (temporaryFile.exists() && temporaryFile.length() > 0) {
+                DiscordSRV.warning("AOF linked accounts file didn't exist but the temporary one does. Did the server die while saving?");
+                file = temporaryFile;
+            } else {
+                return;
+            }
+        } else if (file.length() == 0) {
+            return;
+        }
         String fileContent = FileUtils.readFileToString(file, "UTF-8");
         if (fileContent == null || StringUtils.isBlank(fileContent)) return;
         String[] split = fileContent.split("\n");
@@ -124,14 +134,27 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
 
     @Override
     public void save() throws IOException {
-        try (FileWriter fileWriter = new FileWriter(getFile())) {
+        File file = getFile();
+        File tmpFile = getTemporaryFile();
+        tmpFile.deleteOnExit();
+
+        try (FileWriter fileWriter = new FileWriter(tmpFile)) {
             try (BufferedWriter writer = new BufferedWriter(fileWriter)) {
                 for (Map.Entry<String, UUID> entry : linkedAccounts.entrySet()) {
                     String discordId = entry.getKey();
                     UUID uuid = entry.getValue();
                     writer.write(discordId + " " + uuid + "\n");
                 }
+
+                if (!file.delete()) {
+                    throw new IOException("couldn't delete master file after write");
+                } else if (!tmpFile.renameTo(file)) {
+                    throw new IOException("couldn't rename temporary file to master file after write");
+                }
             }
+        } finally {
+            //noinspection ResultOfMethodCallIgnored
+            tmpFile.delete();
         }
     }
 
@@ -139,20 +162,8 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     @SneakyThrows
     public void link(String discordId, UUID uuid) {
         super.link(discordId, uuid);
-        User user = DiscordUtil.getJda().getUserById(discordId);
-        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 
-        FileUtils.writeStringToFile(
-                getFile(),
-                String.format("%s %s // %s %s\n",
-                        discordId,
-                        uuid,
-                        user != null ? user.getName() : "<discord username unknown>",
-                        player.getName() != null ? player.getName() : "<player username unknown>"
-                ),
-                "UTF-8",
-                true
-        );
+        FileUtils.writeStringToFile(getFile(), discordId + " " + uuid + "\n", "UTF-8", true);
     }
 
     @Override
@@ -192,6 +203,9 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     @Override
     File getFile() {
         return new File(DiscordSRV.getPlugin().getDataFolder(), "accounts.aof");
+    }
+    File getTemporaryFile() {
+        return new File(DiscordSRV.getPlugin().getDataFolder(), "accounts.aof.tmp");
     }
 
 }

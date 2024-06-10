@@ -8,6 +8,13 @@ ConfigVersion: ${version}
 # Du skal genstarte din server efter ændring af denne mulighed
 BotToken: "BOTTOKEN"
 
+# The proxy to be used for Discord
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
 # Kanal links fra spillet til Discord
 # syntaxen er Channels: {"spillets in-game kanal navn fra Minecraft": "nummeret kanal id fra Discord", "en anden in-game kanal navn fra Minecraft": "et andet nummerisk kanal id fra Discord"}
 #
@@ -85,9 +92,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Embed & webhook billede/avatar url format
-# Alternativ integreret avatar-url til offlineservere:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+# Lad stå tomt for at bruge en standardværdi
+# Tilgængelige pladsholdere: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # Konverterer formatering (fed, kursiv, understregning, gennemstregning) mellem Minecraft og Discord
@@ -226,7 +233,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Udvikler", "Ejer"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Ejer", "Udvikler"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Ejer", "Udvikler"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false

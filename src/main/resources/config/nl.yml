@@ -8,6 +8,13 @@ ConfigVersion: ${version}
 # U moet uw server opnieuw opstarten nadat u deze optie hebt gewijzigd
 BotToken: "BOTTOKEN"
 
+# The proxy to be used for Discord  
+# Leave this alone if you don't understand what it does  
+ProxyHost: "https://example.com"  
+ProxyPort: 1234  
+ProxyUser: "USERNAME"  
+ProxyPassword: "PASSWORD"  
+
 # Kanaallinks van game naar Discord
 # syntaxis is Kanalen: {"in-game kanaalnaam van Minecraft": "numerieke kanaal-ID van Discord", "nog een in-game kanaalnaam van Minecraft": "nog een numerieke kanaal-ID van Discord"}
 #
@@ -85,9 +92,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Insluiten & webhook afbeelding/avatar url-formaat
-# Alternatieve ingesloten avatar-url voor offline servers:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+# Laat dit leeg om een standaardwaarde te gebruiken
+# Beschikbare tijdelijke aanduidingen: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # Converteert opmaak (vetgedrukt, cursief, onderstreept) tussen Minecraft en Discord
@@ -225,7 +232,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Eigenaar"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Eigenaar", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Eigenaar", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false

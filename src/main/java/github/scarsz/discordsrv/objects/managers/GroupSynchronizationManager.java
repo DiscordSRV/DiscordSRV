@@ -47,7 +47,6 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -582,11 +581,11 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     @Override
-    public void onGuildMemberRoleAdd(@Nonnull GuildMemberRoleAddEvent event) {
+    public void onGuildMemberRoleAdd(@NotNull GuildMemberRoleAddEvent event) {
         onGuildMemberRolesChanged("add", event.getMember(), event.getRoles());
     }
     @Override
-    public void onGuildMemberRoleRemove(@Nonnull GuildMemberRoleRemoveEvent event) {
+    public void onGuildMemberRoleRemove(@NotNull GuildMemberRoleRemoveEvent event) {
         onGuildMemberRolesChanged("remove", event.getMember(), event.getRoles());
     }
     private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {

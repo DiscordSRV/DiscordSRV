@@ -74,7 +74,9 @@ import java.util.zip.ZipOutputStream;
 public class DebugUtil {
 
     public static final List<String> SENSITIVE_OPTIONS = Arrays.asList(
-            "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword"
+        "BotToken",
+        "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword",
+        "ProxyHost", "ProxyPort", "ProxyUser", "ProxyPassword"
     );
     public static int initializationCount = 0;
 
@@ -105,6 +107,7 @@ public class DebugUtil {
                     "   main guild: " + DiscordSRV.getPlugin().getMainGuild(),
                     "Environmental variables:",
                     "   discord main guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
+                    "   discord server owner: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getOwner()),
                     "   vault groups: " + Arrays.toString(VaultHook.getGroups()),
                     "   PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
                     "   Skripts: " + String.join(", ", SkriptHook.getSkripts()),
@@ -279,7 +282,7 @@ public class DebugUtil {
 
             for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getChannels().entrySet()) {
                 TextChannel textChannel = DiscordUtil.getTextChannelById(entry.getValue());
-                if (textChannel == null) {
+                if (textChannel == null || !textChannel.getId().equals(entry.getValue())) {
                     messages.add(new Message(Message.Type.INVALID_CHANNEL, "{" + entry.getKey() + ":" + entry.getValue() + "}"));
                     continue;
                 }

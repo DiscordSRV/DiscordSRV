@@ -8,6 +8,13 @@ ConfigVersion: ${version}
 # Debe reiniciar su servidor después de cambiar esta opción
 BotToken: "BOTTOKEN"
 
+# The proxy to be used for Discord  
+# Leave this alone if you don't understand what it does  
+ProxyHost: "https://example.com"  
+ProxyPort: 1234  
+ProxyUser: "USERNAME"  
+ProxyPassword: "PASSWORD"  
+
 # Enlaces de canal del juego a Discord
 # la sintaxis es Channels: {"nombre de canal en el juego de Minecraft": "ID de canal numérico de Discord", "otro nombre de canal en el juego de Minecraft": "otro ID de canal numérico de Discord"}
 #
@@ -85,9 +92,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Formato de URL de avatar/imagen para insertar y webhook
-# URL de avatar incrustada alternativa para servidores fuera de línea:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+# Dejar en blanco para usar un valor predeterminado
+# Marcadores de posición disponibles: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # Convierte el formato (negrita, cursiva, subrayado) entre Minecraft y Discord
@@ -225,7 +232,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Desarrollador", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Desarrollador"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Desarrollador"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
