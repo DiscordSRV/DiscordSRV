@@ -130,7 +130,7 @@ UseModernPaperChatEvent: false
 # DiscordGameStatus: Tekst, der skal vises. Kan være en enkelt værdi f.eks. "Minecraft", eller flere værdier, f.eks. ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Aktivitetsstatus skal vises. Dette skal være en af følgende: ONLINE, DND, IDLE, eller INVISIBLE
 # StatusUpdateRateInMinutes: Hvor ofte skal status skiftes
-DiscordGameStatus: ["Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
