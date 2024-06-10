@@ -125,7 +125,8 @@ UseModernPaperChatEvent: false
 # 게임 정보
 # 디스코드 봇의 "지금 게임중: ______"을 설정합니다.
 # 하나의 값을 사용하거나 여러 값을 번갈아가며 사용할 수 있습니다.
-# "게임 중", "보는 중", 또는 "듣는 중"을 활동 유형으로 지정할 수 있습니다.
+# "playing", "watching", "listening", 또는 "competing"을 활동 유형으로 지정할 수 있습니다.
+# You can also set your own custom status without the prefixes
 # PlaceholderAPI 변수를 사용할 수 있습니다.
 #
 # DiscordGameStatus: 게임 정보에 표시할 내용입니다. "Minecraft"와 같이 하나의 값을 넣을 수도, ["Minecraft", "yourip.changeme.com"]과 같이 여러 값을 넣을 수도 있습니다.

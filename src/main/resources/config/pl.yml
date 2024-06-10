@@ -124,7 +124,8 @@ UseModernPaperChatEvent: false
 # Informacje o grze
 # Ustawia wskaźnik „Gra: ______” dla bota.
 # Może być pojedynczą, statyczną wartością lub przechodzić przez wiele różnych opcji
-# Możesz poprzedzić status słowami „odtwarzanie”, „oglądanie” lub „słuchanie”, aby ustawić typ aktywności
+# Możesz poprzedzić status słowami „playing”, „watching”, „listening” lub „competing”, aby ustawić typ aktywności
+# You can also set your own custom status without the prefixes
 # Symbole zastępcze interfejsu API są obsługiwane
 #
 # DiscordGameStatus: tekst do wyświetlenia. Może być pojedynczą wartością, np. „Minecraft” lub wiele wartości, np. [„Minecraft”, „yourip.changeme.com”]

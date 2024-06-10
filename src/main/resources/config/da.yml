@@ -124,7 +124,8 @@ UseModernPaperChatEvent: false
 # Spiloplysninger
 # Indstiller "Spiller: ______"-indikatoren for botten.
 # Kan være en enkelt, statisk værdi eller gå gennem flere forskellige muligheder
-# Du kan indlede status med "playing", "watching", eller "listening to" for at indstille aktivitetstypen
+# Du kan indlede status med "playing", "watching", "listening to", eller "competing" for at indstille aktivitetstypen
+# You can also set your own custom status without the prefixes
 # PlaceholderAPI-placeholders understøttes
 #
 # DiscordGameStatus: Tekst, der skal vises. Kan være en enkelt værdi f.eks. "Minecraft", eller flere værdier, f.eks. ["Minecraft", "yourip.changeme.com"]
