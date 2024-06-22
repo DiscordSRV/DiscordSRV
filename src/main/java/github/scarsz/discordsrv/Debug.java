@@ -65,10 +65,7 @@ public enum Debug {
     }
 
     public boolean isVisible() {
-        boolean oldLevel = DiscordSRV.config().getIntElse("DebugLevel", 0) > 0;
-        if (oldLevel && matches("all")) {
-            return true;
-        }
+        if (matches("all")) return true;
 
         Set<String> debuggerCategories = DiscordSRV.getPlugin().getDebuggerCategories();
         if (!debuggerCategories.isEmpty() && debuggerCategories.stream().anyMatch(this::matches)) {

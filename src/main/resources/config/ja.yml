@@ -70,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# レガシーな設定オプションです。これではなく上記のオプションを使用してください。
-# この設定で 0 より大きい値を指定することは、 Debug に [ALL] を指定することと等価です。
-DebugLevel: 0
-
 # 実験
 # これらの機能は完全に最適化されていません。自己責任で使用してください。
 

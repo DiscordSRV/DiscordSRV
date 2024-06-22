@@ -70,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# Ældre mulighed for overgang til den nye fejlretningsmulighed,
-# at sætte dette til noget over 0 er det samme som at indstille Debug til [ALL]
-DebugLevel: 0
-
 # Eksperimenterende
 # Disse funktioner er ikke fuldt optimeret; brug på eget ansvar
 
