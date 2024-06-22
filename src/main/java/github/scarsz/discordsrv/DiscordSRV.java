@@ -2094,8 +2094,8 @@ public class DiscordSRV extends JavaPlugin {
             avatarUrl = !offline ? defaultUrl : offlineUrl;
             DiscordSRV.config().setRuntimeValue("AvatarUrl", avatarUrl);
 
-            DiscordSRV.error("Your AvatarUrl config option uses crafatar.com, which no longer allows usage with Discord. An alternative provider will be used.");
-            DiscordSRV.error("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this error.");
+            DiscordSRV.warning("Your AvatarUrl config option uses crafatar.com, which no longer allows usage with Discord. An alternative provider will be used.");
+            DiscordSRV.warning("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this warning.");
         }
 
         if (offline && !avatarUrl.contains("{username}") && !offlineUuidAvatarUrlNagged) {
