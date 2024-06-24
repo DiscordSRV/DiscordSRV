@@ -697,7 +697,7 @@ public class DebugUtil {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("description", b64(encrypt(keyBytes, description)));
-        payload.put("expiration", TimeUnit.DAYS.toMinutes(7));
+        payload.put("expiration", TimeUnit.DAYS.toMinutes(21));
         payload.put("files", encryptedFiles);
         HttpRequest request = HttpRequest.post(binHost + "/v1/post")
                 .userAgent("DiscordSRV " + DiscordSRV.version)
