@@ -132,7 +132,8 @@ UseModernPaperChatEvent: false
 # Indstiller "Spiller: ______"-indikatoren for botten.
 # Kan være en enkelt, statisk værdi eller gå gennem flere forskellige muligheder
 # Du kan indlede status med "playing", "watching", eller "listening to" for at indstille aktivitetstypen
-# PlaceholderAPI-placeholders understøttes
+#    %online%: number of online players
+#    PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Tekst, der skal vises. Kan være en enkelt værdi f.eks. "Minecraft", eller flere værdier, f.eks. ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Aktivitetsstatus skal vises. Dette skal være en af følgende: ONLINE, DND, IDLE, eller INVISIBLE

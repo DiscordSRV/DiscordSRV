@@ -132,7 +132,8 @@ UseModernPaperChatEvent: false
 # Met "En train de jouer à : ______" au statut du bot.
 # Il peut s'agir d'un seul argument, d'une valeur fixe, ou d'un cycle qui alterne entre les valeurs.
 # Vous pouvez modifier "playing", "watching", or "listening to" pour changer le type de statut.
-# Les placeholders PlaceholderAPI sont supportés
+#    %online%: number of online players
+#    Les placeholders PlaceholderAPI sont supportés
 #
 # DiscordGameStatus: Texte à afficher. Peut être une valeur unique telle que "Minecraft", ou plusieurs valeurs telles que ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Le type de statut. Il doit FORCEMENT être l'une de ces options : ONLINE, DND, IDLE ou INVISIBLE
