@@ -1,4 +1,5 @@
 # Minecraft-> Discord昵称同步
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled：是否将不和用户的昵称自动设置为昵称格式
 # NicknameSynchronizationCycleTime：重复触发所有在线播放器同步之间的分钟数
