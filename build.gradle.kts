@@ -211,7 +211,7 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-core:2.0-beta9")
 
     // adventure, adventure-platform, MCDiscordReserializer
-    val adventureVersion = "4.14.0"
+    val adventureVersion = "4.17.0"
     api("net.kyori:adventure-api:${adventureVersion}")
     api("net.kyori:adventure-text-minimessage:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
