@@ -54,11 +54,11 @@
 #    IgnoreCancelled: true # seulement pour les alertes d'événement
 #    Content: ""
 #    Webhook:
-#      Active: false
+#      Enabled: false
 #      AvatarUrl: "{botavatarurl}"
 #      Name: "{botname}"
 #    Embed:
-#      Active: true
+#      Enabled: true
 #      Color: "#00ff00" # accepte un code couleur hex (par ex. "#ffffff") ou un entier rgb (par ex. 0)
 #      Author:
 #        ImageUrl: "{embedavatarurl}"
@@ -120,4 +120,3 @@ Alerts:
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
   #      Name: "* {username} ${#allArgs}"
-  
