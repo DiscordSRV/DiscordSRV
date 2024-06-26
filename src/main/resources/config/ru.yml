@@ -132,7 +132,8 @@ UseModernPaperChatEvent: false
 # Устанавливает боту индикатор "Играет в: ______".
 # Может быть как одним статическим значением, так и несколькими (сменяющимися друг за другом).
 # Вы можете добавить в начало "playing", "watching" или "listening to", чтобы установить тип активности (играет, смотрит, слушает)
-# Поддерживает шаблоны PlaceholderAPI
+#    %online%: number of online players
+#    PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Отображаемый текст. Может быть как одним значением, например "Minecraft", так и несколькими: ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Статус отображаемого действия. Он должен быть одним из следующих: ONLINE, DND, IDLE или INVISIBLE.

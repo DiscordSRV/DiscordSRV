@@ -132,7 +132,8 @@ UseModernPaperChatEvent: false
 # Establece el indicador "Playing: ______" para el bot.
 # Puede ser un único valor estático o recorrer varias opciones diferentes
 # Puede establecer el estado como "playing", "watching" o "listening to" para establecer el tipo de actividad
-# Los marcadores de posición PlaceholderAPI son compatibles
+#    %online%: number of online players
+#    PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Texto a mostrar. Puede ser un valor único, p. "Minecraft", o valores múltiples, p. ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Estado de la actividad a mostrar. Debe ser uno de los siguientes: ONLINE, DND, IDLE o INVISIBLE.
