@@ -1,58 +1,58 @@
-# This is an /advanced/ feature of DiscordSRV that allows you to send messages to Discord when a game event happens
-# or when a command is run. You will need a working knowledge of how Bukkit events work and their properties.
-# If you aren't sure about what you're doing here, maybe ask a developer or join our support server @ discordsrv.com/discord
+# Ceci est une fonctionnalité /avancée/ de DiscordSRV qui vous permet d'envoyer des messages à Discord lorsqu'un événement de jeu se produit
+# ou lorsqu'une commande est exécutée. Vous aurez besoin d'une connaissance approfondie du fonctionnement des événements Bukkit et de leurs propriétés.
+# Si vous n'êtes pas sûr de ce que vous faites ici, demandez peut-être à un développeur ou rejoignez notre serveur de support @ discordsrv.com/discord
 # Made something you'd like to share? You can do so in our Discord server's #alerts forum (invite above)
 #
-# Refer to the Bukkit API javadoc to find events & properties to use:
+# Référez-vous à la javadoc de l'API Bukkit pour trouver les événements et leurs propriétés :
 #  https://hub.spigotmc.org/javadocs/bukkit
-# Helpful resources for learning how to use SpEL:
+# Ressources utiles pour apprendre les expressions SpEL :
 #  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
 #  https://dzone.com/articles/learn-spring-expression-language-with-examples
 #
-# You can use the following placeholders:
-#  {tps} - server TPS
-#  {time} - formatted time
-#  {date} - formatted date
-#  {name} - if alert is for a player event, the name of the player
-#  {ping} - if alert is for a player event, the ping of the player
-#  {username} - if alert is for a player event, the username of the player
-#  {displayname} - if alert is for a player event, the display name of the player
-#  {usernamenoescapes} - if alert is for a player event, the username of the player without escaping discord format (for use in inline code & code block markdown)
-#  {displaynamenoescapes} - if alert is for a player event, the display name of the player without escaping discord format (for use in inline code & code block markdown)
-#  {world} - if alert is for a player event, the world the player is in
-#  {embedavatarurl} - if alert is for a player event, the avatar url for the player's head, otherwise, the bot's avatar url
-#  {botavatarurl} - the bot's avatar url
-#  {botname} - the bot's name
-#  %placeholder% - any PlaceholderAPI placeholders, can only use player ones when alert is for a player event
+# Vous pouvez utiliser ces placeholders :
+#  {tps} - TPS du serveur
+#  {time} - heure formatée
+#  {date} - date formatée
+#  {name} - si l'alerte concerne un événement d'un joueur, le nom du joueur
+#  {ping} - si l'alerte concerne un événement d'un joueur, le ping du joueur
+#  {username} - si l'alerte concerne un événement d'un joueur, le nom d'utilisateur du joueur
+#  {displayname} - si l'alerte concerne un événement d'un joueur, le nom d'affichage du joueur
+#  {usernamenoescapes} - si l'alerte concerne un événement d'un joueur, le nom d'utilisateur du joueur sans échapper le formatage discord
+#  {displaynamenoescapes} - si l'alerte concerne un événement d'un joueur, le nom d'affichage du joueur sans échapper le formatage discord
+#  {world} - si l'alerte concerne un événement d'un joueur, le monde actuel du joueur
+#  {embedavatarurl} - si l'alerte concerne un événement d'un joueur, l'URL de l'avatar du skin du joueur, sinon, l'URL de l'avatar du bot
+#  {botavatarurl} - l'URL de l'avatar du bot
+#  {botname} - le nom du bot
+#  %placeholder% - n'importe quel PlaceholderAPI placeholders, vous pouvez seulement utiliser les placeholders qui nécessitent un joueur lors d'un événement d'un joueur
 #
-# You can also use SpEL expressions with ${expression...}, such as...
-#  - Getting a player's IP: ${#player.address.address.hostAddress}
-#  - Getting a player's game mode: ${#player.gameMode.name()}
-#  - Getting a player's linked Discord account ID: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
-#  - Getting the online player count: ${#server.onlinePlayers.size()}
-#  - Getting the status of DiscordSRV's connection to Discord: ${#jda.status.name()}
-#  - Checking if a player is in a specific world: ${#player.world.name == 'world_the_end'}
-#  - Checking if it's day in the world that the player is in: ${#player.world.time > 0 && #player.world.time < 13000}
-#  You can use the following expression placeholders, as seen above:
-#   #plugins.<plugin> - the specified plugin instance, null if doesn't exist
-#   #event - the event that's triggering the alert if this alert is an event alert
-#   #server - the Bukkit API server instance, equivalent to Bukkit#getServer
-#   #discordsrv - the DiscordSRV plugin instance
-#   #player - the player that the event is for, if this is a player event or command
-#   #sender - the command sender, if this is a command alert
-#   #command - the full command, with no leading slash, if this is a command alert
-#   #args - the command arguments, if this is a command alert
-#   #allArgs - the command arguments as one string, if this is a command alert
-#   #channel - the destination channel for this alert
-#   #jda - DiscordSRV's JDA instance that it uses to communicate with Discord
+# Vous pouvez également utiliser les expressions SpEL avec ${expression...}, par exemple :
+#  - Obtenir l'IP d'un joueur : ${#player.address.address.hostAddress}
+#  - Obtenir le mode de jeu d'un joueur : ${#player.gameMode.name()}
+#  - Obtenir l'ID du compte discord lié d'un joueur : ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - Obtenir le nombre de joueurs connectés : ${#server.onlinePlayers.size()}
+#  - Obtenir le statut de la connexion entre DiscordSRV et Discord : ${#jda.status.name()}
+#  - Vérifier si un joueur est dans un monde : ${#player.world.name == 'world_the_end'}
+#  - Vérifier s'il fait jour dans le monde où le joueur se trouve : ${#player.world.time > 0 && #player.world.time < 13000}
+#  Vous pouvez utiliser les placeholders d'expression suivants, comme vu ci-dessus :
+#   #plugins.<plugin> - l'instance du plugin spécifié, null si elle n'existe pas
+#   #event - l'événement qui déclenche l'alerte si cette alerte est une alerte d'événement
+#   #server - l'instance du serveur API Bukkit, équivalent à Bukkit#getServer
+#   #discordsrv - l'instance du plugin DiscordSRV
+#   #player - le joueur pour lequel l'événement a lieu, si c'est un événement de joueur ou une commande
+#   #sender - l'expéditeur de la commande, si c'est une alerte de commande
+#   #command - la commande complète, sans slash de début, si c'est une alerte de commande
+#   #args - les arguments de la commande, si c'est une alerte de commande
+#   #allArgs - les arguments de la commande en une seule chaîne, si c'est une alerte de commande
+#   #channel - le canal de destination pour cette alerte
+#   #jda - l'instance JDA de DiscordSRV qu'il utilise pour communiquer avec Discord
 #
-# Syntax/defaults:
-#  - Trigger: <event name or /command>
-#    Async: true # optional, defaults to true, you should almost never have to change this
+# Syntaxe/par défaut :
+#  - Trigger: <nom de l'événement ou /commande>
+#    Async: true # optionnel, par défaut à true, vous ne devriez presque jamais avoir à changer cela
 #    Conditions:
-#      - property == < > <= >= value etc
-#    Channel: <discordsrv channel name>
-#    IgnoreCancelled: true # only for event alerts
+#      - propriété == < > <= >= valeur etc
+#    Channel: <nom du canal discordsrv>
+#    IgnoreCancelled: true # seulement pour les alertes d'événement
 #    Content: ""
 #    Webhook:
 #      Enabled: false
@@ -60,25 +60,25 @@
 #      Name: "{botname}"
 #    Embed:
 #      Enabled: true
-#      Color: "#00ff00" # accepts a hex color code (eg. "#ffffff") or a rgb integer (eg. 0)
+#      Color: "#00ff00" # accepte un code couleur hex (par ex. "#ffffff") ou un entier rgb (par ex. 0)
 #      Author:
 #        ImageUrl: "{embedavatarurl}"
-#        Name: "{username} did... something."
+#        Name: "{username} a fait... quelque chose."
 #        Url: ""
 #      ThumbnailUrl: ""
 #      Title:
 #        Text: ""
 #        Url: ""
 #      Description: ""
-#      Fields: [] # format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
+#      Fields: [] # le format est "titre;valeur;inline" (par ex. "Qui a rejoint ?;%displayname%;true") ou "blank" pour ajouter un champ vide
 #      ImageUrl: ""
 #      Footer:
 #        Text: ""
 #        IconUrl: ""
-#      Timestamp: false # set to true to use the time the message was sent or use a epoch timestamp for a specific time (https://www.epochconverter.com/)
+#      Timestamp: false # mettre à true pour utiliser l'heure à laquelle le message a été envoyé ou utiliser un timestamp d'époque pour un moment spécifique (https://www.epochconverter.com/)
 #
 Alerts:
-  # Example config to send messages to the "fish" DiscordSRV channel when a player successfully catches a fish
+  # Exemple de configuration pour envoyer des messages au canal "fish" de DiscordSRV lorsqu'un joueur attrape un poisson avec succès
   #- Trigger: PlayerFishEvent
   #  Channel: fish
   #  Conditions:
@@ -87,20 +87,20 @@ Alerts:
   #    Color: "#00ff00"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+  #      Name: "{name} a attrapé un ${caught.itemStack.type.name()}!"
 
-  # Example config to send Matrix anti-cheat messages
+  # Exemple de configuration pour envoyer des messages anti-triche Matrix
   #- Trigger: PlayerViolationEvent
   #  Channel: matrix
   #  Conditions:
-  #    - violations >= 5 # don't send events for players with < 5 violations
+  #    - violations >= 5 # ne pas envoyer d'événements pour les joueurs avec < 5 violations
   #  Embed:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} failed ${hackType.name().toLowerCase()} check | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+  #      Name: "{username} a échoué au contrôle ${hackType.name().toLowerCase()} | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
 
-  # Example config to send /gamemode messages
+  # Exemple de configuration pour envoyer des messages /gamemode
   #- Trigger: /gamemode
   #  Channel: gamemode
   #  Conditions:
@@ -109,9 +109,9 @@ Alerts:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} changed gamemode to ${#args.get(0)}"
+  #      Name: "{username} a changé de mode de jeu pour ${#args.get(0)}"
 
-  # Example config to send /me commands
+  # Exemple de configuration pour envoyer des commandes /me
   #- Trigger: /me
   #  Channel: me
   #  Conditions:
