@@ -46,77 +46,78 @@
 #   #jda - l'instance JDA de DiscordSRV qu'il utilise pour communiquer avec Discord
 #
 # Syntaxe/par défaut :
-#  - Déclencheur : <nom de l'événement ou /commande>
-#    Asynchrone : true # optionnel, par défaut à true, vous ne devriez presque jamais avoir à changer cela
-#    Conditions :
+#  - Trigger: <nom de l'événement ou /commande>
+#    Async: true # optionnel, par défaut à true, vous ne devriez presque jamais avoir à changer cela
+#    Conditions:
 #      - propriété == < > <= >= valeur etc
-#    Canal : <nom du canal discordsrv>
-#    IgnoreCancelled : true # seulement pour les alertes d'événement
-#    Contenu : ""
-#    Webhook :
-#      Activé : false
-#      AvatarUrl : "{botavatarurl}"
-#      Nom : "{botname}"
-#    Embed :
-#      Activé : true
-#      Couleur : "#00ff00" # accepte un code couleur hex (par ex. "#ffffff") ou un entier rgb (par ex. 0)
-#      Auteur :
-#        ImageUrl : "{embedavatarurl}"
-#        Nom : "{username} a fait... quelque chose."
-#        Url : ""
-#      ThumbnailUrl : ""
-#      Titre :
-#        Texte : ""
-#        Url : ""
-#      Description : ""
-#      Champs : [] # le format est "titre;valeur;inline" (par ex. "Qui a rejoint ?;%displayname%;true") ou "blank" pour ajouter un champ vide
-#      ImageUrl : ""
-#      Pied de page :
-#        Texte : ""
-#        IconUrl : ""
-#      Timestamp : false # mettre à true pour utiliser l'heure à laquelle le message a été envoyé ou utiliser un timestamp d'époque pour un moment spécifique (https://www.epochconverter.com/)
+#    Channel: <nom du canal discordsrv>
+#    IgnoreCancelled: true # seulement pour les alertes d'événement
+#    Content: ""
+#    Webhook:
+#      Active: false
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{botname}"
+#    Embed:
+#      Active: true
+#      Color: "#00ff00" # accepte un code couleur hex (par ex. "#ffffff") ou un entier rgb (par ex. 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{username} a fait... quelque chose."
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # le format est "titre;valeur;inline" (par ex. "Qui a rejoint ?;%displayname%;true") ou "blank" pour ajouter un champ vide
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # mettre à true pour utiliser l'heure à laquelle le message a été envoyé ou utiliser un timestamp d'époque pour un moment spécifique (https://www.epochconverter.com/)
 #
-Alertes :
+Alerts:
   # Exemple de configuration pour envoyer des messages au canal "fish" de DiscordSRV lorsqu'un joueur attrape un poisson avec succès
-  #- Déclencheur : PlayerFishEvent
-  #  Canal : fish
-  #  Conditions :
+  #- Trigger: PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
   #    - state.name() == 'CAUGHT_FISH'
-  #  Embed :
-  #    Couleur : "#00ff00"
-  #    Auteur :
-  #      ImageUrl : "{embedavatarurl}"
-  #      Nom : "{name} a attrapé un ${caught.itemStack.type.name()}!"
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} a attrapé un ${caught.itemStack.type.name()}!"
 
   # Exemple de configuration pour envoyer des messages anti-triche Matrix
-  #- Déclencheur : PlayerViolationEvent
-  #  Canal : matrix
-  #  Conditions :
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
   #    - violations >= 5 # ne pas envoyer d'événements pour les joueurs avec < 5 violations
-  #  Embed :
-  #    Couleur : "#ff0000"
-  #    Auteur :
-  #      ImageUrl : "{embedavatarurl}"
-  #      Nom : "{username} a échoué au contrôle ${hackType.name().toLowerCase()} | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} a échoué au contrôle ${hackType.name().toLowerCase()} | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
 
   # Exemple de configuration pour envoyer des messages /gamemode
-  #- Déclencheur : /gamemode
-  #  Canal : gamemode
-  #  Conditions :
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
   #    - '#player.hasPermission("minecraft.command.gamemode") == true'
-  #  Embed :
-  #    Couleur : "#ff0000"
-  #    Auteur :
-  #      ImageUrl : "{embedavatarurl}"
-  #      Nom : "{username} a changé de mode de jeu pour ${#args.get(0)}"
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} a changé de mode de jeu pour ${#args.get(0)}"
 
   # Exemple de configuration pour envoyer des commandes /me
-  #- Déclencheur : /me
-  #  Canal : me
-  #  Conditions :
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
   #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
-  #  Embed :
-  #    Couleur : "#00ff00"
-  #    Auteur :
-  #      ImageUrl : "{embedavatarurl}"
-  #      Nom : "* {username} ${#allArgs}"
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"
+  
