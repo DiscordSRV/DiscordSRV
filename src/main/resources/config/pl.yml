@@ -133,7 +133,7 @@ UseModernPaperChatEvent: false
 # Może być pojedynczą, statyczną wartością lub przechodzić przez wiele różnych opcji
 # Możesz poprzedzić status słowami „odtwarzanie”, „oglądanie” lub „słuchanie”, aby ustawić typ aktywności
 #    %online%: number of online players
-#    PlaceholderAPI placeholders are supported
+#    Symbole zastępcze interfejsu API są obsługiwane
 #
 # DiscordGameStatus: tekst do wyświetlenia. Może być pojedynczą wartością, np. „Minecraft” lub wiele wartości, np. [„Minecraft”, „yourip.changeme.com”]
 # DiscordOnlineStatus: Status czynności, która ma być wyświetlana. Musi to być jedna z następujących wartości: ONLINE, DND, IDLE lub INVISIBLE.
