@@ -1,4 +1,5 @@
 # Minecraft -> Discord nickname synchronization
+# Controlled by the 'discordsrv.nicknamesync' permission
 #
 # NicknameSynchronizationEnabled: whether to set the discord user's nickname to the nickname format automatically
 # NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
@@ -18,6 +19,7 @@ NicknameSynchronizationCycleTime: 3
 NicknameSynchronizationFormat: "%displayname%"
 
 # Minecraft group <-> Discord role synchronization
+# Controlled by the 'discordsrv.sync.<group>' and 'discordsrv.sync.deny.<group>' permissions
 # Requires Vault
 #
 # GroupRoleSynchronizationGroupsAndRolesToSync: these are roles/groups you'd like synchronized between Discord and Minecraft
