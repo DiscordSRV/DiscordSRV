@@ -123,11 +123,20 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         Connection conn;
         try {
             // new driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.NonRegisteringDriver");
             conn = new com.mysql.cj.jdbc.NonRegisteringDriver().connect(jdbc, properties);
         } catch (ClassNotFoundException ignored) {
             // old driver
-            conn = new com.mysql.jdbc.Driver().connect(jdbc, properties);
+            try {
+                Class<?> driverClass = Class.forName("com.mysql.jdbc.Driver");
+                Object driver = driverClass.getDeclaredConstructor().newInstance();
+                // We have to do this via reflection because Paper's plugin mapping loads all referenced classes...
+                conn = (Connection) driverClass
+                        .getMethod("connect", String.class, Properties.class)
+                        .invoke(driver, jdbc, properties);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException("Failed to connect with old MySQL driver", e);
+            }
         }
         this.connection = conn;
 

@@ -44,8 +44,13 @@ body:
           required: true
         - label: I asked in [DiscordSRV's Discord server](https://discord.discordsrv.com) to see whether this issue is in fact a bug that needs to be fixed.
           required: true
-        - label: I didn't actually check any of these things
-          required: false
+  - type: input
+    id: where-asked
+    attributes:
+      label: Ticket number or message link to where you asked in DiscordSRV's Discord server about this
+      description: We require you to ask our support team to ensure that the issue tracker is used exclusively for bug reports (and feature requests) and not reports that are duplicates, caused by another plugin or a result of user error. Issues that are resolved in development builds may still need a bug report for visibility if one has not already been submitted.
+    validations:
+      required: true
   - type: textarea
     attributes:
       label: Anything else
