@@ -1,5 +1,5 @@
 # Minecraft -> Discord nickname synchronization
-# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled: whether to set the discord user's nickname to the nickname format automatically
 # NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
