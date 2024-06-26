@@ -1,4 +1,5 @@
 # Minecraft -> Discord kaldenavnsynkronisering
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled: om der automatisk skal indstilles discord-brugerens kaldenavn til kaldenavnsformatet
 # NicknameSynchronizationCycleTime: antal minutter mellem gentagne gange udløsning af synkronisering for alle online spillere
