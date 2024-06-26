@@ -19,7 +19,6 @@ NicknameSynchronizationCycleTime: 3
 NicknameSynchronizationFormat: "%displayname%"
 
 # Minecraft group <-> Discord role synchronization
-# Controlled by the 'discordsrv.sync.<group>' and 'discordsrv.sync.deny.<group>' permissions
 # Requires Vault
 #
 # GroupRoleSynchronizationGroupsAndRolesToSync: these are roles/groups you'd like synchronized between Discord and Minecraft
