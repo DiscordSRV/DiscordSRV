@@ -113,7 +113,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 return String.valueOf(accountLinkManager.getLinkedAccountCount());
         }
 
-        if(identifier.startsWith("role_")) {
+        if (identifier.startsWith("role_")) {
             DiscordSRV.debug("PlaceholderAPI is requesting a role placeholder, checking if it's a valid role placeholder");
             if (identifier.matches("role_\\d+_name")) {
                 final String roleId = identifier.replaceAll("\\D", "");
