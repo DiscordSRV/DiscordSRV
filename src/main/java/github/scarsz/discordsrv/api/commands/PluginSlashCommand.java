@@ -90,7 +90,7 @@ public class PluginSlashCommand {
         return this.guilds.isEmpty() || this.guilds.contains(guild.getId());
     }
     /**
-     * Add the given {@link Guild} to the list of guilds this command will be registered to, 
+     * Add the given {@link Guild} to the list of guilds this command will be registered to,
      * when none are provided the command will be registered to all guilds.
      * @param guild the guild to apply this command to
      * @return the {@link PluginSlashCommand} instance for chaining
@@ -99,7 +99,7 @@ public class PluginSlashCommand {
         return addGuildFilter(guild.getId());
     }
     /**
-     * Add the given {@link Guild} id to the list of guilds this command will be registered to, 
+     * Add the given {@link Guild} id to the list of guilds this command will be registered to,
      * when none are provided the command will be registered to all guilds.
      * @param guildId the guild ID to apply this command to
      * @return the {@link PluginSlashCommand} instance for chaining

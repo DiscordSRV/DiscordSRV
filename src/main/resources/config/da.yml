@@ -33,7 +33,7 @@ ProxyPassword: "PASSWORD"
 # til bruger tilkobling: link
 #
 # Den første del af at danne kanal par er ikke Discord kanal navnet!
-# Kør "/discord reload" efter du har ændret denne 
+# Kør "/discord reload" efter du har ændret denne
 Channels: {"global": "000000000000000000"}
 
 # Konsol kanalens numeriske ID (IKKE NAVN), efterlad blank for at slå fra

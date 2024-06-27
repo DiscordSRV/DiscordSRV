@@ -66,7 +66,7 @@ public class AchievementMessagePostProcessEvent extends GameEvent<Event> impleme
         this.webhookAvatarUrl = webhookAvatarUrl;
         setCancelled(cancelled);
     }
-    
+
     @Deprecated
     public AchievementMessagePostProcessEvent(String channel, String processedMessage, Player player, String achievementName, boolean cancelled) {
         super(player, null);

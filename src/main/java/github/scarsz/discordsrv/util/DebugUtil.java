@@ -337,7 +337,7 @@ public class DebugUtil {
         } else if (!DiscordSRV.updateChecked || DiscordSRV.isUpdateCheckDisabled()) {
             messages.add(new Message(Message.Type.UPDATE_CHECK_DISABLED));
         }
-        
+
         StringBuilder stringBuilder = new StringBuilder();
         if (messages.isEmpty()) {
             stringBuilder.append("No issues detected automatically\n");

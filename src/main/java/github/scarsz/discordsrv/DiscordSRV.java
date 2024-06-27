@@ -767,7 +767,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
 
-        OkHttpClient httpClient = httpClientBuilder.build(); 
+        OkHttpClient httpClient = httpClientBuilder.build();
 
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
