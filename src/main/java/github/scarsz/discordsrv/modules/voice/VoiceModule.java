@@ -90,7 +90,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         String categoryId = DiscordSRV.config().getString("Voice category");
         if (StringUtils.isBlank(categoryId)) return;
 
-        Category category = DiscordSRV.getPlugin().getJda().getCategoryById(DiscordSRV.config().getString(categoryId));
+        Category category = DiscordSRV.getPlugin().getJda().getCategoryById(categoryId);
         if (category != null) {
             category.getVoiceChannels().stream()
                     .filter(channel -> {
