@@ -65,8 +65,6 @@ public enum Debug {
     }
 
     public boolean isVisible() {
-        if (matches("all")) return true;
-
         Set<String> debuggerCategories = DiscordSRV.getPlugin().getDebuggerCategories();
         if (!debuggerCategories.isEmpty() && debuggerCategories.stream().anyMatch(this::matches)) {
             return true;
