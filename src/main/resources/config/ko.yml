@@ -71,10 +71,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# Legacy option for transitioning to the new Debug option,
-# setting this to anything above 0 is the same as setting Debug to [ALL]
-DebugLevel: 0
-
 # 실험
 # 이러한 기능은 완전히 최적화되지 않았습니다. 자신의 책임하에 사용하십시오
 
