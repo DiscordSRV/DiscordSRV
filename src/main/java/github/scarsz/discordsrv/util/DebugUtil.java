@@ -114,10 +114,10 @@ public class DebugUtil {
                     "   /discord command executor: " + (Bukkit.getServer().getPluginCommand("discord") != null ? Bukkit.getServer().getPluginCommand("discord").getPlugin() : ""),
                     "   hooked plugins: " + DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")),
                     "Threads:",
-                    "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
-                    "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
-                    "    nickname updater -> alive: " + (DiscordSRV.getPlugin().getNicknameUpdater() != null && DiscordSRV.getPlugin().getNicknameUpdater().isAlive()),
-                    "    presence updater -> alive: " + (DiscordSRV.getPlugin().getPresenceUpdater() != null && DiscordSRV.getPlugin().getPresenceUpdater().isAlive()),
+                    "   channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
+                    "   server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
+                    "   nickname updater -> alive: " + (DiscordSRV.getPlugin().getNicknameUpdater() != null && DiscordSRV.getPlugin().getNicknameUpdater().isAlive()),
+                    "   presence updater -> alive: " + (DiscordSRV.getPlugin().getPresenceUpdater() != null && DiscordSRV.getPlugin().getPresenceUpdater().isAlive()),
                     "Guilds:" + listGuilds()
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
@@ -144,10 +144,10 @@ public class DebugUtil {
     }
 
     private static String listGuilds() {
-        if (DiscordUtil.getJda() == null) return "\n  null JDA";
+        if (DiscordUtil.getJda() == null) return "\n   null JDA";
         String list = "";
         for (Guild server : DiscordUtil.getJda().getGuilds()) {
-            list += "\n    " + server + "  :  [";
+            list += "\n   " + server + "  :  [";
             for (TextChannel channel : server.getTextChannels()) list += channel + ", ";
             list += "]";
         }
