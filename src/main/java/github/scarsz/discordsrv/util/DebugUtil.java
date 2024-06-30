@@ -144,7 +144,7 @@ public class DebugUtil {
     }
 
     private static String listGuilds() {
-        if (DiscordUtil.getJda() == null) return "    null JDA";
+        if (DiscordUtil.getJda() == null) return "\n  null JDA";
         String list = "";
         for (Guild server : DiscordUtil.getJda().getGuilds()) {
             list += "\n    " + server + "  :  [";
