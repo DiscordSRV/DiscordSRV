@@ -20,8 +20,6 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -29,15 +27,16 @@ import org.bukkit.event.Event;
 /**
  * <p>Called after DiscordSRV has processed a Minecraft chat message but before being sent to Discord.
  * Modification is allow and will effect the message sent to Discord.</p>
- * 
+ *
  * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePostProcessEvent} would be called instead, due to the lack of the Player object</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class GameChatMessagePostProcessEvent extends GameEvent<Event> implements Cancellable {
 
-    @Getter @Setter private boolean cancelled;
+    private boolean cancelled;
 
-    @Getter @Setter private String channel;
-    @Getter @Setter private String processedMessage;
+    private String channel;
+    private String processedMessage;
 
     public GameChatMessagePostProcessEvent(String channel, String processedMessage, Player player, boolean cancelled, Event event) {
         super(player, event);
@@ -51,4 +50,27 @@ public class GameChatMessagePostProcessEvent extends GameEvent<Event> implements
         this(channel, processedMessage, player, cancelled, null);
     }
 
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public String getChannel() {
+        return this.channel;
+    }
+
+    public String getProcessedMessage() {
+        return this.processedMessage;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public void setProcessedMessage(String processedMessage) {
+        this.processedMessage = processedMessage;
+    }
 }

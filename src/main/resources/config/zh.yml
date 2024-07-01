@@ -8,12 +8,12 @@ ConfigVersion: ${version}
 # 更改此選項後必須重新啟動服務器
 BotToken: "BOTTOKEN"
 
-# 使用代理服务器连接到Discord 
+# 使用代理服务器连接到Discord
 # 如果你不知道它的功能，请不要修改参数
-ProxyHost: "https://example.com"  
-ProxyPort: 1234  
-ProxyUser: "USERNAME"  
-ProxyPassword: "PASSWORD"  
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
 
 # 从游戏到Discord的频道链接
 # 语法为 Channels: {"来自Minecraft的游戏中频道名称": "来自Discord的数字频道ID", "来自Minecraft的另一个游戏中频道名称": "来自Discord的另一个数字频道ID”}
@@ -70,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# Legacy option for transitioning to the new Debug option,
-# setting this to anything above 0 is the same as setting Debug to [ALL]
-DebugLevel: 0
-
 # 实验
 # 这些功能尚未完全优化。 使用风险自负
 
@@ -105,7 +101,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # 其他
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -133,7 +128,8 @@ UseModernPaperChatEvent: false
 # Can be a single, static value, or cycle through multiple different options
 # You can preface the status with "playing", "watching", "listening to", or "competing" to set the activity type
 # You can also set your own custom status without the prefixes
-# PlaceholderAPI placeholders are supported
+#    %online%: number of online players
+#    PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE

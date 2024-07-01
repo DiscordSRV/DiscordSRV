@@ -20,7 +20,6 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -29,11 +28,12 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 /**
  * <p>Called directly after receiving a message through Discord from a {@link PrivateChannel}</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class DiscordPrivateMessageReceivedEvent extends DiscordEvent<PrivateMessageReceivedEvent> {
 
-    @Getter private final User author;
-    @Getter private final PrivateChannel channel;
-    @Getter private final Message message;
+    private final User author;
+    private final PrivateChannel channel;
+    private final Message message;
 
     public DiscordPrivateMessageReceivedEvent(PrivateMessageReceivedEvent jdaEvent) {
         super(jdaEvent.getJDA(), jdaEvent);
@@ -42,4 +42,15 @@ public class DiscordPrivateMessageReceivedEvent extends DiscordEvent<PrivateMess
         this.message = jdaEvent.getMessage();
     }
 
+    public User getAuthor() {
+        return this.author;
+    }
+
+    public PrivateChannel getChannel() {
+        return this.channel;
+    }
+
+    public Message getMessage() {
+        return this.message;
+    }
 }

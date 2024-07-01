@@ -29,11 +29,11 @@ import java.util.Map;
 
 /**
  * <p>Made by Scarsz</p>
- * <p>German translations by Androkai & GerdSattler</p>
+ * <p>German translations by Androkai &amp; GerdSattler</p>
  * <p>Japanese translations by Ucchy</p>
  * <p>French translations by BrinDeNuage</p>
  * <p>Korean translations by Alex4386 (with MintNetwork)</p>
- * <p>Dutch translations by Mr Ceasar & Zarathos</p>
+ * <p>Dutch translations by Mr Ceasar &amp; Zarathos</p>
  * <p>Spanish translations by ZxFrankxZ</p>
  * <p>Russian translations by DmitryRendov</p>
  * <p>Estonian translations by Madis0</p>
@@ -424,21 +424,6 @@ public class LangUtil {
             put(Language.DA, "Konsol videresendelse tildelt til kanal");
             put(Language.UK, "Вихід консолі успішно перенаправлений на канал");
             put(Language.NB, "Konsollsending er bundet til kanal");
-        }}), FOUND_SERVER(new HashMap<Language, String>() {{
-            put(Language.EN, "Found server");
-            put(Language.FR, "Serveur trouvé");
-            put(Language.DE, "Server wurde gefunden");
-            put(Language.JA, "見つかったサーバー");
-            put(Language.KO, "서버를 찾았습니다");
-            put(Language.NL, "Server gevonden");
-            put(Language.ES, "Servidor encontrado");
-            put(Language.RU, "Сервер найден");
-            put(Language.ET, "Server leitud");
-            put(Language.ZH, "已找到伺服器");
-            put(Language.PL, "Znaleziono serwer");
-            put(Language.DA, "Fundet server");
-            put(Language.UK, "Сервер знайдено");
-            put(Language.NB, "Fant server");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");

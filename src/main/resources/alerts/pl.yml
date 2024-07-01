@@ -1,6 +1,7 @@
 # To jest / zaawansowana / funkcja DiscordSRV, która umożliwia wysyłanie wiadomości do Discord, gdy nastąpi wydarzenie w grze
 # lub gdy polecenie jest uruchamiane. Będziesz potrzebować praktycznej wiedzy o tym, jak działają wydarzenia Bukkit i ich właściwości.
 # Jeśli nie jesteś pewien, co tutaj robisz, może zapytaj programistę lub dołącz do naszego serwera pomocy @ discordsrv.com/discord
+# Made something you'd like to share? You can do so in our Discord server's #alerts forum (invite above)
 #
 # Zapoznaj się z javadoc PlaceholderAPI Bukkit, aby znaleźć zdarzenia i właściwości do użycia:
 #  https://hub.spigotmc.org/javadocs/bukkit

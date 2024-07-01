@@ -21,8 +21,6 @@
 package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.api.Cancellable;
-import lombok.Getter;
-import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
@@ -38,16 +36,32 @@ import java.util.Set;
  * registering to this {@link Guild} altogether. Cancelling also leave slash commands originally registered in a
  * {@link Guild} untouched.</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class GuildSlashCommandUpdateEvent extends Event implements Cancellable {
 
-    @Getter @Setter private boolean cancelled;
+    private boolean cancelled;
 
-    @Getter private final Guild guild;
-    @Getter private final Set<CommandData> commands;
+    private final Guild guild;
+    private final Set<CommandData> commands;
 
     public GuildSlashCommandUpdateEvent(Guild guild, Set<CommandData> commands) {
         this.guild = guild;
         this.commands = commands;
     }
 
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public Guild getGuild() {
+        return this.guild;
+    }
+
+    public Set<CommandData> getCommands() {
+        return this.commands;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
 }
