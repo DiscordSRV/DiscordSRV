@@ -938,14 +938,6 @@ public class DiscordSRV extends JavaPlugin {
             nicknameUpdater.start();
         }
 
-        // print the things the bot can see
-        if (config().getBoolean("PrintGuildsAndChannels")) {
-            for (Guild server : jda.getGuilds()) {
-                DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
-                for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
-            }
-        }
-
         // show warning if bot wasn't in any guilds
         if (jda.getGuilds().size() == 0) {
             DiscordSRV.error(LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS);
