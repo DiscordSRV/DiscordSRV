@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 /**
  * <p>Utility for replacing placeholders in Strings. You can provide the replacements directly as map entries or you can
- * provide a Function<String, String> that will map keys to their values.</p>
+ * provide a {@link java.util.function.Function Function&lt;String, String>} that will map keys to their values.</p>
  *
  * <p>Examples:
  * <ol>

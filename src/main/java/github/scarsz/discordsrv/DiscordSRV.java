@@ -157,7 +157,7 @@ public class DiscordSRV extends JavaPlugin {
     public static String version = "";
 
     // Managers
-    @Getter private AccountLinkManager accountLinkManager;
+    private AccountLinkManager accountLinkManager;
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private IncompatibleClientManager incompatibleClientManager = new IncompatibleClientManager();
@@ -767,7 +767,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
 
-        OkHttpClient httpClient = httpClientBuilder.build(); 
+        OkHttpClient httpClient = httpClientBuilder.build();
 
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
@@ -2227,4 +2227,8 @@ public class DiscordSRV extends JavaPlugin {
         return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 
+    @SuppressWarnings("LombokGetterMayBeUsed")
+    public AccountLinkManager getAccountLinkManager() {
+        return this.accountLinkManager;
+    }
 }

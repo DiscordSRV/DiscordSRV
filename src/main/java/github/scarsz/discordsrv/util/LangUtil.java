@@ -29,11 +29,11 @@ import java.util.Map;
 
 /**
  * <p>Made by Scarsz</p>
- * <p>German translations by Androkai & GerdSattler</p>
+ * <p>German translations by Androkai &amp; GerdSattler</p>
  * <p>Japanese translations by Ucchy</p>
  * <p>French translations by BrinDeNuage</p>
  * <p>Korean translations by Alex4386 (with MintNetwork)</p>
- * <p>Dutch translations by Mr Ceasar & Zarathos</p>
+ * <p>Dutch translations by Mr Ceasar &amp; Zarathos</p>
  * <p>Spanish translations by ZxFrankxZ</p>
  * <p>Russian translations by DmitryRendov</p>
  * <p>Estonian translations by Madis0</p>
