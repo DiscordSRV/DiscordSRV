@@ -2098,8 +2098,8 @@ public class DiscordSRV extends JavaPlugin {
             DiscordSRV.warning("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this warning.");
         }
 
-        if (offline && !avatarUrl.contains("{username}") && !offlineUuidAvatarUrlNagged) {
-            DiscordSRV.error("Your AvatarUrl config option does not contain the {username} placeholder even though this server is using offline UUIDs.");
+        if (offline && (avatarUrl.contains("{uuid}") || avatarUrl.contains("{uuid-nodashes}")) && !offlineUuidAvatarUrlNagged) {
+            DiscordSRV.error("Your AvatarUrl config option contains {uuid} or {uuid-nodashes} but this server is using offline UUIDs.");
             offlineUuidAvatarUrlNagged = true;
         }
 
