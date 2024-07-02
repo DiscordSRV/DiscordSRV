@@ -124,10 +124,10 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Informations de jeu
-# Met "En train de jouer à : ______" au statut du bot.
+# Sets the user status for the bot
 # Il peut s'agir d'un seul argument, d'une valeur fixe, ou d'un cycle qui alterne entre les valeurs.
 # Vous pouvez modifier "playing", "watching", "listening to", or "competing" pour changer le type de statut.
-# You can also set your own custom status without the prefixes
+# You can set your own custom status by not including the prefixes
 #    %online%: number of online players
 #    Les placeholders PlaceholderAPI sont supportés
 #

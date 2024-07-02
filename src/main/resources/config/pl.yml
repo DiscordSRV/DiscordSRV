@@ -124,10 +124,10 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Informacje o grze
-# Ustawia wskaźnik „Gra: ______” dla bota.
+# Sets the user status for the bot
 # Może być pojedynczą, statyczną wartością lub przechodzić przez wiele różnych opcji
 # Możesz poprzedzić status słowami „playing”, „watching”, „listening” lub „competing”, aby ustawić typ aktywności
-# You can also set your own custom status without the prefixes
+# You can set your own custom status by not including the prefixes
 #    %online%: number of online players
 #    Symbole zastępcze interfejsu API są obsługiwane
 #

@@ -124,10 +124,10 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Información del Juego
-# Establece el indicador "Playing: ______" para el bot.
+# Sets the user status for the bot
 # Puede ser un único valor estático o recorrer varias opciones diferentes
 # Puede establecer el estado como "playing", "watching", "listening to" o "competing" para establecer el tipo de actividad
-# You can also set your own custom status without the prefixes
+# You can set your own custom status by not including the prefixes
 #    %online%: number of online players
 #    Los marcadores de posición PlaceholderAPI son compatibles
 #
