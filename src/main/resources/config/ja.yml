@@ -8,12 +8,12 @@ ConfigVersion: ${version}
 # このオプションを変更した後、サーバーを再起動する必要があります
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord  
-# Leave this alone if you don't understand what it does  
-ProxyHost: "https://example.com"  
-ProxyPort: 1234  
-ProxyUser: "USERNAME"  
-ProxyPassword: "PASSWORD"  
+# The proxy to be used for Discord
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
 
 # ゲームからDiscordへのチャンネルリンク
 # 構文は Channels: {"Minecraft内のチャンネル名": "Discord内のチャンネルID（数値）", "Minecraft内の別のチャンネル名": "Discord内の別のチャンネルID（数値）"}
@@ -70,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# レガシーな設定オプションです。これではなく上記のオプションを使用してください。
-# この設定で 0 より大きい値を指定することは、 Debug に [ALL] を指定することと等価です。
-DebugLevel: 0
-
 # 実験
 # これらの機能は完全に最適化されていません。自己責任で使用してください。
 
@@ -106,7 +102,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # その他
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -133,7 +128,8 @@ UseModernPaperChatEvent: false
 # Sets the "Playing: ______" indicator for the bot.
 # Can be a single, static value, or cycle through multiple different options
 # You can preface the status with "playing", "watching", or "listening to" to set the activity type
-# PlaceholderAPI placeholders are supported
+#    %online%: number of online players
+#    PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE

@@ -8,12 +8,12 @@ ConfigVersion: ${version}
 # Після зміни цього параметра необхідно перезавантажити сервер.
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord  
-# Leave this alone if you don't understand what it does  
-ProxyHost: "https://example.com"  
-ProxyPort: 1234  
-ProxyUser: "USERNAME"  
-ProxyPassword: "PASSWORD"  
+# The proxy to be used for Discord
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
 
 # Посилання на канали з гри в Discord
 # синтаксис: Channels: {"назва внутрішньоігрового каналу з Minecraft": "числовий ідентифікатор каналу з Discord", "інша назва внутрішньоігрового каналу з Minecraft": "інший числовий ідентифікатор каналу з Discord"}
@@ -70,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/поміняйте-посилання-в-
 #
 Debug: []
 
-# Legacy option for transitioning до нової Debug option,
-# setting this to anything above 0 is the same as setting Debug to [ALL]
-DebugLevel: 0
-
 # Експерименти
 # Ці функції не повністю оптимізовані; Використовуйте на свій ризик
 
@@ -105,7 +101,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # Інші
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -132,7 +127,8 @@ UseModernPaperChatEvent: false
 # Устанавливает боту индикатор "Играет в: ______".
 # Может быть как одним статическим значением, так и несколькими (сменяющимися друг за другом).
 # Вы можете добавить в начало "playing", "watching" или "listening to", чтобы установить тип активности (играет, смотрит, слушает)
-# Поддерживает шаблоны PlaceholderAPI
+#    %online%: number of online players
+#    Поддерживает шаблоны PlaceholderAPI
 #
 # DiscordGameStatus: Отображаемый текст. Может быть как одним значением, например "Minecraft", так и несколькими: ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Статус отображаемого действия. Он должен быть одним из следующих: ONLINE, DND, IDLE или INVISIBLE.

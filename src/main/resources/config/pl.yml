@@ -8,12 +8,12 @@ ConfigVersion: ${version}
 # Po zmianie tej opcji musisz ponownie uruchomić serwer
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord  
-# Leave this alone if you don't understand what it does  
-ProxyHost: "https://example.com"  
-ProxyPort: 1234  
-ProxyUser: "USERNAME"  
-ProxyPassword: "PASSWORD"  
+# The proxy to be used for Discord
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
 
 # Linki kanału z gry do Discord
 # składnia to Kanały: {"nazwa kanału w grze z Minecrafta": "numeryczny identyfikator kanału z Discord", "inna nazwa kanału w grze z Minecrafta": "inny numeryczny identyfikator kanału z Discord"}
@@ -70,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/zmieńtowconfigu.yml"
 #
 Debug: []
 
-# Legacy option for transitioning to the new Debug option,
-# setting this to anything above 0 is the same as setting Debug to [ALL]
-DebugLevel: 0
-
 # Eksperymenty
 # Te funkcje nie są w pełni zoptymalizowane; używaj na własne ryzyko
 
@@ -105,7 +101,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # Inny
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -132,7 +127,8 @@ UseModernPaperChatEvent: false
 # Ustawia wskaźnik „Gra: ______” dla bota.
 # Może być pojedynczą, statyczną wartością lub przechodzić przez wiele różnych opcji
 # Możesz poprzedzić status słowami „odtwarzanie”, „oglądanie” lub „słuchanie”, aby ustawić typ aktywności
-# Symbole zastępcze interfejsu API są obsługiwane
+#    %online%: number of online players
+#    Symbole zastępcze interfejsu API są obsługiwane
 #
 # DiscordGameStatus: tekst do wyświetlenia. Może być pojedynczą wartością, np. „Minecraft” lub wiele wartości, np. [„Minecraft”, „yourip.changeme.com”]
 # DiscordOnlineStatus: Status czynności, która ma być wyświetlana. Musi to być jedna z następujących wartości: ONLINE, DND, IDLE lub INVISIBLE.

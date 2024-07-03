@@ -21,8 +21,6 @@
 package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.api.Cancellable;
-import lombok.Getter;
-import lombok.Setter;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
@@ -31,11 +29,12 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * <p>At the time this event is called, the command can still be changed, and event cancelled</p>
  * <p>Cancelling the event will stop the command from being sent to the server</p>
  */
-public class DiscordConsoleCommandPreProcessEvent extends DiscordEvent<GuildMessageReceivedEvent> implements Cancellable{
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
+public class DiscordConsoleCommandPreProcessEvent extends DiscordEvent<GuildMessageReceivedEvent> implements Cancellable {
 
-    @Getter private boolean sentInConsoleChannel;
-    @Getter @Setter private boolean cancelled;
-    @Getter @Setter private String command;
+    private boolean sentInConsoleChannel;
+    private boolean cancelled;
+    private String command;
 
     public DiscordConsoleCommandPreProcessEvent(GuildMessageReceivedEvent jdaEvent, String command, boolean sentInConsoleChannel) {
         super(jdaEvent.getJDA(), jdaEvent);
@@ -44,4 +43,23 @@ public class DiscordConsoleCommandPreProcessEvent extends DiscordEvent<GuildMess
         this.command = command;
     }
 
+    public boolean isSentInConsoleChannel() {
+        return this.sentInConsoleChannel;
+    }
+
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public String getCommand() {
+        return this.command;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
 }

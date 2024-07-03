@@ -20,13 +20,44 @@
 
 package github.scarsz.discordsrv.api.commands;
 
-import lombok.Value;
+import java.util.Objects;
 import net.dv8tion.jda.api.entities.Guild;
 
-@Value
-public class CommandRegistrationError {
+@SuppressWarnings("LombokGetterMayBeUsed")
+public final class CommandRegistrationError {
 
-    Guild guild;
-    Throwable exception;
+    private final Guild guild;
+    private final Throwable exception;
 
+    public CommandRegistrationError(Guild guild, Throwable exception) {
+        this.guild = guild;
+        this.exception = exception;
+    }
+
+    public Guild getGuild() {
+        return this.guild;
+    }
+
+    public Throwable getException() {
+        return this.exception;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof CommandRegistrationError)) return false;
+        if (!Objects.equals(this.getGuild(), ((CommandRegistrationError) o).getGuild())) return false;
+        return Objects.equals(this.getException(), ((CommandRegistrationError) o).getException());
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + (this.getGuild() == null ? 43 : this.getGuild().hashCode());
+        result = result * PRIME + (this.getException() == null ? 43 : this.getException().hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "CommandRegistrationError(guild=" + this.getGuild() + ", exception=" + this.getException() + ")";
+    }
 }

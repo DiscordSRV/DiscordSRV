@@ -23,12 +23,12 @@ Require linked account to play:
   Only check banned players: false
 
   # Besked der fortæller kickede spillere hvordan de skal linke deres brugere
-  # Brug {BOT} som en placeholder for bottens navn 
-  # Brug {CODE} som en placeholder for koden folk skal sende til botten 
+  # Brug {BOT} som en placeholder for bottens navn
+  # Brug {CODE} som en placeholder for koden folk skal sende til botten
   # Brug {INVITE} som en placeholder for invitations linket folk skal bruge til at joine Discord serveren, bruger DiscordInviteLink i config.yml
   Not linked message: "&7Du skal linke din &9Discord &7brugere for at spille.\n\n&7Send en privatbesked til &b{BOT}&7 inde i Discord serveren som KUN indeholder &b{CODE}&7 for at linke dine bruger.\n\n&7Discord Invite » &b{INVITE}"
 
-  # Hvis aktiveret, spillere vil ikke kun skulle have deres brugere linked, men 
+  # Hvis aktiveret, spillere vil ikke kun skulle have deres brugere linked, men
   # vil også kræve dem at være medlem af Discord serveren som botten også er i.
   #
   # Acceptabelt format:

@@ -157,7 +157,7 @@ public class DiscordSRV extends JavaPlugin {
     public static String version = "";
 
     // Managers
-    @Getter private AccountLinkManager accountLinkManager;
+    private AccountLinkManager accountLinkManager;
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private IncompatibleClientManager incompatibleClientManager = new IncompatibleClientManager();
@@ -767,7 +767,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
 
-        OkHttpClient httpClient = httpClientBuilder.build(); 
+        OkHttpClient httpClient = httpClientBuilder.build();
 
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
@@ -936,14 +936,6 @@ public class DiscordSRV extends JavaPlugin {
         } else {
             nicknameUpdater = new NicknameUpdater();
             nicknameUpdater.start();
-        }
-
-        // print the things the bot can see
-        if (config().getBoolean("PrintGuildsAndChannels")) {
-            for (Guild server : jda.getGuilds()) {
-                DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
-                for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
-            }
         }
 
         // show warning if bot wasn't in any guilds
@@ -2094,12 +2086,12 @@ public class DiscordSRV extends JavaPlugin {
             avatarUrl = !offline ? defaultUrl : offlineUrl;
             DiscordSRV.config().setRuntimeValue("AvatarUrl", avatarUrl);
 
-            DiscordSRV.error("Your AvatarUrl config option uses crafatar.com, which no longer allows usage with Discord. An alternative provider will be used.");
-            DiscordSRV.error("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this error.");
+            DiscordSRV.warning("Your AvatarUrl config option uses crafatar.com, which no longer allows usage with Discord. An alternative provider will be used.");
+            DiscordSRV.warning("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this warning.");
         }
 
-        if (offline && !avatarUrl.contains("{username}") && !offlineUuidAvatarUrlNagged) {
-            DiscordSRV.error("Your AvatarUrl config option does not contain the {username} placeholder even though this server is using offline UUIDs.");
+        if (offline && (avatarUrl.contains("{uuid}") || avatarUrl.contains("{uuid-nodashes}")) && !offlineUuidAvatarUrlNagged) {
+            DiscordSRV.error("Your AvatarUrl config option contains {uuid} or {uuid-nodashes} but this server is using offline UUIDs.");
             offlineUuidAvatarUrlNagged = true;
         }
 
@@ -2247,4 +2239,8 @@ public class DiscordSRV extends JavaPlugin {
         return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 
+    @SuppressWarnings("LombokGetterMayBeUsed")
+    public AccountLinkManager getAccountLinkManager() {
+        return this.accountLinkManager;
+    }
 }
