@@ -183,7 +183,6 @@ repositories {
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
-    maven("https://repo.granny.dev/snapshots/") // TODO: remove once Adventure fixes their repo upload
     maven("https://nexus.scarsz.me/content/groups/public/")
 }
 
@@ -222,7 +221,7 @@ dependencies {
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.4-SNAPSHOT") // TODO: stop pulling from granny's repo
+    implementation("net.kyori:adventure-platform-bukkit:4.3.4-SNAPSHOT")
     api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
