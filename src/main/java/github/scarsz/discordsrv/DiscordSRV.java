@@ -2163,6 +2163,14 @@ public class DiscordSRV extends JavaPlugin {
         return selectedRoles;
     }
 
+    public Role getTopSelectedRole(Member member) {
+        List<Role> selectedRoles = getSelectedRoles(member);
+        if (selectedRoles.isEmpty()) return null;
+        return member.getRoles().stream()
+                .filter(selectedRoles::contains)
+                .findFirst().orElse(null);
+    }
+
     public Map<String, String> getGroupSynchronizables() {
         HashMap<String, String> map = new HashMap<>();
         config.dget("GroupRoleSynchronizationGroupsAndRolesToSync").children().forEach(dynamic ->
