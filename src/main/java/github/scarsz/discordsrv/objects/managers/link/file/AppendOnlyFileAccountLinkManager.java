@@ -138,20 +138,16 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
         File tmpFile = getTemporaryFile();
         tmpFile.deleteOnExit();
 
-        try (FileWriter fileWriter = new FileWriter(tmpFile)) {
-            try (BufferedWriter writer = new BufferedWriter(fileWriter)) {
+        try {
+            try (FileWriter fileWriter = new FileWriter(tmpFile);
+                 BufferedWriter writer = new BufferedWriter(fileWriter)) {
                 for (Map.Entry<String, UUID> entry : linkedAccounts.entrySet()) {
                     String discordId = entry.getKey();
                     UUID uuid = entry.getValue();
                     writer.write(discordId + " " + uuid + "\n");
                 }
-
-                if (!file.delete()) {
-                    throw new IOException("couldn't delete master file after write");
-                } else if (!tmpFile.renameTo(file)) {
-                    throw new IOException("couldn't rename temporary file to master file after write");
-                }
             }
+            FileUtils.moveFile(tmpFile, file);
         } finally {
             //noinspection ResultOfMethodCallIgnored
             tmpFile.delete();
