@@ -8,12 +8,12 @@ ConfigVersion: ${version}
 # Debe reiniciar su servidor después de cambiar esta opción
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord  
-# Leave this alone if you don't understand what it does  
-ProxyHost: "https://example.com"  
-ProxyPort: 1234  
-ProxyUser: "USERNAME"  
-ProxyPassword: "PASSWORD"  
+# The proxy to be used for Discord
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
 
 # Enlaces de canal del juego a Discord
 # la sintaxis es Channels: {"nombre de canal en el juego de Minecraft": "ID de canal numérico de Discord", "otro nombre de canal en el juego de Minecraft": "otro ID de canal numérico de Discord"}
@@ -70,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# Legacy option for transitioning to the new Debug option,
-# setting this to anything above 0 is the same as setting Debug to [ALL]
-DebugLevel: 0
-
 # Los experimentos
 # Estas características no están completamente optimizadas; Úselo bajo su propio riesgo
 
@@ -105,7 +101,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # Otras
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -129,15 +124,17 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Información del Juego
-# Establece el indicador "Playing: ______" para el bot.
+# Sets the user status for the bot
 # Puede ser un único valor estático o recorrer varias opciones diferentes
-# Puede establecer el estado como "playing", "watching" o "listening to" para establecer el tipo de actividad
-# Los marcadores de posición PlaceholderAPI son compatibles
+# Puede establecer el estado como "playing", "watching", "listening to" o "competing" para establecer el tipo de actividad
+# You can set your own custom status by not including the prefixes
+#    %online%: number of online players
+#    Los marcadores de posición PlaceholderAPI son compatibles
 #
 # DiscordGameStatus: Texto a mostrar. Puede ser un valor único, p. "Minecraft", o valores múltiples, p. ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Estado de la actividad a mostrar. Debe ser uno de los siguientes: ONLINE, DND, IDLE o INVISIBLE.
 # StatusUpdateRateInMinutes: Con qué frecuencia cambiar el estado
-DiscordGameStatus: ["Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 

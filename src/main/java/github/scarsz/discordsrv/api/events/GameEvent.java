@@ -20,17 +20,24 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 abstract class GameEvent<T extends org.bukkit.event.Event> extends Event {
 
-    @Getter final private Player player;
-    @Getter final private T triggeringBukkitEvent;
+    final private Player player;
+    final private T triggeringBukkitEvent;
 
     GameEvent(Player player, T triggeringBukkitEvent) {
         this.player = player;
         this.triggeringBukkitEvent = triggeringBukkitEvent;
     }
 
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    public T getTriggeringBukkitEvent() {
+        return this.triggeringBukkitEvent;
+    }
 }

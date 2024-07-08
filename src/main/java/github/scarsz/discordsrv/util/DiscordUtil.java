@@ -90,7 +90,7 @@ public class DiscordUtil {
     private static final Pattern EMOTE_MENTION_PATTERN = Pattern.compile("(<a?:([a-zA-Z]{2,32}):[0-9]{16,20}>)");
 
     /**
-     * Converts Discord-compatible <@12345742934270> mentions to human readable @mentions
+     * Converts Discord-compatible &lt;@12345742934270> mentions to human readable @mentions
      * @param message the message
      * @return the converted message
      */
@@ -128,7 +128,7 @@ public class DiscordUtil {
     }
 
     /**
-     * Convert @mentions into Discord-compatible <@012345678901234567890> mentions
+     * Convert @mentions into Discord-compatible &lt;@012345678901234567890> mentions
      * @param message Message to convert
      * @param guild Guild to find names to convert
      * @return Contents of the given message with names converted to mentions

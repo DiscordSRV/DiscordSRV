@@ -183,7 +183,6 @@ repositories {
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
-    maven("https://repo.granny.dev/snapshots/") // TODO: remove once JDAAppender is properly updated in scarsz' nexus
     maven("https://nexus.scarsz.me/content/groups/public/")
 }
 
@@ -194,7 +193,7 @@ dependencies {
     }
 
     // JDA
-    api("net.dv8tion:JDA:4.4.0_352.fix-5") {
+    api("net.dv8tion:JDA:4.4.1_DiscordSRV.fix-6") {
         exclude(module = "opus-java") // we don't use voice features
     }
 
@@ -206,7 +205,7 @@ dependencies {
     }
 
     // Logging
-    implementation("me.scarsz.jdaappender:jda4:1.2.0-SNAPSHOT")
+    implementation("me.scarsz.jdaappender:jda4:1.2.1")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9
@@ -216,13 +215,13 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-core:2.0-beta9")
 
     // adventure, adventure-platform, MCDiscordReserializer
-    val adventureVersion = "4.16.0"
+    val adventureVersion = "4.17.0"
     api("net.kyori:adventure-api:${adventureVersion}")
     api("net.kyori:adventure-text-minimessage:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.4-SNAPSHOT")
     api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
@@ -288,7 +287,7 @@ dependencies {
     compileOnly("org.dynmap:dynmap-api:2.0")
     compileOnly("com.gmail.nossr50:mcmmo:1.5.07")
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
-    compileOnly("me.clip:placeholderapi:2.10.7")
+    compileOnly("me.clip:placeholderapi:2.10.9")
 
     // debug hooks
     compileOnly("ch.njol:skript:2.5")

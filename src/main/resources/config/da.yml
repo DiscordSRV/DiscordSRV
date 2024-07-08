@@ -33,7 +33,7 @@ ProxyPassword: "PASSWORD"
 # til bruger tilkobling: link
 #
 # Den første del af at danne kanal par er ikke Discord kanal navnet!
-# Kør "/discord reload" efter du har ændret denne 
+# Kør "/discord reload" efter du har ændret denne
 Channels: {"global": "000000000000000000"}
 
 # Konsol kanalens numeriske ID (IKKE NAVN), efterlad blank for at slå fra
@@ -70,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# Ældre mulighed for overgang til den nye fejlretningsmulighed,
-# at sætte dette til noget over 0 er det samme som at indstille Debug til [ALL]
-DebugLevel: 0
-
 # Eksperimenterende
 # Disse funktioner er ikke fuldt optimeret; brug på eget ansvar
 
@@ -105,7 +101,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # Andet
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -129,15 +124,17 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Spiloplysninger
-# Indstiller "Spiller: ______"-indikatoren for botten.
+# Sets the user status for the bot
 # Kan være en enkelt, statisk værdi eller gå gennem flere forskellige muligheder
-# Du kan indlede status med "playing", "watching", eller "listening to" for at indstille aktivitetstypen
-# PlaceholderAPI-placeholders understøttes
+# Du kan indlede status med "playing", "watching", "listening to", eller "competing" for at indstille aktivitetstypen
+# You can set your own custom status by not including the prefixes
+#    %online%: number of online players
+#    PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Tekst, der skal vises. Kan være en enkelt værdi f.eks. "Minecraft", eller flere værdier, f.eks. ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Aktivitetsstatus skal vises. Dette skal være en af følgende: ONLINE, DND, IDLE, eller INVISIBLE
 # StatusUpdateRateInMinutes: Hvor ofte skal status skiftes
-DiscordGameStatus: ["Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 

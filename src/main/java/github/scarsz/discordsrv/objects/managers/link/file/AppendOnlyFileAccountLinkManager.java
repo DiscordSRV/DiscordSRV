@@ -138,20 +138,18 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
         File tmpFile = getTemporaryFile();
         tmpFile.deleteOnExit();
 
-        try (FileWriter fileWriter = new FileWriter(tmpFile)) {
-            try (BufferedWriter writer = new BufferedWriter(fileWriter)) {
+        try {
+            try (FileWriter fileWriter = new FileWriter(tmpFile);
+                 BufferedWriter writer = new BufferedWriter(fileWriter)) {
                 for (Map.Entry<String, UUID> entry : linkedAccounts.entrySet()) {
                     String discordId = entry.getKey();
                     UUID uuid = entry.getValue();
                     writer.write(discordId + " " + uuid + "\n");
                 }
-
-                if (!file.delete()) {
-                    throw new IOException("couldn't delete master file after write");
-                } else if (!tmpFile.renameTo(file)) {
-                    throw new IOException("couldn't rename temporary file to master file after write");
-                }
             }
+            //noinspection ResultOfMethodCallIgnored
+            file.delete();
+            FileUtils.moveFile(tmpFile, file);
         } finally {
             //noinspection ResultOfMethodCallIgnored
             tmpFile.delete();
@@ -162,20 +160,8 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     @SneakyThrows
     public void link(String discordId, UUID uuid) {
         super.link(discordId, uuid);
-        User user = DiscordUtil.getJda().getUserById(discordId);
-        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 
-        FileUtils.writeStringToFile(
-                getFile(),
-                String.format("%s %s // %s %s\n",
-                        discordId,
-                        uuid,
-                        user != null ? user.getName() : "<discord username unknown>",
-                        player.getName() != null ? player.getName() : "<player username unknown>"
-                ),
-                "UTF-8",
-                true
-        );
+        FileUtils.writeStringToFile(getFile(), discordId + " " + uuid + "\n", "UTF-8", true);
     }
 
     @Override

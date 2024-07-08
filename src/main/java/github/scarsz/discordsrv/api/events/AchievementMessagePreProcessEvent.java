@@ -21,8 +21,6 @@
 package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.objects.MessageFormat;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -30,13 +28,14 @@ import org.bukkit.event.Event;
 /**
  * <p>Called before DiscordSRV has processed a achievement/advancement message, modifications may be overwritten by DiscordSRV's processing.</p>
  */
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class AchievementMessagePreProcessEvent extends GameEvent<Event> implements Cancellable {
 
-    @Getter @Setter private boolean cancelled;
+    private boolean cancelled;
 
-    @Getter @Setter private String achievementName;
-    @Getter @Setter private String channel;
-    @Getter @Setter private MessageFormat messageFormat;
+    private String achievementName;
+    private String channel;
+    private MessageFormat messageFormat;
 
     public AchievementMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String achievementName, Event triggeringBukkitEvent) {
         super(player, triggeringBukkitEvent);
@@ -75,4 +74,35 @@ public class AchievementMessagePreProcessEvent extends GameEvent<Event> implemen
         this.messageFormat = messageFormat;
     }
 
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public String getAchievementName() {
+        return this.achievementName;
+    }
+
+    public String getChannel() {
+        return this.channel;
+    }
+
+    public MessageFormat getMessageFormat() {
+        return this.messageFormat;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public void setAchievementName(String achievementName) {
+        this.achievementName = achievementName;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public void setMessageFormat(MessageFormat messageFormat) {
+        this.messageFormat = messageFormat;
+    }
 }

@@ -157,7 +157,7 @@ public class DiscordSRV extends JavaPlugin {
     public static String version = "";
 
     // Managers
-    @Getter private AccountLinkManager accountLinkManager;
+    private AccountLinkManager accountLinkManager;
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private IncompatibleClientManager incompatibleClientManager = new IncompatibleClientManager();
@@ -767,7 +767,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
 
-        OkHttpClient httpClient = httpClientBuilder.build(); 
+        OkHttpClient httpClient = httpClientBuilder.build();
 
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
@@ -938,14 +938,6 @@ public class DiscordSRV extends JavaPlugin {
             nicknameUpdater.start();
         }
 
-        // print the things the bot can see
-        if (config().getBoolean("PrintGuildsAndChannels")) {
-            for (Guild server : jda.getGuilds()) {
-                DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
-                for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
-            }
-        }
-
         // show warning if bot wasn't in any guilds
         if (jda.getGuilds().size() == 0) {
             DiscordSRV.error(LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS);
@@ -995,7 +987,14 @@ public class DiscordSRV extends JavaPlugin {
                     BiFunction<String, LogItem, String> placeholders = (key, item) -> {
                         String name = config.padLoggerName(config.resolveLoggerName(item.getLogger()));
                         String timestamp = TimeUtil.consoleTimeStamp(item.getTimestamp());
-                        return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
+                        String value = config().getString(key);
+
+                        // avoid processing placeholders if config value is empty
+                        if (StringUtils.isBlank(value)) {
+                            return "";
+                        }
+
+                        return PlaceholderUtil.replacePlaceholdersToDiscord(value)
                                 .replace("{date}", timestamp)
                                 .replace("{datetime}", timestamp)
                                 .replace("{name}", StringUtils.isNotBlank(name) ? " " + name : "")
@@ -2094,12 +2093,12 @@ public class DiscordSRV extends JavaPlugin {
             avatarUrl = !offline ? defaultUrl : offlineUrl;
             DiscordSRV.config().setRuntimeValue("AvatarUrl", avatarUrl);
 
-            DiscordSRV.error("Your AvatarUrl config option uses crafatar.com, which no longer allows usage with Discord. An alternative provider will be used.");
-            DiscordSRV.error("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this error.");
+            DiscordSRV.warning("Your AvatarUrl config option uses crafatar.com, which no longer allows usage with Discord. An alternative provider will be used.");
+            DiscordSRV.warning("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this warning.");
         }
 
-        if (offline && !avatarUrl.contains("{username}") && !offlineUuidAvatarUrlNagged) {
-            DiscordSRV.error("Your AvatarUrl config option does not contain the {username} placeholder even though this server is using offline UUIDs.");
+        if (offline && (avatarUrl.contains("{uuid}") || avatarUrl.contains("{uuid-nodashes}")) && !offlineUuidAvatarUrlNagged) {
+            DiscordSRV.error("Your AvatarUrl config option contains {uuid} or {uuid-nodashes} but this server is using offline UUIDs.");
             offlineUuidAvatarUrlNagged = true;
         }
 
@@ -2162,6 +2161,14 @@ public class DiscordSRV extends JavaPlugin {
         }
         selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
         return selectedRoles;
+    }
+
+    public Role getTopSelectedRole(Member member) {
+        List<Role> selectedRoles = getSelectedRoles(member);
+        if (selectedRoles.isEmpty()) return null;
+        return member.getRoles().stream()
+                .filter(selectedRoles::contains)
+                .findFirst().orElse(null);
     }
 
     public Map<String, String> getGroupSynchronizables() {
@@ -2235,4 +2242,8 @@ public class DiscordSRV extends JavaPlugin {
         return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 
+    @SuppressWarnings("LombokGetterMayBeUsed")
+    public AccountLinkManager getAccountLinkManager() {
+        return this.accountLinkManager;
+    }
 }

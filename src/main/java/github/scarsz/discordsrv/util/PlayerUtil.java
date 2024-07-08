@@ -223,7 +223,7 @@ public class PlayerUtil {
     /**
      * Returns whether the passed UUID is a v3 UUID. Offline UUIDs are v3, online are v4.
      * @param uuid the UUID to check
-     * @return whether the UUID is a v3 UUID & thus is offline
+     * @return whether the UUID is a v3 UUID &amp; thus is offline
      */
     public static boolean uuidIsOffline(UUID uuid) {
         return uuid.version() == 3;

@@ -34,6 +34,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.ErrorResponse;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -74,17 +75,16 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(receivedMessage.getContentRaw(), event.getAuthor().getId());
         if (reply != null) {
             int deleteSeconds = DiscordSRV.config().getIntElse("MinecraftDiscordAccountLinkedMessageDeleteSeconds", 0);
-            MessageAction repliedMessage = receivedMessage.reply(reply);
+            RestAction<Message> repliedMessage = receivedMessage.reply(reply).delay(deleteSeconds, TimeUnit.SECONDS);
 
-            // delete the message after a delay if the config option is enabled
-            if (deleteSeconds > 0) {
-                // delete the message after a delay
-                repliedMessage.delay(deleteSeconds, TimeUnit.SECONDS).queue(replyMessage -> {
+            repliedMessage.queue(replyMessage -> {
+                // delete the message after a delay if the config option is set
+                if (deleteSeconds > 0) {
                     replyMessage.delete().queue(null, ignoreFailedToDeleteMessage);
                     receivedMessage.delete().queue(null, ignoreFailedToDeleteMessage.handle(ErrorResponse.MISSING_PERMISSIONS,
                             e -> DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Failed to delete " + receivedMessage.getAuthor() + "'s message in the link channel because of missing permissions.")));
-                });
-            }
+                }
+            });
 
         }
     }
