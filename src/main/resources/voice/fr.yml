@@ -1,10 +1,10 @@
 # Ceci est le fichier de configuration du module vocal de DiscordSRV.
-# C'est une fonctionnalité expérimentale. Les choses peuvent ne pas fonctionner correctement.
-# Si vous jouez avec ce module, veuillez nous envoyer vos commentaires sur
-# problèmes sur notre discorde. https://discordsrv.com/discord
+# C'est une fonctionnalité expérimentale. Certaines choses peuvent ne pas fonctionner correctement.
+# Si vous expérimentez avec ce module, veuillez nous faire part de vos commentaires sur
+# les problèmes rencontrés sur notre Discord. https://discordsrv.com/discord
 #
 
-# Activer ou non le module vocal
+# Active ou désactive le module vocal
 # Vous devez redémarrer votre serveur après avoir modifié cette option
 Voice enabled: false
 # Nombre de ticks entre les mises à jour du réseau
@@ -13,10 +13,10 @@ Tick speed: 5
 # Aucun canal autre que le canal du lobby (ci-dessous) ne devrait être dans cette catégorie
 Voice category: 000000000000000000
 # Le canal du lobby (à l'intérieur de la catégorie de voix) vers lequel les gens seront déplacés
-# quand ils ne sont à portée d'aucun réseau. C'est aussi le canal que les gens vont
+# lorsqu'ils ne sont à portée d'aucun réseau. C'est aussi le canal que les gens vont
 # rejoindre pour être connecté au réseau vocal de proximité.
 Lobby channel: 000000000000000000
-# Met en sourdine les utilisateurs du hall qui ont les autorisations Parler et Muet autres dans le hall
+# Met en sourdine les utilisateurs du lobby qui ont les autorisations Parler et Muet autres dans le lobby
 Mute users who bypass speak permissions in the lobby: true
 
 Network:
@@ -24,8 +24,8 @@ Network:
   Vertical Strength: 40
   Horizontal Strength: 80
   # Une fois qu'un joueur a rejoint un réseau, il peut être
-  # strength + falloff avant d'être déconnecté
+  # à une distance de strength + falloff avant d'être déconnecté
   Falloff: 5
-  # Whether voice network channels are visible to everyone, even those not connected
-  # Helps let players know if people are actually using the voice network at the moment
+  # Détermine si les canaux sont visibles par les membres, même ceux qui ne sont pas connectés
+  # Utile pour laisser les gens voir qui est dans le réseau vocal
   Channels are visible: false

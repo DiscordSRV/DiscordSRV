@@ -8,7 +8,14 @@ ConfigVersion: ${version}
 # 更改此選項後必須重新啟動服務器
 BotToken: "BOTTOKEN"
 
-# 从游戏到不和谐的频道链接
+# 使用代理服务器连接到Discord
+# 如果你不知道它的功能，请不要修改参数
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
+# 从游戏到Discord的频道链接
 # 语法为 Channels: {"来自Minecraft的游戏中频道名称": "来自Discord的数字频道ID", "来自Minecraft的另一个游戏中频道名称": "来自Discord的另一个数字频道ID”}
 #
 # DiscordSRV的所有消息将转到第一个通道，除非为该消息定义了一个通道:
@@ -63,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# Legacy option for transitioning to the new Debug option,
-# setting this to anything above 0 is the same as setting Debug to [ALL]
-DebugLevel: 0
-
 # 实验
 # 这些功能尚未完全优化。 使用风险自负
 
@@ -85,9 +88,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # 嵌入和 webhook 图像/头像 url 格式
-# 离线服务器的替代嵌入头像网址:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+# 留空以使用默认值
+# 可用占位符: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # 转换格式，例如 Minecraft和Discord之间的粗体，斜体，下划线
@@ -98,7 +101,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # 其他
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -122,15 +124,17 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Game Information
-# Sets the "Playing: ______" indicator for the bot.
+# Sets the user status for the bot
 # Can be a single, static value, or cycle through multiple different options
-# You can preface the status with "playing", "watching", or "listening to" to set the activity type
-# PlaceholderAPI placeholders are supported
+# You can preface the status with "playing", "watching", "listening to", or "competing" to set the activity type
+# You can set your own custom status by not including the prefixes
+#    %online%: number of online players
+#    PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
 # StatusUpdateRateInMinutes: How frequently to cycle the status
-DiscordGameStatus: ["Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
@@ -222,7 +226,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false

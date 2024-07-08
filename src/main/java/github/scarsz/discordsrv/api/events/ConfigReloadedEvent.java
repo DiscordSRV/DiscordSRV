@@ -20,18 +20,21 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
 import org.bukkit.command.CommandSender;
 
 /**
  * <p>Called directly after the configuration was reloaded and the requester was informed.</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class ConfigReloadedEvent extends Event {
 
-    @Getter private final CommandSender requester;
+    private final CommandSender requester;
 
     public ConfigReloadedEvent(CommandSender requester) {
         this.requester = requester;
     }
 
+    public CommandSender getRequester() {
+        return this.requester;
+    }
 }

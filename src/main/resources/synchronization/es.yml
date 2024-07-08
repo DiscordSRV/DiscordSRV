@@ -1,4 +1,5 @@
 # Minecraft -> Sincronización de apodos de Discord
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled: si establecer o no el apodo del usuario de la discordia en el formato de apodo automáticamente
 # NicknameSynchronizationCycleTime: cantidad de minutos entre la activación repetida de la sincronización para todos los jugadores en línea

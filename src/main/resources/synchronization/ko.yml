@@ -1,4 +1,5 @@
 # Minecraft-> Discord 닉네임 동기화
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled : 불일치 사용자의 닉네임을 닉네임 형식으로 자동 설정할지 여부
 # NicknameSynchronizationCycleTime : 모든 온라인 플레이어에 대해 반복적으로 동기화를 트리거하는 간격 (분)

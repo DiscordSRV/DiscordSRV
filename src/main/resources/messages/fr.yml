@@ -48,7 +48,7 @@
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " (répondre à %name%)"
+DiscordToMinecraftMessageReplyFormat: " (réponse à %name%)"
 
 # Minecraft -> Message Discord
 #

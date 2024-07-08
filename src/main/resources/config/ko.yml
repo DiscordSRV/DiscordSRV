@@ -8,6 +8,13 @@ ConfigVersion: ${version}
 # 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.
 BotToken: "BOTTOKEN"
 
+# The proxy to be used for Discord
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
 # 게임에서 디스코드 채널로 연결하기
 # 작성방법은 Channels: {"마인크래프트 인게임 채팅 채널 이름": "숫자로 된 디스코드 채널 ID", "또 다른 마인크래프트 채팅 채널 이름": "숫자로 된 디스코드 채널 ID"} 와 같은 방식입니다.
 #
@@ -64,10 +71,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# Legacy option for transitioning to the new Debug option,
-# setting this to anything above 0 is the same as setting Debug to [ALL]
-DebugLevel: 0
-
 # 실험
 # 이러한 기능은 완전히 최적화되지 않았습니다. 자신의 책임하에 사용하십시오
 
@@ -86,9 +89,9 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # 임베드 및 웹훅 이미지/아바타 URL 형식
-# 오프라인 서버용 대체 아바타 URL 포함:
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+# 기본값을 사용하려면 비워 두세요.
+# 사용 가능한 자리 표시자: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializer
 # 예를 들어 서식을 변환합니다. 굵은 기울임 꼴, 마인 크래프트와 Discord 사이에 밑줄
@@ -99,7 +102,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # 다른
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -123,15 +125,17 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # 게임 정보
-# 디스코드 봇의 "지금 게임중: ______"을 설정합니다.
+# Sets the user status for the bot
 # 하나의 값을 사용하거나 여러 값을 번갈아가며 사용할 수 있습니다.
-# "게임 중", "보는 중", 또는 "듣는 중"을 활동 유형으로 지정할 수 있습니다.
-# PlaceholderAPI 변수를 사용할 수 있습니다.
+# "playing", "watching", "listening", 또는 "competing"을 활동 유형으로 지정할 수 있습니다.
+# You can set your own custom status by not including the prefixes
+#    %online%: number of online players
+#    PlaceholderAPI 변수를 사용할 수 있습니다.
 #
 # DiscordGameStatus: 게임 정보에 표시할 내용입니다. "Minecraft"와 같이 하나의 값을 넣을 수도, ["Minecraft", "yourip.changeme.com"]과 같이 여러 값을 넣을 수도 있습니다.
 # DiscordOnlineStatus: 표시할 활동 상태입니다. ONLINE, DND, IDLE 또는 INVISIBLE 중 하나여야 합니다.
 # StatusUpdateRateInMinutes: 게임 정보를 여러개로 설정한 경우 얼마나 자주 값을 변경할지 설정합니다. (분)
-DiscordGameStatus: ["Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
@@ -223,7 +227,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false

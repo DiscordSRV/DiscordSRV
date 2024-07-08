@@ -74,7 +74,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         try {
             Matcher matcher = JDBC_PATTERN.matcher(jdbc);
-        
+
             if (!matcher.matches()) {
                 if (!quiet) DiscordSRV.error("Not using JDBC because the JDBC connection string is invalid!");
                 return false;
@@ -123,11 +123,20 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         Connection conn;
         try {
             // new driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.NonRegisteringDriver");
             conn = new com.mysql.cj.jdbc.NonRegisteringDriver().connect(jdbc, properties);
         } catch (ClassNotFoundException ignored) {
             // old driver
-            conn = new com.mysql.jdbc.Driver().connect(jdbc, properties);
+            try {
+                Class<?> driverClass = Class.forName("com.mysql.jdbc.Driver");
+                Object driver = driverClass.getDeclaredConstructor().newInstance();
+                // We have to do this via reflection because Paper's plugin mapping loads all referenced classes...
+                conn = (Connection) driverClass
+                        .getMethod("connect", String.class, Properties.class)
+                        .invoke(driver, jdbc, properties);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException("Failed to connect with old MySQL driver", e);
+            }
         }
         this.connection = conn;
 
@@ -213,10 +222,9 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             try {
                 if (accountsFile.length() != 0) {
                     DiscordSRV.info("linked accounts file exists and we want to use JDBC backend, importing...");
+                    Map<String, UUID> accounts = new AppendOnlyFileAccountLinkManager().getLinkedAccounts();
                     File importFile = new File(accountsFile.getParentFile(), "accounts.aof.imported");
                     if (!accountsFile.renameTo(importFile)) throw new RuntimeException("Failed to move accounts file to " + importFile.getName());
-
-                    Map<String, UUID> accounts = new AppendOnlyFileAccountLinkManager().getLinkedAccounts();
                     connection.setAutoCommit(false);
                     for (Map.Entry<String, UUID> entry : accounts.entrySet()) {
                         String discord = entry.getKey();

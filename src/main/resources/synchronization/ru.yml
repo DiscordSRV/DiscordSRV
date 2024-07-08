@@ -1,4 +1,5 @@
 # Синхронизация никнеймов
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # В Discord будет такой же ник, как в Minecraft
 # NicknameSynchronizationEnabled: Включить - true, отключить - false
