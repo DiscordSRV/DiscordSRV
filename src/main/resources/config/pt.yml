@@ -8,6 +8,13 @@ VersaoConfig: ${version}
 # Você precisa reiniciar o servidor após alterar esta opção
 TokenBot: "BOTTOKEN"
 
+# The proxy to be used for Discord
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
 # Links dos canais do jogo para o Discord
 # sintaxe é Channels: {"nome de canal do jogo do Minecraft": "ID numérico do canal do Discord", "outro nome de canal do jogo do Minecraft": "outro ID numérico do canal do Discord"}
 #
@@ -63,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 Debug: []
 
-# Opção legada (antiga) para transição para a nova opção Debug,
-# configurar isso para qualquer coisa acima de 0 é o mesmo que configurar o Debug para [ALL]
-DebugLevel: 0
-
 # Experimentos
 # Estes recursos não estão totalmente otimizados; use por sua conta e risco
 
@@ -84,10 +87,10 @@ Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
-# Formato de URL de imagem/avatar incorporado e webhook
-# Alternativa de URL de avatar incorporado para servidores offlines
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+# Embed & webhook image/avatar url format
+# Leave blank to use a default value
+# Available placeholders: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
 
 # Reserializador
 # Converte formatação (bold, italics, underline, strikethrough) entre o servidor do Minecraft e o Discord
@@ -98,7 +101,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # Outros
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -122,15 +124,17 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Informações do jogo
-# Defina o indicador "Jogando: ______" para o bot.
+# Sets the user status for the bot
 # Pode ser um único, valor estático, ou percorrer várias opções diferentes
 # Você pode prefaciar o status como "jogando", "assistindo", ou "ouvindo" para definir o tipo de atividade
+# You can set your own custom status by not including the prefixes
+#    %online%: number of online players
 # Placeholders do PlaceholderAPI são suportados
 #
 # DiscordGameStatus: Texto a ser exibido. Pode ser um valor único ex: "Minecraft", ou valores múltiplos ex: ["Minecraft", "seuip.altere-me.com"]
 # DiscordOnlineStatus: Status de atividade a ser exibido. Deve ser um dos seguintes valores: ONLINE, DND, IDLE ou INVISIBLE
 # StatusUpdateRateInMinutes: Com que frequência o status do jogo deve ser atualizado
-DiscordGameStatus: ["Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
@@ -223,7 +227,7 @@ DiscordConsoleChannelBlockBots: true
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
