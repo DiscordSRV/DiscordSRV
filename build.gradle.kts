@@ -194,7 +194,7 @@ dependencies {
     }
 
     // JDA
-    api("net.dv8tion:JDA:4.4.0_352.fix-5") {
+    api("net.dv8tion:JDA:4.4.1_DiscordSRV.fix-6") {
         exclude(module = "opus-java") // we don't use voice features
     }
 

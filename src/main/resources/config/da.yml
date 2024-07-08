@@ -124,16 +124,17 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Spiloplysninger
-# Indstiller "Spiller: ______"-indikatoren for botten.
+# Sets the user status for the bot
 # Kan være en enkelt, statisk værdi eller gå gennem flere forskellige muligheder
-# Du kan indlede status med "playing", "watching", eller "listening to" for at indstille aktivitetstypen
+# Du kan indlede status med "playing", "watching", "listening to", eller "competing" for at indstille aktivitetstypen
+# You can set your own custom status by not including the prefixes
 #    %online%: number of online players
 #    PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Tekst, der skal vises. Kan være en enkelt værdi f.eks. "Minecraft", eller flere værdier, f.eks. ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Aktivitetsstatus skal vises. Dette skal være en af følgende: ONLINE, DND, IDLE, eller INVISIBLE
 # StatusUpdateRateInMinutes: Hvor ofte skal status skiftes
-DiscordGameStatus: ["Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 

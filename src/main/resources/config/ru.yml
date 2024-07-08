@@ -124,16 +124,17 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Информация в статусе бота в Discord
-# Устанавливает боту индикатор "Играет в: ______".
+# Устанавливает боту статус
 # Может быть как одним статическим значением, так и несколькими (сменяющимися друг за другом).
-# Вы можете добавить в начало "playing", "watching" или "listening to", чтобы установить тип активности (играет, смотрит, слушает)
+# Вы можете добавить в начало "playing", "watching", "listening to" или "competing", чтобы установить тип активности (играет, смотрит, слушает, соревнуется)
+# Также вы можете поставить свой кастомный статус без префикса
 #    %online%: number of online players
 #    Поддерживает шаблоны PlaceholderAPI
 #
 # DiscordGameStatus: Отображаемый текст. Может быть как одним значением, например "Minecraft", так и несколькими: ["Minecraft", "yourip.changeme.com"]
 # DiscordOnlineStatus: Статус отображаемого действия. Он должен быть одним из следующих: ONLINE, DND, IDLE или INVISIBLE.
 # StatusUpdateRateInMinutes: Как часто (в минутах) менять статус (если их несколько)
-DiscordGameStatus: ["Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
