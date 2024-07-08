@@ -1,4 +1,5 @@
 # Sincronização de apelido Discord <-> Minecraft
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled: se definido como true, define o apelido do usuário do Discord para o formato de apelido automaticamente
 # NicknameSynchronizationCycleTime: quantidade de minutos entre a sincronização repetida para todos os jogadores online
