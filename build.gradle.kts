@@ -264,7 +264,7 @@ dependencies {
     ///
 
     // chat hooks
-    compileOnly("ru.mrbrikster:chatty-api:2.18.2")
+    compileOnly("ru.brikster:chatty-api:3.0.0-SNAPSHOT") // published to maven local
     compileOnly("br.com.finalcraft:fancychat:1.0.2")
     compileOnly("com.dthielke.herochat:Herochat:5.6.5")
     compileOnly("br.com.devpaulo:legendchat:1.1.5")
