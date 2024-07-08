@@ -147,6 +147,8 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
                     writer.write(discordId + " " + uuid + "\n");
                 }
             }
+            //noinspection ResultOfMethodCallIgnored
+            file.delete();
             FileUtils.moveFile(tmpFile, file);
         } finally {
             //noinspection ResultOfMethodCallIgnored
