@@ -110,7 +110,7 @@ public class LangUtil {
                     "6. サーバーを起動します。\n" +
                     "\n" +
                     "\n");
-           put(Language.KO,
+            put(Language.KO,
                     "\n" +
                     "\n" +
                     "DiscordSRV를 ASM 4에서 구동 중 입니다.. DiscordSRV는 ASM 5 이상 버전에서 작동합니다.\n" +
@@ -438,7 +438,7 @@ public class LangUtil {
             put(Language.ZH, "API listener {listenername} 已訂閱 ({methodcount} 種方案)");
             put(Language.PL, "Odbiornik API {listenername} zasubskrybowano ({methodcount} metodą)");
             put(Language.DA, "API listener {listenername} abonneret ({methodcount} metoder)");
-            put(Language.UK, "API listener {listener name} підписано на ({methodcount} методи)");
+            put(Language.UK, "API listener {listenername} підписано на ({methodcount} методи)");
         }}), API_LISTENER_UNSUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} unsubscribed");
             put(Language.FR, "API listener {listenername} n'est plus associé");
@@ -452,7 +452,7 @@ public class LangUtil {
             put(Language.ZH, "API listener {listenername} 已取消訂閱");
             put(Language.PL, "Odbiornik API {listenername} odbubskrybowano");
             put(Language.DA, "API listener {listenername} afmeldt abonnement");
-            put(Language.UK, "API listener {listener name} деактивовано");
+            put(Language.UK, "API listener {listenername} деактивовано");
         }}), API_LISTENER_METHOD_NOT_ACCESSIBLE(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} method {methodname} was inaccessible despite efforts to make it accessible");
             put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
@@ -466,7 +466,7 @@ public class LangUtil {
             put(Language.ZH, "DiscordSRV API Listener {listenername} 方案 {methodname} 無法存取");
             put(Language.PL, "Odbiornik DiscordSRV API {listenername} metodą {methodname} był niedostępny pomimo starań, aby był dostępny");
             put(Language.DA, "DiscordSRV API Listener {listenername} metode {methodname} var utilgængelig på trods af indsats til at gøre den tilgængelig");
-            put(Language.UK, "DiscordSRV API Listener {listener name} метод {methodname} був недоступний, незважаючи на всі наші зусилля, щоб зробити його доступним");
+            put(Language.UK, "DiscordSRV API Listener {listenername} метод {methodname} був недоступний, незважаючи на всі наші зусилля, щоб зробити його доступним");
         }}), HTTP_FAILED_TO_FETCH_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to fetch URL");
             put(Language.FR, "Impossible de récuperer l'URL");
@@ -760,7 +760,7 @@ public class LangUtil {
             put(Language.ZH, "群組同步需要在synchronization.yml中有效的GroupRoleSynchronizationGroupsAndRolesToSync條目");
             put(Language.PL, "Synchronizacja grupowa wymaga ważnego GroupRoleSynchronizationGroupsAndRolesToSync wpisu w synchronization.yml");
             put(Language.DA, "Gruppe synkronisation kræver valid GroupRoleSynchronizationGroupsAndRolesToSync entréer i synchronization.yml");
-            put(Language.UK, "Синхронізація групи вимагає дійсних записів GroupRoleSynchronizationGroupsAndrolestosync у synchronization.yml");
+            put(Language.UK, "Синхронізація групи вимагає дійсних записів GroupRoleSynchronizationGroupsAndRolesToSync у synchronization.yml");
         }}), PLUGIN_RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV has been reloaded. This is NOT supported, and issues WILL occur! Restart your server before asking for support!");
             put(Language.FR, "DiscordSRV a été rechargé. Ceci n'est PAS pris en charge et des problèmes surviendront! Redémarrez votre serveur avant de demander de l'aide!");
