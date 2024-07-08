@@ -2159,13 +2159,9 @@ public class DiscordSRV extends JavaPlugin {
     public Role getTopSelectedRole(Member member) {
         List<Role> selectedRoles = getSelectedRoles(member);
         if (selectedRoles.isEmpty()) return null;
-        // Loop through user's roles and find the highest one selected
-        for (int i = 0; i < member.getRoles().size(); i++) {
-            if (selectedRoles.contains(member.getRoles().get(i))) {
-                return member.getRoles().get(i);
-            }
-        }
-        return null;
+        return member.getRoles().stream()
+                .filter(selectedRoles::contains)
+                .findFirst().orElse(null);
     }
 
     public Map<String, String> getGroupSynchronizables() {
