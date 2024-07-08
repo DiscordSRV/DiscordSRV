@@ -183,7 +183,7 @@ repositories {
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
-    maven("https://repo.granny.dev/snapshots/") // TODO: remove once JDAAppender is properly updated in scarsz' nexus
+    maven("https://repo.granny.dev/snapshots/") // TODO: remove once Adventure fixes their repo upload
     maven("https://nexus.scarsz.me/content/groups/public/")
 }
 
