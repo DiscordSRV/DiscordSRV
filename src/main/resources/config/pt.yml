@@ -70,10 +70,6 @@ DiscordInviteLink: "https://discord.gg/mudeissonaconfig.yml"
 #
 Debug: []
 
-# Opção legada para transição para a nova opção Debug,
-# definir isso como qualquer valor acima de 0 é o mesmo que definir Debug para [ALL]
-DebugLevel: 0
-
 # Experimentos
 # Esses recursos não estão totalmente otimizados; use por sua própria conta e risco
 
@@ -105,7 +101,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # Outros
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -129,9 +124,10 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Informações do jogo
-# Define o indicador "Jogando: ______" para o bot.
+# Sets the user status for the bot
 # Pode ser um único valor estático ou ciclo por várias opções diferentes
 # Você pode prefigurar o status com "jogando", "assistindo" ou "ouvindo" para definir o tipo de atividade
+# You can set your own status by not including the prefixes
 # Os placeholders do PlaceholderAPI são suportados
 #
 # DiscordGameStatus: Texto a ser exibido. Pode ser um único valor, por exemplo, "Minecraft", ou vários valores, por exemplo, ["Minecraft", "seuip.changeme.com"]

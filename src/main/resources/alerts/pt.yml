@@ -1,6 +1,7 @@
 # Esta é uma funcionalidade / avançada / do DiscordSRV que permite enviar mensagens para o Discord quando um evento do jogo ocorre
 # ou quando um comando é executado. Você precisará de um conhecimento prático de como funcionam os eventos do Bukkit e suas propriedades.
 # Se você não tem certeza do que está fazendo aqui, talvez pergunte a um desenvolvedor ou entre em nosso servidor de suporte em @ discordsrv.com/discord
+# Made something you'd like to share? You can do so in our Discord server's #alerts forum (invite above)
 #
 # Consulte o javadoc da API do Bukkit para encontrar eventos e propriedades para usar:
 #  https://hub.spigotmc.org/javadocs/bukkit
