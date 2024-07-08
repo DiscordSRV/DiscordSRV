@@ -987,7 +987,14 @@ public class DiscordSRV extends JavaPlugin {
                     BiFunction<String, LogItem, String> placeholders = (key, item) -> {
                         String name = config.padLoggerName(config.resolveLoggerName(item.getLogger()));
                         String timestamp = TimeUtil.consoleTimeStamp(item.getTimestamp());
-                        return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
+                        String value = config().getString(key);
+
+                        // avoid processing placeholders if config value is empty
+                        if (StringUtils.isBlank(value)) {
+                            return "";
+                        }
+
+                        return PlaceholderUtil.replacePlaceholdersToDiscord(value)
                                 .replace("{date}", timestamp)
                                 .replace("{datetime}", timestamp)
                                 .replace("{name}", StringUtils.isNotBlank(name) ? " " + name : "")
