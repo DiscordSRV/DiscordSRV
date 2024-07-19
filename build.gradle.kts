@@ -264,6 +264,7 @@ dependencies {
     ///
 
     // chat hooks
+    compileOnly("ru.brikster:chatty-api:3.0.0-SNAPSHOT") // currently mvn local bc jitpack using java 17
     compileOnly("ru.mrbrikster:chatty-api:2.18.2")
     compileOnly("br.com.finalcraft:fancychat:1.0.2")
     compileOnly("com.dthielke.herochat:Herochat:5.6.5")
