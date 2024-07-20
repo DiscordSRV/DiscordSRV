@@ -63,7 +63,7 @@ public class ChattyV3ChatHook implements ChatHook {
                 .replace("%channelnickname%", chat.getId())
                 .replace("%message%", legacy);
 
-        Collection<? extends Player> recipients = DiscordSRV.getPlugin().getServer().getOnlinePlayers();
+        Collection<? extends Player> recipients = chat.calculateRecipients(null);
         DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Sending a message to Chatty chat (" + chat.getId() + "), recipients: " + recipients);
 
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
