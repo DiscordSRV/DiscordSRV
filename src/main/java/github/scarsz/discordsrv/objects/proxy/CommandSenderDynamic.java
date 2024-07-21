@@ -22,9 +22,7 @@ package github.scarsz.discordsrv.objects.proxy;
 
 import dev.vankka.dynamicproxy.processor.Original;
 import dev.vankka.dynamicproxy.processor.Proxy;
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.SchedulerUtil;
+import github.scarsz.discordsrv.util.DiscordSendUtil;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.ComponentLike;
@@ -34,7 +32,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.StringJoiner;
 import java.util.UUID;
 
 @Proxy(CommandSender.class)
@@ -43,46 +40,16 @@ public abstract class CommandSenderDynamic implements CommandSender {
     @Original
     private final CommandSender original;
     private final GuildMessageReceivedEvent event;
+    private final DiscordSendUtil sendUtil;
 
     public CommandSenderDynamic(CommandSender original, GuildMessageReceivedEvent event) {
         this.original = original;
         this.event = event;
+        this.sendUtil = new DiscordSendUtil(event);
     }
 
-    private boolean alreadyQueuedDelete = false;
-
-    private StringJoiner messageBuffer = new StringJoiner("\n");
-    private boolean bufferCollecting = false;
-
     private void doSend(String message) {
-        if (this.bufferCollecting) { // If the buffer has started collecting messages, we should just add this one to it.
-            if (DiscordUtil.escapeMarkdown(this.messageBuffer + "\n" + message).length() > 1998) { // If the message will be too long (allowing for markdown escaping and the newline)
-                // Send the message, then clear the buffer and add this message to the empty buffer
-                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer.toString()), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
-                this.messageBuffer = new StringJoiner("\n");
-                this.messageBuffer.add(message);
-            } else { // If adding this message to the buffer won't send it over the 2000 character limit
-                this.messageBuffer.add(message);
-            }
-        } else { // Messages aren't currently being collected, let's start doing that
-            this.bufferCollecting = true;
-            this.messageBuffer.add(message); // This message is the first one in the buffer
-            SchedulerUtil.runTaskLater(DiscordSRV.getPlugin(), () -> { // Collect messages for 3 ticks, then send
-                this.bufferCollecting = false;
-                if (this.messageBuffer.length() == 0) return; // There's nothing in the buffer to send, leave it
-                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer.toString()), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
-                this.messageBuffer = new StringJoiner("\n");
-            }, 3L);
-        }
-
-        // expire request message after specified time
-        if (!alreadyQueuedDelete && DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
-            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-                try { Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000L); } catch (InterruptedException ignored) {}
-                event.getMessage().delete().queue();
-                alreadyQueuedDelete = true;
-            });
-        }
+        sendUtil.send(message);
     }
 
     private void doSend(ComponentLike componentLike) {
