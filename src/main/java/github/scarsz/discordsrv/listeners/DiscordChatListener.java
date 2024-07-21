@@ -50,7 +50,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -495,7 +494,7 @@ public class DiscordChatListener extends ListenerAdapter {
         return true;
     }
 
-    private final AtomicBoolean useFeedbackForwardingSender = new AtomicBoolean(FeedbackForwardingSenderUtil.senderExists());
+    private final boolean useFeedbackForwardingSender = FeedbackForwardingSenderUtil.senderExists();
 
     private boolean processConsoleCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
@@ -597,7 +596,7 @@ public class DiscordChatListener extends ListenerAdapter {
         SchedulerUtil.runTask(DiscordSRV.getPlugin(), () -> {
             CommandSender preferredSender;
 
-            if (useFeedbackForwardingSender.get())
+            if (useFeedbackForwardingSender)
                 preferredSender = new FeedbackForwardingSenderUtil(event).getFeedbackSender();
             else
                 preferredSender = new CommandSenderDynamicProxy(Bukkit.getConsoleSender(), event).getProxy();
