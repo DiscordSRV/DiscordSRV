@@ -21,6 +21,7 @@
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import lombok.Getter;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.bukkit.command.CommandSender;
 
@@ -30,7 +31,8 @@ import java.util.function.Consumer;
 public class FeedbackForwardingSenderUtil {
 
     private final DiscordSRV plugin = DiscordSRV.getPlugin();
-    public final CommandSender feedbackSender;
+    @Getter
+    private final CommandSender feedbackSender;
     private final GuildMessageReceivedEvent event;
     private final DiscordSendUtil sendUtil;
 
@@ -72,7 +74,7 @@ public class FeedbackForwardingSenderUtil {
         return str.replace("{}", "."); // Used for relocation bypass
     }
 
-    public static boolean exists() {
+    public static boolean senderExists() {
         try {
             Class.forName("io.papermc.paper.commands.FeedbackForwardingSender");
             return true;

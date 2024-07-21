@@ -42,6 +42,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -49,6 +50,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -493,6 +495,8 @@ public class DiscordChatListener extends ListenerAdapter {
         return true;
     }
 
+    private final AtomicBoolean useFeedbackForwardingSender = new AtomicBoolean(FeedbackForwardingSenderUtil.senderExists());
+
     private boolean processConsoleCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
 
@@ -590,7 +594,16 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // It uses the command from the consoleEvent in case the API user wants to hijack/change it
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
-        SchedulerUtil.runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new CommandSenderDynamicProxy(Bukkit.getConsoleSender(), event).getProxy(), consoleEvent.getCommand()));
+        SchedulerUtil.runTask(DiscordSRV.getPlugin(), () -> {
+            CommandSender preferredSender;
+
+            if (useFeedbackForwardingSender.get())
+                preferredSender = new FeedbackForwardingSenderUtil(event).getFeedbackSender();
+            else
+                preferredSender = new CommandSenderDynamicProxy(Bukkit.getConsoleSender(), event).getProxy();
+
+            Bukkit.getServer().dispatchCommand(preferredSender, consoleEvent.getCommand());
+        });
 
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), false));
         return true;
