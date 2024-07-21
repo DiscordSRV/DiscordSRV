@@ -39,12 +39,10 @@ public abstract class CommandSenderDynamic implements CommandSender {
 
     @Original
     private final CommandSender original;
-    private final GuildMessageReceivedEvent event;
     private final DiscordSendUtil sendUtil;
 
     public CommandSenderDynamic(CommandSender original, GuildMessageReceivedEvent event) {
         this.original = original;
-        this.event = event;
         this.sendUtil = new DiscordSendUtil(event);
     }
 

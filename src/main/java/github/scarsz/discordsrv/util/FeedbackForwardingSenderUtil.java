@@ -33,12 +33,10 @@ public class FeedbackForwardingSenderUtil {
     private final DiscordSRV plugin = DiscordSRV.getPlugin();
     @Getter
     private final CommandSender feedbackSender;
-    private final GuildMessageReceivedEvent event;
     private final DiscordSendUtil sendUtil;
 
     public FeedbackForwardingSenderUtil(GuildMessageReceivedEvent event) {
         feedbackSender = createCommandSender();
-        this.event = event;
         this.sendUtil = new DiscordSendUtil(event);
     }
 
