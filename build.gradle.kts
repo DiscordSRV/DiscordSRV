@@ -205,7 +205,7 @@ dependencies {
     }
 
     // Logging
-    implementation("me.scarsz.jdaappender:jda4:1.2.2-SNAPSHOT")
+    implementation("me.scarsz.jdaappender:jda4:1.2.2-20240731.053221-2")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9
@@ -221,7 +221,7 @@ dependencies {
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.4-SNAPSHOT")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.4-20240708.051538-1")
     api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
@@ -239,9 +239,9 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     // DynamicProxy
-    runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1-SNAPSHOT")
-    compileOnly("dev.vankka:dynamicproxy:1.0.1-SNAPSHOT")
-    annotationProcessor("dev.vankka:dynamicproxy:1.0.1-SNAPSHOT")
+    runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1-20240720.141742-6")
+    compileOnly("dev.vankka:dynamicproxy:1.0.1-20240720.141742-8")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.1-20240720.141742-8")
 
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
