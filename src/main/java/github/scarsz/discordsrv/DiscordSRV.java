@@ -73,15 +73,7 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.kyori.adventure.text.Component;
-import okhttp3.Authenticator;
-import okhttp3.ConnectionPool;
-import okhttp3.Credentials;
-import okhttp3.Dispatcher;
-import okhttp3.Dns;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.Route;
+import okhttp3.*;
 import okhttp3.internal.Util;
 import okhttp3.internal.tls.OkHostnameVerifier;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -150,10 +142,11 @@ public class DiscordSRV extends JavaPlugin {
 
     public static final ApiManager api = new ApiManager();
     public static boolean isReady = false;
-    public static boolean updateIsAvailable = false;
+    public static boolean shuttingDown = false;
     public static boolean updateChecked = false;
     public static boolean invalidBotToken = false;
     private static boolean offlineUuidAvatarUrlNagged = false;
+    public static boolean updateIsAvailable = false;
     public static String version = "";
 
     // Managers
@@ -772,6 +765,17 @@ public class DiscordSRV extends JavaPlugin {
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
         RestAction.setDefaultFailure(throwable -> {
+            if (shuttingDown) {
+                Throwable t = throwable;
+                while (t != null) {
+                    if (t instanceof InterruptedException || t instanceof InterruptedIOException) {
+                        // Ignore interrupts when shutting down
+                        return;
+                    }
+                    t = t.getCause();
+                }
+            }
+
             if (throwable instanceof HierarchyException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action due to being lower in hierarchy than the action's target: " + throwable.getMessage());
             } else if (throwable instanceof PermissionException) {
@@ -1373,6 +1377,8 @@ public class DiscordSRV extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        shuttingDown = true;
+
         final long shutdownStartTime = System.currentTimeMillis();
 
         // prepare the shutdown message
