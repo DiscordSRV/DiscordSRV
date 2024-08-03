@@ -73,10 +73,7 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.kyori.adventure.text.Component;
-import okhttp3.ConnectionPool;
-import okhttp3.Dispatcher;
-import okhttp3.Dns;
-import okhttp3.OkHttpClient;
+import okhttp3.*;
 import okhttp3.internal.Util;
 import okhttp3.internal.tls.OkHostnameVerifier;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -109,12 +106,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitWorker;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.minidns.DnsClient;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
 
-import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.io.*;
@@ -145,14 +142,15 @@ public class DiscordSRV extends JavaPlugin {
 
     public static final ApiManager api = new ApiManager();
     public static boolean isReady = false;
-    public static boolean updateIsAvailable = false;
+    public static boolean shuttingDown = false;
     public static boolean updateChecked = false;
     public static boolean invalidBotToken = false;
     private static boolean offlineUuidAvatarUrlNagged = false;
+    public static boolean updateIsAvailable = false;
     public static String version = "";
 
     // Managers
-    @Getter private AccountLinkManager accountLinkManager;
+    private AccountLinkManager accountLinkManager;
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private IncompatibleClientManager incompatibleClientManager = new IncompatibleClientManager();
@@ -308,11 +306,17 @@ public class DiscordSRV extends JavaPlugin {
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
-        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-sensitive channel
+        String value = entry != null ? entry.getValue() : null;
+        if (!StringUtils.isBlank(value)) {
+            return jda.getTextChannelById(value); // found case-sensitive channel
+        }
 
         // no case-sensitive channel found, try case in-sensitive
         entry = channels.entrySet().stream().filter(e -> e.getKey().equalsIgnoreCase(gameChannelName)).findFirst().orElse(null);
-        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-insensitive channel
+        value = entry != null ? entry.getValue() : null;
+        if (!StringUtils.isBlank(value)) {
+            return jda.getTextChannelById(value); // found case-insensitive channel
+        }
 
         return null; // no channel found, case-insensitive or not
     }
@@ -720,7 +724,12 @@ public class DiscordSRV extends JavaPlugin {
         dispatcher.setMaxRequestsPerHost(20); // most requests are to discord.com
         ConnectionPool connectionPool = new ConnectionPool(5, 10, TimeUnit.SECONDS);
 
-        OkHttpClient httpClient = new OkHttpClient.Builder()
+        String proxyHost = config.getString("ProxyHost");
+        int proxyPort = config.getInt("ProxyPort");
+        String authUser = config.getString("ProxyUser");
+        String authPassword = config.getString("ProxyPassword");
+
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
                 .dns(dns)
@@ -730,13 +739,43 @@ public class DiscordSRV extends JavaPlugin {
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .hostnameVerifier(noopHostnameVerifier.isPresent() && noopHostnameVerifier.get()
                         ? (hostname, sslSession) -> true
-                        : OkHostnameVerifier.INSTANCE
-                )
-                .build();
+                        : OkHostnameVerifier.INSTANCE);
+
+        if (proxyHost != null && !proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
+            try {
+                // This had to be set to empty string to avoid issue with basic auth
+                // Reference: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111
+                System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.trim(), proxyPort));
+                httpClientBuilder = httpClientBuilder.proxy(proxy);
+
+                if (!authPassword.isEmpty()) {
+                    httpClientBuilder = httpClientBuilder.proxyAuthenticator((route, response) -> {
+                        String credential = Credentials.basic(authUser.trim(), authPassword.trim());
+                        return response.request().newBuilder().header("Proxy-Authorization", credential).build();
+                    });
+                }
+            } catch (Exception e) {
+                DiscordSRV.error("Failed to generate a proxy from config options.", e);
+            }
+        }
+
+        OkHttpClient httpClient = httpClientBuilder.build();
 
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
         RestAction.setDefaultFailure(throwable -> {
+            if (shuttingDown) {
+                Throwable t = throwable;
+                while (t != null) {
+                    if (t instanceof InterruptedException || t instanceof InterruptedIOException) {
+                        // Ignore interrupts when shutting down
+                        return;
+                    }
+                    t = t.getCause();
+                }
+            }
+
             if (throwable instanceof HierarchyException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action due to being lower in hierarchy than the action's target: " + throwable.getMessage());
             } else if (throwable instanceof PermissionException) {
@@ -903,14 +942,6 @@ public class DiscordSRV extends JavaPlugin {
             nicknameUpdater.start();
         }
 
-        // print the things the bot can see
-        if (config().getBoolean("PrintGuildsAndChannels")) {
-            for (Guild server : jda.getGuilds()) {
-                DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
-                for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
-            }
-        }
-
         // show warning if bot wasn't in any guilds
         if (jda.getGuilds().size() == 0) {
             DiscordSRV.error(LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS);
@@ -960,7 +991,14 @@ public class DiscordSRV extends JavaPlugin {
                     BiFunction<String, LogItem, String> placeholders = (key, item) -> {
                         String name = config.padLoggerName(config.resolveLoggerName(item.getLogger()));
                         String timestamp = TimeUtil.consoleTimeStamp(item.getTimestamp());
-                        return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
+                        String value = config().getString(key);
+
+                        // avoid processing placeholders if config value is empty
+                        if (StringUtils.isBlank(value)) {
+                            return "";
+                        }
+
+                        return PlaceholderUtil.replacePlaceholdersToDiscord(value)
                                 .replace("{date}", timestamp)
                                 .replace("{datetime}", timestamp)
                                 .replace("{name}", StringUtils.isNotBlank(name) ? " " + name : "")
@@ -1339,6 +1377,8 @@ public class DiscordSRV extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        shuttingDown = true;
+
         final long shutdownStartTime = System.currentTimeMillis();
 
         // prepare the shutdown message
@@ -2048,27 +2088,24 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        String defaultUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
-        String offlineUrl = "https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}";
+        String defaultUrl = "https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}";
+        String offlineUrl = "https://crafthead.net/helm/{username}/{size}#{texture}";
 
         if (StringUtils.isBlank(avatarUrl)) {
             avatarUrl = !offline ? defaultUrl : offlineUrl;
         }
 
-        if (offline && !avatarUrl.contains("{username}")) {
-            boolean defaultValue = avatarUrl.equals(defaultUrl);
-            if (defaultValue) {
-                // Using default value while in offline mode -> use offline url
-                avatarUrl = offlineUrl;
-            }
+        if (avatarUrl.contains("://crafatar.com/")) {
+            avatarUrl = !offline ? defaultUrl : offlineUrl;
+            DiscordSRV.config().setRuntimeValue("AvatarUrl", avatarUrl);
 
-            if (!offlineUuidAvatarUrlNagged) {
-                DiscordSRV.error("Your AvatarUrl config option does not contain the {username} placeholder even though this server is using offline UUIDs.");
-                DiscordSRV.error(offlineUrl + " will be used because the default value does not support offline mode servers");
-                DiscordSRV.error("You should set your AvatarUrl (in config.yml) to " + offlineUrl + " (or another url that supports usernames) "
-                        + (defaultValue ? "to get rid of this error" : "to get avatars to work."));
-                offlineUuidAvatarUrlNagged = true;
-            }
+            DiscordSRV.warning("Your AvatarUrl config option uses crafatar.com, which no longer allows usage with Discord. An alternative provider will be used.");
+            DiscordSRV.warning("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this warning.");
+        }
+
+        if (offline && (avatarUrl.contains("{uuid}") || avatarUrl.contains("{uuid-nodashes}")) && !offlineUuidAvatarUrlNagged) {
+            DiscordSRV.error("Your AvatarUrl config option contains {uuid} or {uuid-nodashes} but this server is using offline UUIDs.");
+            offlineUuidAvatarUrlNagged = true;
         }
 
         if (username.startsWith("*")) {
@@ -2130,6 +2167,14 @@ public class DiscordSRV extends JavaPlugin {
         }
         selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
         return selectedRoles;
+    }
+
+    public Role getTopSelectedRole(Member member) {
+        List<Role> selectedRoles = getSelectedRoles(member);
+        if (selectedRoles.isEmpty()) return null;
+        return member.getRoles().stream()
+                .filter(selectedRoles::contains)
+                .findFirst().orElse(null);
     }
 
     public Map<String, String> getGroupSynchronizables() {
@@ -2203,4 +2248,8 @@ public class DiscordSRV extends JavaPlugin {
         return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 
+    @SuppressWarnings("LombokGetterMayBeUsed")
+    public AccountLinkManager getAccountLinkManager() {
+        return this.accountLinkManager;
+    }
 }

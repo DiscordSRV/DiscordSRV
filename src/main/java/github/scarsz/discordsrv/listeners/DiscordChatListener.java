@@ -52,8 +52,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import static github.scarsz.discordsrv.util.MessageFormatResolver.getMessageFormat;
-
 public class DiscordChatListener extends ListenerAdapter {
 
     @Override
@@ -64,14 +62,14 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // block webhooks
         if (event.isWebhookMessage()) {
-            if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockWebhooks")) {
-                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from webhook" + event.getAuthor() + " but DiscordChatChannelBlockWebhooks is on");
-                return;
-            }
-
             // Prevent our own webhook from being picked up
             String webhook = WebhookUtil.getWebhookUrlFromCache(event.getChannel());
             if (webhook != null && webhook.split("/")[6].equals(event.getAuthor().getId())) return;
+
+            if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockWebhooks")) {
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from webhook " + event.getAuthor() + " but DiscordChatChannelBlockWebhooks is on");
+                return;
+            }
         }
 
         // canned responses
@@ -99,7 +97,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // sanitise
         message = message.replace("\u001B", "");
-        
+
         // return if should not send discord chat
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
@@ -223,7 +221,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // get the correct format message
         String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
-        String formatMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
+        String formatMessage = MessageFormatResolver.getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
         message = message != null ? message : "<blank message>";
         boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
@@ -328,9 +326,18 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private boolean handleMessageAddons(GuildMessageReceivedEvent event, DiscordGuildMessagePreProcessEvent preEvent, List<Role> selectedRoles, Role topRole, String url) {
+        // apply regex filters to url
+        for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
+            url = entry.getKey().matcher(url).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(url)) {
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Not processing Discord message addon because its URL was cleared by a filter: " + entry.getKey().pattern());
+                return false;
+            }
+        }
+
         // get the correct format message
         String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
-        String placedMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
+        String placedMessage = MessageFormatResolver.getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
         placedMessage = MessageUtil.translateLegacy(
                 replacePlaceholders(placedMessage, event, selectedRoles));
@@ -394,14 +401,25 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? escape.apply(DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1)) : "")
                 .replace("%toprolealias%", getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%allroles%", escape.apply(DiscordUtil.getFormattedRoles(selectedRoles)))
-                .replace("%reply%", event.getMessage().getReferencedMessage() != null ? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), event.getMessage().getReferencedMessage()) : "")
+                .replace("%reply%", replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), event.getMessage().getReferencedMessage()))
                 .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\*", "*") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\_", "_"); // get rid of escaped characters, since Minecraft doesn't use markdown
     }
 
     private String replaceReplyPlaceholders(String format, Message repliedMessage) {
-        Function<String, String> escape = MessageUtil.isLegacy(format)
+        if (repliedMessage == null) {
+            return "";
+        }
+
+        boolean isLegacy = MessageUtil.isLegacy(format);
+        String message = repliedMessage.getContentRaw();
+
+        Component reserialized = MessageUtil.reserializeToMinecraftBasedOnConfig(message);
+        message = MessageUtil.toPlain(reserialized, isLegacy);
+        if (!isLegacy) message = MessageUtil.escapeMiniTokens(message);
+
+        Function<String, String> escape = isLegacy
                 ? str -> str
                 : str -> str.replaceAll("([<>])", "\\\\$1");
 
@@ -409,7 +427,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         return format.replace("%name%", escape.apply(MessageUtil.strip(repliedUserName)))
                 .replace("%username%", escape.apply(MessageUtil.strip(repliedMessage.getAuthor().getName())))
-                .replace("%message%", escape.apply(MessageUtil.strip(repliedMessage.getContentDisplay())));
+                .replace("%message%", message);
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {

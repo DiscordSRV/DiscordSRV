@@ -101,8 +101,11 @@ public class PresenceUpdater extends Thread {
                         } else if (StringUtils.startsWithIgnoreCase(status, "playing")) {
                             String removed = status.substring("playing".length()).trim();
                             DiscordUtil.getJda().getPresence().setPresence(onlineStatus, Activity.playing(removed), false);
+                        } else if (StringUtils.startsWithIgnoreCase(status, "competing")) {
+                            String removed = status.substring("competing".length()).trim();
+                            DiscordUtil.getJda().getPresence().setPresence(onlineStatus, Activity.competing(removed), false);
                         } else {
-                            DiscordUtil.getJda().getPresence().setPresence(onlineStatus, Activity.playing(status), false);
+                            DiscordUtil.getJda().getPresence().setPresence(onlineStatus, Activity.customStatus(status), false);
                         }
                     } else {
                         DiscordUtil.getJda().getPresence().setPresence(onlineStatus, null, false);

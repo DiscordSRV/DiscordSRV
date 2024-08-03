@@ -21,24 +21,30 @@
 package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
-import lombok.Getter;
+import java.util.UUID;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.UUID;
-
 /**
  * <p>Called directly after an account pair is linked via DiscordSRV's {@link AccountLinkManager}</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class AccountLinkedEvent extends Event {
 
-    @Getter private final OfflinePlayer player;
-    @Getter private final User user;
+    private final OfflinePlayer player;
+    private final User user;
 
     public AccountLinkedEvent(User user, UUID playerUuid) {
         this.player = Bukkit.getOfflinePlayer(playerUuid);
         this.user = user;
     }
 
+    public OfflinePlayer getPlayer() {
+        return this.player;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
 }

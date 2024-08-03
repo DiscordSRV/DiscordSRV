@@ -1,4 +1,5 @@
 # Синхронізація нікнеймів у Discord (буде такий же нік, як у Minecraft)
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled: Увімкнути - true, вимкнути - false
 # NicknameSynchronizationCycleTime: Час (у хвилинах) - як часто DiscordSRV буде синхронізувати ніки гравців.

@@ -1,4 +1,5 @@
 # Minecraft -> Discord-Spitznamensynchronisation
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled: Gibt an, ob der Spitzname des Discord-Benutzers automatisch auf das Spitznamenformat gesetzt werden soll
 # NicknameSynchronizationCycleTime: Anzahl der Minuten zwischen dem wiederholten Auslösen der Synchronisation für alle Online-Spieler

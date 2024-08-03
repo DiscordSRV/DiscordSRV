@@ -1,4 +1,5 @@
 # Minecraft -> Discord-bijnaamsynchronisatie
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled: het al dan niet automatisch instellen van de bijnaam van de onenigheidsgebruiker in het bijnaamformaat
 # NicknameSynchronizationCycleTime: aantal minuten tussen het herhaaldelijk activeren van synchronisatie voor alle online spelers

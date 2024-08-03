@@ -87,7 +87,10 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             );
         }
 
-        Category category = DiscordSRV.getPlugin().getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
+        String categoryId = DiscordSRV.config().getString("Voice category");
+        if (StringUtils.isBlank(categoryId)) return;
+
+        Category category = DiscordSRV.getPlugin().getJda().getCategoryById(categoryId);
         if (category != null) {
             category.getVoiceChannels().stream()
                     .filter(channel -> {
@@ -231,7 +234,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         })
                         .map(Player::getUniqueId)
                         .collect(Collectors.toCollection(ConcurrentHashMap::newKeySet));
-                if (playersWithinRange.size() > 0) {
+                if (!playersWithinRange.isEmpty()) {
                     if (category.getChannels().size() == 50) {
                         DiscordSRV.debug(Debug.VOICE, "Can't create new voice network because category " + category.getName() + " is full of channels");
                         continue;

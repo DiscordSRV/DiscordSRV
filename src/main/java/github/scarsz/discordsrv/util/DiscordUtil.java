@@ -20,6 +20,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageSentEvent;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageSentEvent;
@@ -89,7 +90,7 @@ public class DiscordUtil {
     private static final Pattern EMOTE_MENTION_PATTERN = Pattern.compile("(<a?:([a-zA-Z]{2,32}):[0-9]{16,20}>)");
 
     /**
-     * Converts Discord-compatible <@12345742934270> mentions to human readable @mentions
+     * Converts Discord-compatible &lt;@12345742934270> mentions to human readable @mentions
      * @param message the message
      * @return the converted message
      */
@@ -127,7 +128,7 @@ public class DiscordUtil {
     }
 
     /**
-     * Convert @mentions into Discord-compatible <@012345678901234567890> mentions
+     * Convert @mentions into Discord-compatible &lt;@012345678901234567890> mentions
      * @param message Message to convert
      * @param guild Guild to find names to convert
      * @return Contents of the given message with names converted to mentions
@@ -760,17 +761,17 @@ public class DiscordUtil {
 
     public static void setNickname(Member member, String nickname) {
         if (member == null) {
-            DiscordSRV.debug("Can't set nickname of null member");
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "Can't set nickname of null member");
             return;
         }
 
         if (!member.getGuild().getSelfMember().canInteract(member)) {
-            DiscordSRV.debug("Not setting " + member + "'s nickname because we can't interact with them");
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "Not setting " + member + "'s nickname because we can't interact with them");
             return;
         }
 
         if (nickname != null && nickname.equals(member.getNickname())) {
-            DiscordSRV.debug("Not setting " + member + "'s nickname because it wouldn't change");
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "Not setting " + member + "'s nickname because it wouldn't change");
             return;
         }
 

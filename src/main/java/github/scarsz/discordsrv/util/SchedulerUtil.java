@@ -53,16 +53,18 @@ public class SchedulerUtil {
         return callMethod(clazz, null, methodName, new Class[]{});
     }
 
-    private static boolean methodExist(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+    private static boolean classExists(String className) {
         try {
-            clazz.getDeclaredMethod(methodName, parameterTypes);
+            Class.forName(className);
             return true;
         } catch (Throwable ignored) {}
         return false;
     }
 
     public static Boolean isFolia() {
-        if (IS_FOLIA == null) IS_FOLIA = methodExist(Bukkit.class, "getGlobalRegionScheduler");
+        if (IS_FOLIA == null) {
+            IS_FOLIA = classExists("io.papermc.paper.threadedregions.RegionizedServer");
+        }
         return IS_FOLIA;
     }
 

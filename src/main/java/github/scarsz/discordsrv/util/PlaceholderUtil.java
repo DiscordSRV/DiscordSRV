@@ -69,7 +69,7 @@ public class PlaceholderUtil {
         input = replacePlaceholders(input, player);
 
         if (placeholderapi) {
-            input = MessageUtil.stripLegacySectionOnly(input); // Color codes will be in this form
+            input = MessageUtil.stripLegacy(input); // PAPI no longer replaces chat colors? strip both legacy codes
             input = input.replace("&\u200B", "&");
         }
         return input;

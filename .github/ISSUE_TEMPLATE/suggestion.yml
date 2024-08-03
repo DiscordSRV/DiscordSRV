@@ -1,6 +1,6 @@
 name: 💡 Make a suggestion
 description: Suggest a change on the current behavior, a completely new feature, or something else.
-labels: 
+labels:
   - enhancement
 body:
   - type: textarea
