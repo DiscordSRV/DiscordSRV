@@ -25,18 +25,24 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.StringJoiner;
 
-public class DiscordSendUtil {
+public class DiscordChatChannelCommandFeedbackForwarder {
 
     private final GuildMessageReceivedEvent event;
 
-    public DiscordSendUtil(GuildMessageReceivedEvent event) {
-        this.event = event;
-    }
-
     private StringJoiner messageBuffer = new StringJoiner("\n");
 
-    private boolean alreadyQueuedDelete = false;
     private boolean bufferCollecting = false;
+
+    public DiscordChatChannelCommandFeedbackForwarder(GuildMessageReceivedEvent event) {
+        this.event = event;
+
+        // expire request message after specified time
+        if (DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
+            SchedulerUtil.runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () -> {
+                event.getMessage().delete().queue();
+            }, DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 20L); // Seconds to ticks
+        }
+    }
 
     public void send(String message) {
         if (this.bufferCollecting) { // If the buffer has started collecting messages, we should just add this one to it.
@@ -57,15 +63,6 @@ public class DiscordSendUtil {
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer.toString()), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
                 this.messageBuffer = new StringJoiner("\n");
             }, 3L);
-        }
-
-        // expire request message after specified time
-        if (!alreadyQueuedDelete && DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
-            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-                try { Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000L); } catch (InterruptedException ignored) {}
-                event.getMessage().delete().queue();
-                alreadyQueuedDelete = true;
-            });
         }
     }
 

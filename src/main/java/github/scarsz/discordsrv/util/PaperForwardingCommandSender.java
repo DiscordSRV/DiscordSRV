@@ -28,16 +28,25 @@ import org.bukkit.command.CommandSender;
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
-public class FeedbackForwardingSenderUtil {
+public class PaperForwardingCommandSender {
+
+    public static boolean isSenderExists() {
+        try {
+            Class.forName("io.papermc.paper.commands.FeedbackForwardingSender");
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
 
     private final DiscordSRV plugin = DiscordSRV.getPlugin();
     @Getter
     private final CommandSender feedbackSender;
-    private final DiscordSendUtil sendUtil;
+    private final DiscordChatChannelCommandFeedbackForwarder sendUtil;
 
-    public FeedbackForwardingSenderUtil(GuildMessageReceivedEvent event) {
+    public PaperForwardingCommandSender(GuildMessageReceivedEvent event) {
         feedbackSender = createCommandSender();
-        this.sendUtil = new DiscordSendUtil(event);
+        this.sendUtil = new DiscordChatChannelCommandFeedbackForwarder(event);
     }
 
     private CommandSender createCommandSender() {
@@ -69,16 +78,7 @@ public class FeedbackForwardingSenderUtil {
     }
 
     private String dot(String str) {
-        return str.replace("{}", "."); // Used for relocation bypass
-    }
-
-    public static boolean senderExists() {
-        try {
-            Class.forName("io.papermc.paper.commands.FeedbackForwardingSender");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+        return str.replace("{}", "."); // Used to relocation bypass
     }
 
 }

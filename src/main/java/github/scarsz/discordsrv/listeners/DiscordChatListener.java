@@ -494,7 +494,7 @@ public class DiscordChatListener extends ListenerAdapter {
         return true;
     }
 
-    private final boolean useFeedbackForwardingSender = FeedbackForwardingSenderUtil.senderExists();
+    private final boolean useFeedbackForwardingSender = PaperForwardingCommandSender.isSenderExists();
 
     private boolean processConsoleCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
@@ -597,7 +597,7 @@ public class DiscordChatListener extends ListenerAdapter {
             CommandSender preferredSender;
 
             if (useFeedbackForwardingSender)
-                preferredSender = new FeedbackForwardingSenderUtil(event).getFeedbackSender();
+                preferredSender = new PaperForwardingCommandSender(event).getFeedbackSender();
             else
                 preferredSender = new CommandSenderDynamicProxy(Bukkit.getConsoleSender(), event).getProxy();
 

@@ -22,7 +22,7 @@ package github.scarsz.discordsrv.objects.proxy;
 
 import dev.vankka.dynamicproxy.processor.Original;
 import dev.vankka.dynamicproxy.processor.Proxy;
-import github.scarsz.discordsrv.util.DiscordSendUtil;
+import github.scarsz.discordsrv.util.DiscordChatChannelCommandFeedbackForwarder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.ComponentLike;
@@ -39,11 +39,11 @@ public abstract class CommandSenderDynamic implements CommandSender {
 
     @Original
     private final CommandSender original;
-    private final DiscordSendUtil sendUtil;
+    private final DiscordChatChannelCommandFeedbackForwarder sendUtil;
 
     public CommandSenderDynamic(CommandSender original, GuildMessageReceivedEvent event) {
         this.original = original;
-        this.sendUtil = new DiscordSendUtil(event);
+        this.sendUtil = new DiscordChatChannelCommandFeedbackForwarder(event);
     }
 
     private void doSend(String message) {
