@@ -197,6 +197,11 @@ public class PlayerAdvancementDoneListener implements Listener {
                 Object craftAdvancement = NMSUtil.getHandle(advancement);
                 Optional<Object> craftAdvancementDisplayOptional = getAdvancementDisplayObject(craftAdvancement);
 
+                // Both NMS and paper/spigot don't have AdvancementDisplay so that means it shouldn't be announced
+                if (!craftAdvancementDisplayOptional.isPresent()) {
+                    return true;
+                }
+
                 Object craftAdvancementDisplay = craftAdvancementDisplayOptional.get();
                 if (ADVANCEMENT_DISPLAY_ANNOUNCE_CHAT_METHOD == null) {
                     ADVANCEMENT_DISPLAY_ANNOUNCE_CHAT_METHOD = Arrays.stream(craftAdvancementDisplay.getClass().getMethods())
@@ -332,7 +337,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"));
             }
 
-            return Optional.of(method_getAdvancementDisplay.invoke(handle));
+            return Optional.ofNullable(method_getAdvancementDisplay.invoke(handle));
         }
         return Optional.empty();
     }
