@@ -317,7 +317,7 @@ ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
 
-# 使用代理服务器连接到Discord
+# HTTP proxy used for connecting to the Discord API
 # 如果你不知道它的功能，请不要修改参数
 ProxyHost: "https://example.com"
 ProxyPort: 1234

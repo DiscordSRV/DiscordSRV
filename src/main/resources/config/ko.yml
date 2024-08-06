@@ -317,7 +317,7 @@ ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
 
-# The proxy to be used for Discord
+# HTTP proxy used for connecting to the Discord API
 # Leave this alone if you don't understand what it does
 ProxyHost: "https://example.com"
 ProxyPort: 1234
