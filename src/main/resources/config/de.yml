@@ -8,13 +8,6 @@ ConfigVersion: ${version}
 # Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord
-# Leave this alone if you don't understand what it does
-ProxyHost: "https://example.com"
-ProxyPort: 1234
-ProxyUser: "USERNAME"
-ProxyPassword: "PASSWORD"
-
 # Kanalverbindungen vom Spiel zu Discord
 # Syntax ist Channels: {"Kanalname im Spiel von Minecraft": "numerische Kanal-ID von Discord", "ein anderer Kanalname im Spiel von Minecraft": "eine andere numerische Kanal-ID von Discord"}
 #
@@ -354,3 +347,10 @@ MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# The proxy to be used for Discord
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
