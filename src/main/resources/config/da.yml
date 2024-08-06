@@ -35,34 +35,6 @@ DiscordConsoleChannelId: "000000000000000000"
 # Invitations link vist til spillere når der bruges /discord og beskeden vist til utilkoblede brugere når tilkobling er påbudt
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# Debug information
-# Aktiver ikke disse medmindre du prøver at finde årsagen til fejlen
-#
-# Tilgængelige Debug kategorier:
-# MINECRAFT_TO_DISCORD  - Beskeder der kommer fra Minecraft
-# DISCORD_TO_MINECRAFT  - Beskeder der kommer fra Discord
-# GROUP_SYNC            - Gruppe synkronisering
-# PRESENCE              - Bottens status
-# VOICE                 - Stemme modulet (se voice.yml)
-# REQUIRE_LINK          - Linket der bruges til at tilslutte modulet (se linking.yml)
-# NICKNAME_SYNC         - Øgenavns synkronisering
-# ALERTS                - Alerts (se alerts.yml)
-# WATCHDOG              - Watchdog
-# BAN_SYNCHRONIZATION   - Ban synkronisering
-# LP_CONTEXTS           - LuckPerm's contexts
-# ACCOUNT_LINKING       - discord/minecraft bruger tilkobling
-#
-# UNCATEGORIZED         - Alt ikke i en af de førnævnte kategorier
-# ALL                   - Alle ovenstående kategorier (inklusiv UNCATEGORIZED)
-#
-# JDA                   - JDA's debug beskeder
-# JDA_REST_ACTIONS      - For at debugge JDA's rest actions
-# CALLSTACKS            - Viser stack trace for DiscordSRV debug kald
-#
-# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
-
 # Eksperimenterende
 # Disse funktioner er ikke fuldt optimeret; brug på eget ansvar
 
@@ -353,3 +325,31 @@ ProxyHost: "https://example.com"
 ProxyPort: 1234
 ProxyUser: "USERNAME"
 ProxyPassword: "PASSWORD"
+
+# Debug information
+# Aktiver ikke disse medmindre du prøver at finde årsagen til fejlen
+#
+# Tilgængelige Debug kategorier:
+# MINECRAFT_TO_DISCORD  - Beskeder der kommer fra Minecraft
+# DISCORD_TO_MINECRAFT  - Beskeder der kommer fra Discord
+# GROUP_SYNC            - Gruppe synkronisering
+# PRESENCE              - Bottens status
+# VOICE                 - Stemme modulet (se voice.yml)
+# REQUIRE_LINK          - Linket der bruges til at tilslutte modulet (se linking.yml)
+# NICKNAME_SYNC         - Øgenavns synkronisering
+# ALERTS                - Alerts (se alerts.yml)
+# WATCHDOG              - Watchdog
+# BAN_SYNCHRONIZATION   - Ban synkronisering
+# LP_CONTEXTS           - LuckPerm's contexts
+# ACCOUNT_LINKING       - discord/minecraft bruger tilkobling
+#
+# UNCATEGORIZED         - Alt ikke i en af de førnævnte kategorier
+# ALL                   - Alle ovenstående kategorier (inklusiv UNCATEGORIZED)
+#
+# JDA                   - JDA's debug beskeder
+# JDA_REST_ACTIONS      - For at debugge JDA's rest actions
+# CALLSTACKS            - Viser stack trace for DiscordSRV debug kald
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []

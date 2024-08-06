@@ -35,34 +35,6 @@ DiscordConsoleChannelId: "000000000000000000"
 # Lien d'invitation affiché aux joueurs lors de l'utilisation de /discord et sur le message affiché aux joueurs non liés lorsque la liaison est appliquée
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# Informations de débogage
-# Ne les activez pas sauf si vous essayez de localiser un problème
-#
-# Catégories de débogage disponibles :
-# MINECRAFT_TO_DISCORD  - Messages provenant de Minecraft
-# DISCORD_TO_MINECRAFT  - Messages provenant de Discord
-# GROUP_SYNC            - Synchronisation de groupe
-# PRESENCE              - Statut ou présence du jeu du bot
-# VOICE                 - Le module vocal (voir voice.yml)
-# REQUIRE_LINK          - Le lien requis pour rejoindre le module (voir linking.yml)
-# NICKNAME_SYNC         - Synchronisation des surnoms
-# ALERTS                - Alertes (voir alerts.yml)
-# WATCHDOG              - Surveilleur de serveur
-# BAN_SYNCHRONIZATION   - Synchronisation des bannissements
-# LP_CONTEXTS           - Les contextes de LuckPerm
-# ACCOUNT_LINKING       - Liaison de compte discord/minecraft
-#
-# UNCATEGORIZED         - Tout ce qui ne fait partie d'aucune des catégories ci-dessus
-# ALL                   - Toutes les catégories ci-dessus (y compris UNCATEGORIZED)
-#
-# JDA                   - Messages de débogage de JDA
-# JDA_REST_ACTIONS      - Pour déboguer les actions de repos de JDA
-# CALLSTACKS            - Affiche la trace de pile pour les appels de débogage DiscordSRV
-#
-# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
-
 # Expériences
 # Ces fonctionnalités ne sont pas entièrement optimisées ; À utiliser à vos risques et périls
 
@@ -349,3 +321,31 @@ ProxyHost: "https://example.com"
 ProxyPort: 1234
 ProxyUser: "USERNAME"
 ProxyPassword: "PASSWORD"
+
+# Informations de débogage
+# Ne les activez pas sauf si vous essayez de localiser un problème
+#
+# Catégories de débogage disponibles :
+# MINECRAFT_TO_DISCORD  - Messages provenant de Minecraft
+# DISCORD_TO_MINECRAFT  - Messages provenant de Discord
+# GROUP_SYNC            - Synchronisation de groupe
+# PRESENCE              - Statut ou présence du jeu du bot
+# VOICE                 - Le module vocal (voir voice.yml)
+# REQUIRE_LINK          - Le lien requis pour rejoindre le module (voir linking.yml)
+# NICKNAME_SYNC         - Synchronisation des surnoms
+# ALERTS                - Alertes (voir alerts.yml)
+# WATCHDOG              - Surveilleur de serveur
+# BAN_SYNCHRONIZATION   - Synchronisation des bannissements
+# LP_CONTEXTS           - Les contextes de LuckPerm
+# ACCOUNT_LINKING       - Liaison de compte discord/minecraft
+#
+# UNCATEGORIZED         - Tout ce qui ne fait partie d'aucune des catégories ci-dessus
+# ALL                   - Toutes les catégories ci-dessus (y compris UNCATEGORIZED)
+#
+# JDA                   - Messages de débogage de JDA
+# JDA_REST_ACTIONS      - Pour déboguer les actions de repos de JDA
+# CALLSTACKS            - Affiche la trace de pile pour les appels de débogage DiscordSRV
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []

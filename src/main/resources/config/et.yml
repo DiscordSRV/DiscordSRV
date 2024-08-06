@@ -35,34 +35,6 @@ DiscordConsoleChannelId: "000000000000000000"
 # Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
 DiscordInviteLink: "https://discord.gg/muudasedafailisconfig.yml"
 
-# Debug information
-# Don't enable these unless you're attempting to locate an issue
-#
-# Available Debug categories:
-# MINECRAFT_TO_DISCORD  - Messages coming from Minecraft
-# DISCORD_TO_MINECRAFT  - Messages coming from Discord
-# GROUP_SYNC            - Group synchronization
-# PRESENCE              - The bot's game status or presence
-# VOICE                 - The voice module (see voice.yml)
-# REQUIRE_LINK          - The require link to join module (see linking.yml)
-# NICKNAME_SYNC         - Nickname synchronization
-# ALERTS                - Alerts (see alerts.yml)
-# WATCHDOG              - The watchdog
-# BAN_SYNCHRONIZATION   - Ban synchronization
-# LP_CONTEXTS           - LuckPerm's contexts
-# ACCOUNT_LINKING       - discord/minecraft account linking
-#
-# UNCATEGORIZED         - Anything not in any of the above categories
-# ALL                   - All the above categories (including UNCATEGORIZED)
-#
-# JDA                   - JDA's debug messages
-# JDA_REST_ACTIONS      - For debugging JDA's rest actions
-# CALLSTACKS            - Displays the stack trace for DiscordSRV debug calls
-#
-# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
-
 # Experiments
 # These features are not fully optimized; use at your own risk
 
@@ -352,3 +324,31 @@ ProxyHost: "https://example.com"
 ProxyPort: 1234
 ProxyUser: "USERNAME"
 ProxyPassword: "PASSWORD"
+
+# Debug information
+# Don't enable these unless you're attempting to locate an issue
+#
+# Available Debug categories:
+# MINECRAFT_TO_DISCORD  - Messages coming from Minecraft
+# DISCORD_TO_MINECRAFT  - Messages coming from Discord
+# GROUP_SYNC            - Group synchronization
+# PRESENCE              - The bot's game status or presence
+# VOICE                 - The voice module (see voice.yml)
+# REQUIRE_LINK          - The require link to join module (see linking.yml)
+# NICKNAME_SYNC         - Nickname synchronization
+# ALERTS                - Alerts (see alerts.yml)
+# WATCHDOG              - The watchdog
+# BAN_SYNCHRONIZATION   - Ban synchronization
+# LP_CONTEXTS           - LuckPerm's contexts
+# ACCOUNT_LINKING       - discord/minecraft account linking
+#
+# UNCATEGORIZED         - Anything not in any of the above categories
+# ALL                   - All the above categories (including UNCATEGORIZED)
+#
+# JDA                   - JDA's debug messages
+# JDA_REST_ACTIONS      - For debugging JDA's rest actions
+# CALLSTACKS            - Displays the stack trace for DiscordSRV debug calls
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []

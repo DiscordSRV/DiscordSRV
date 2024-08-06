@@ -35,34 +35,6 @@ DiscordConsoleChannelId: "000000000000000000"
 # /discord でプレイヤーに表示される招待リンク、およびアカウント連携を強制する際にまだ連携していないプレイヤーに表示される招待リンク
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# デバッグ情報
-# 問題を特定しようとする際以外はこの設定を使用しないでください。
-#
-# 利用可能なデバッグカテゴリ:
-# MINECRAFT_TO_DISCORD  - Minecraft からのメッセージ
-# DISCORD_TO_MINECRAFT  - Discord からのメッセージ
-# GROUP_SYNC            - グループの同期
-# PRESENCE              - Bot のゲームステータスと状態
-# VOICE                 - 音声モジュール（voice.yml を参照）
-# REQUIRE_LINK          - モジュールを追加するために必要なリンク（linking.yml を参照）
-# NICKNAME_SYNC         - ニックネームの同期
-# ALERTS                - アラート (alerts.yml を参照)
-# WATCHDOG              - サーバー の watchdog
-# BAN_SYNCHRONIZATION   - BAN 同期
-# LP_CONTEXTS           - LuckPermのコンテキスト
-# ACCOUNT_LINKING       - Discord/Minecraft のアカウント連携
-#
-# UNCATEGORIZED         - 上記のいずれにも該当しないもの
-# ALL                   - 上記のすべてのカテゴリ（UNCATEGORIZEDを含む）
-#
-# JDA                   - JDA のデバッグメッセージ
-# JDA_REST_ACTIONS      - JDA の残りのアクションのデバッグ用
-# CALLSTACKS            - DiscordSRV デバッグ呼び出しのスタックトレース
-#
-# 例: "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
-
 # 実験
 # これらの機能は完全に最適化されていません。自己責任で使用してください。
 
@@ -355,3 +327,31 @@ ProxyHost: "https://example.com"
 ProxyPort: 1234
 ProxyUser: "USERNAME"
 ProxyPassword: "PASSWORD"
+
+# デバッグ情報
+# 問題を特定しようとする際以外はこの設定を使用しないでください。
+#
+# 利用可能なデバッグカテゴリ:
+# MINECRAFT_TO_DISCORD  - Minecraft からのメッセージ
+# DISCORD_TO_MINECRAFT  - Discord からのメッセージ
+# GROUP_SYNC            - グループの同期
+# PRESENCE              - Bot のゲームステータスと状態
+# VOICE                 - 音声モジュール（voice.yml を参照）
+# REQUIRE_LINK          - モジュールを追加するために必要なリンク（linking.yml を参照）
+# NICKNAME_SYNC         - ニックネームの同期
+# ALERTS                - アラート (alerts.yml を参照)
+# WATCHDOG              - サーバー の watchdog
+# BAN_SYNCHRONIZATION   - BAN 同期
+# LP_CONTEXTS           - LuckPermのコンテキスト
+# ACCOUNT_LINKING       - Discord/Minecraft のアカウント連携
+#
+# UNCATEGORIZED         - 上記のいずれにも該当しないもの
+# ALL                   - 上記のすべてのカテゴリ（UNCATEGORIZEDを含む）
+#
+# JDA                   - JDA のデバッグメッセージ
+# JDA_REST_ACTIONS      - JDA の残りのアクションのデバッグ用
+# CALLSTACKS            - DiscordSRV デバッグ呼び出しのスタックトレース
+#
+# 例: "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []

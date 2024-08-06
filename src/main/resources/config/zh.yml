@@ -35,34 +35,6 @@ DiscordConsoleChannelId: "000000000000000000"
 # 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-#调试信息
-#除非要尝试查找问题，否则不要启用这些功能
-#
-#可用的调试类别:
-# MINECRAFT_TO_DISCORD  - 来自Minecraft的消息
-# DISCORD_TO_MINECRAFT  - 来自Discord的消息
-# GROUP_SYNC            - 组同步
-# PRESENCE              - 机器人的游戏状态或状态
-# VOICE                 - 语音模块（请参阅voice.yml）
-# REQUIRE_LINK          - 加入模块的require链接（请参阅linking.yml）
-# NICKNAME_SYNC         - 昵称同步
-# ALERTS                - 快讯（请参阅alerts.yml）
-# WATCHDOG              - 伺服器監視器
-# BAN_SYNCHRONIZATION   - 封鎖名單同步
-# LP_CONTEXTS           - LuckPerm 的上下文
-# ACCOUNT_LINKING       - 不和谐/我的世界帐户链接
-#
-# UNCATEGORIZED         - 以上任何类别都不属于
-# ALL                   - 以上所有类别（包括UNCATEGORIZED）
-#
-# JDA                   - JDA的调试消息
-# JDA_REST_ACTIONS      - 用于调试JDA的其余操作
-# CALLSTACKS            - 显示DiscordSRV调试调用的堆栈跟踪
-#
-# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
-
 # 实验
 # 这些功能尚未完全优化。 使用风险自负
 
@@ -351,3 +323,31 @@ ProxyHost: "https://example.com"
 ProxyPort: 1234
 ProxyUser: "USERNAME"
 ProxyPassword: "PASSWORD"
+
+#调试信息
+#除非要尝试查找问题，否则不要启用这些功能
+#
+#可用的调试类别:
+# MINECRAFT_TO_DISCORD  - 来自Minecraft的消息
+# DISCORD_TO_MINECRAFT  - 来自Discord的消息
+# GROUP_SYNC            - 组同步
+# PRESENCE              - 机器人的游戏状态或状态
+# VOICE                 - 语音模块（请参阅voice.yml）
+# REQUIRE_LINK          - 加入模块的require链接（请参阅linking.yml）
+# NICKNAME_SYNC         - 昵称同步
+# ALERTS                - 快讯（请参阅alerts.yml）
+# WATCHDOG              - 伺服器監視器
+# BAN_SYNCHRONIZATION   - 封鎖名單同步
+# LP_CONTEXTS           - LuckPerm 的上下文
+# ACCOUNT_LINKING       - 不和谐/我的世界帐户链接
+#
+# UNCATEGORIZED         - 以上任何类别都不属于
+# ALL                   - 以上所有类别（包括UNCATEGORIZED）
+#
+# JDA                   - JDA的调试消息
+# JDA_REST_ACTIONS      - 用于调试JDA的其余操作
+# CALLSTACKS            - 显示DiscordSRV调试调用的堆栈跟踪
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
