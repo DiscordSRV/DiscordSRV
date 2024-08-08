@@ -741,6 +741,9 @@ public class DiscordSRV extends JavaPlugin {
                         ? (hostname, sslSession) -> true
                         : OkHostnameVerifier.INSTANCE);
 
+        // websocket
+        WebSocketFactory wsFactory = new WebSocketFactory().setDualStackMode(DualStackMode.IPV4_ONLY);
+
         if (proxyHost != null && !proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
             try {
                 // This had to be set to empty string to avoid issue with basic auth
@@ -755,6 +758,10 @@ public class DiscordSRV extends JavaPlugin {
                         return response.request().newBuilder().header("Proxy-Authorization", credential).build();
                     });
                 }
+
+                // websocket proxy
+                wsFactory.getProxySettings().setHost(proxyHost).setPort(proxyPort);
+
             } catch (Exception e) {
                 DiscordSRV.error("Failed to generate a proxy from config options.", e);
             }
@@ -874,9 +881,7 @@ public class DiscordSRV extends JavaPlugin {
                     .setCallbackPool(callbackThreadPool, false)
                     .setGatewayPool(gatewayThreadPool, true)
                     .setRateLimitPool(rateLimitThreadPool, true)
-                    .setWebsocketFactory(new WebSocketFactory()
-                            .setDualStackMode(DualStackMode.IPV4_ONLY)
-                    )
+                    .setWebsocketFactory(wsFactory)
                     .setHttpClient(httpClient)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
