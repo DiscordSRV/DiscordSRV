@@ -8,13 +8,6 @@ ConfigVersion: ${version}
 # U moet uw server opnieuw opstarten nadat u deze optie hebt gewijzigd
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord
-# Leave this alone if you don't understand what it does
-ProxyHost: "https://example.com"
-ProxyPort: 1234
-ProxyUser: "USERNAME"
-ProxyPassword: "PASSWORD"
-
 # Kanaallinks van game naar Discord
 # syntaxis is Kanalen: {"in-game kanaalnaam van Minecraft": "numerieke kanaal-ID van Discord", "nog een in-game kanaalnaam van Minecraft": "nog een numerieke kanaal-ID van Discord"}
 #
@@ -41,34 +34,6 @@ DiscordConsoleChannelId: "000000000000000000"
 
 # Uitnodigingslink getoond aan spelers bij gebruik /discord en op het bericht getoond aan niet-gekoppelde spelers wanneer het koppelen wordt afgedwongen
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
-
-# Foutopsporingsinformatie
-# Schakel deze niet in tenzij u probeert een probleem op te sporen
-#
-# Beschikbare foutopsporingscategorieën:
-# MINECRAFT_TO_DISCORD  - Berichten afkomstig van Minecraft
-# DISCORD_TO_MINECRAFT  - Berichten afkomstig van Discord
-# GROUP_SYNC            - Groepssynchronisatie
-# PRESENCE              - De spelstatus of aanwezigheid van de bot
-# VOICE                 - De spraakmodule (zie voice.yml)
-# REQUIRE_LINK          - De vereiste link om deel te nemen aan de module (zie linking.yml)
-# NICKNAME_SYNC         - Synchronisatie van bijnamen
-# ALERTS                - Waarschuwingen (zie alerts.yml)
-# WATCHDOG              - Server watchdog
-# BAN_SYNCHRONIZATION   - Ban synchronisatie
-# LP_CONTEXTS           - De contexten van LuckPerm
-# ACCOUNT_LINKING       - discord/minecraft-account koppelen
-#
-# UNCATEGORIZED         - Alles wat niet in een van de bovenstaande categorieën valt
-# ALL                   - Alle bovenstaande categorieën (inclusief UNCATEGORIZED)
-#
-# JDA                   - JDA's foutopsporingsberichten
-# JDA_REST_ACTIONS      - Voor het debuggen van de rustacties van JDA
-# CALLSTACKS            - Geeft de stacktracering weer voor DiscordSRV-foutopsporingsoproepen
-#
-# e.g. "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
 
 # Experimenten
 # Deze functies zijn niet volledig geoptimaliseerd; gebruik op eigen risico
@@ -352,3 +317,38 @@ MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# HTTP proxy used for connecting to the Discord API
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
+# Foutopsporingsinformatie
+# Schakel deze niet in tenzij u probeert een probleem op te sporen
+#
+# Beschikbare foutopsporingscategorieën:
+# MINECRAFT_TO_DISCORD  - Berichten afkomstig van Minecraft
+# DISCORD_TO_MINECRAFT  - Berichten afkomstig van Discord
+# GROUP_SYNC            - Groepssynchronisatie
+# PRESENCE              - De spelstatus of aanwezigheid van de bot
+# VOICE                 - De spraakmodule (zie voice.yml)
+# REQUIRE_LINK          - De vereiste link om deel te nemen aan de module (zie linking.yml)
+# NICKNAME_SYNC         - Synchronisatie van bijnamen
+# ALERTS                - Waarschuwingen (zie alerts.yml)
+# WATCHDOG              - Server watchdog
+# BAN_SYNCHRONIZATION   - Ban synchronisatie
+# LP_CONTEXTS           - De contexten van LuckPerm
+# ACCOUNT_LINKING       - discord/minecraft-account koppelen
+#
+# UNCATEGORIZED         - Alles wat niet in een van de bovenstaande categorieën valt
+# ALL                   - Alle bovenstaande categorieën (inclusief UNCATEGORIZED)
+#
+# JDA                   - JDA's foutopsporingsberichten
+# JDA_REST_ACTIONS      - Voor het debuggen van de rustacties van JDA
+# CALLSTACKS            - Geeft de stacktracering weer voor DiscordSRV-foutopsporingsoproepen
+#
+# e.g. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
