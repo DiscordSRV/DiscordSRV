@@ -26,6 +26,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
+import com.neovisionaries.ws.client.ProxySettings;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
@@ -729,6 +730,9 @@ public class DiscordSRV extends JavaPlugin {
         String authUser = config.getString("ProxyUser");
         String authPassword = config.getString("ProxyPassword");
 
+        WebSocketFactory websocketFactory = new WebSocketFactory()
+                .setDualStackMode(DualStackMode.IPV4_ONLY);
+
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
@@ -741,7 +745,7 @@ public class DiscordSRV extends JavaPlugin {
                         ? (hostname, sslSession) -> true
                         : OkHostnameVerifier.INSTANCE);
 
-        if (proxyHost != null && !proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
+        if (!proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
             try {
                 // This had to be set to empty string to avoid issue with basic auth
                 // Reference: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111
@@ -749,11 +753,19 @@ public class DiscordSRV extends JavaPlugin {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.trim(), proxyPort));
                 httpClientBuilder = httpClientBuilder.proxy(proxy);
 
+                ProxySettings proxySettings = websocketFactory.getProxySettings();
+                proxySettings.setHost(proxyHost.trim());
+
                 if (!authPassword.isEmpty()) {
+                    String trimmedUsername = authUser.trim();
+                    String trimmedPassword = authPassword.trim();
+
                     httpClientBuilder = httpClientBuilder.proxyAuthenticator((route, response) -> {
-                        String credential = Credentials.basic(authUser.trim(), authPassword.trim());
+                        String credential = Credentials.basic(trimmedUsername, trimmedPassword);
                         return response.request().newBuilder().header("Proxy-Authorization", credential).build();
                     });
+
+                    proxySettings.setCredentials(trimmedUsername, trimmedPassword);
                 }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to generate a proxy from config options.", e);
@@ -874,9 +886,7 @@ public class DiscordSRV extends JavaPlugin {
                     .setCallbackPool(callbackThreadPool, false)
                     .setGatewayPool(gatewayThreadPool, true)
                     .setRateLimitPool(rateLimitThreadPool, true)
-                    .setWebsocketFactory(new WebSocketFactory()
-                            .setDualStackMode(DualStackMode.IPV4_ONLY)
-                    )
+                    .setWebsocketFactory(websocketFactory)
                     .setHttpClient(httpClient)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
