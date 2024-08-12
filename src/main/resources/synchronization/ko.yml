@@ -1,16 +1,16 @@
-# Minecraft-> Discord 닉네임 동기화
-# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
+# 마인크래프트 -> 디스코드 닉네임 동기화
+# 'discordsrv.nicknamesync' 권한을 사용하여 플레이어별로 제어할 수 있습니다(기본적으로 부여됨).
 #
-# NicknameSynchronizationEnabled : 불일치 사용자의 닉네임을 닉네임 형식으로 자동 설정할지 여부
+# NicknameSynchronizationEnabled : 디스코드 사용자의 닉네임을 닉네임 형식으로 자동 설정할지 여부
 # NicknameSynchronizationCycleTime : 모든 온라인 플레이어에 대해 반복적으로 동기화를 트리거하는 간격 (분)
-# NicknameSynchronizationFormat : 닉네임 형식 (32자를 넘지 않아야 함을 명심하십시오)
+# NicknameSynchronizationFormat : 닉네임 형식 (32자를 넘지 않아야 함을 명심하세요.)
 # %displayname%:            플레이어의 표시 이름
 #                            예: Jeb
 # %username%:               플레이어의 사용자 이름
 #                            예: Jeb_
 # %discord_name%:           플레이어의 discord 사용자 이름
 #                            예: 4Jeb
-# %discord_discriminator%: 플레이어의 불일치 판별 자
+# %discord_discriminator%: 플레이어의 디스코드 태그
 #                            예: 4988
 # PlaceholderAPI 자리 표시자는 값에 대해 지원됩니다.
 #
@@ -43,12 +43,12 @@ GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
 GroupRoleSynchronizationCycleCompletely: false
 
-# 차단 동기화
-# 만약 플레이어가 디스코드에서 차단당한 경우, 마인크래프트 서버에서도 동시에 밴을 진행합니다. 그 반대도 마찬가지입니다.
+# 밴 동기화
+# 만약 플레이어가 디스코드에서 밴당한 경우, 마인크래프트 서버에서도 동시에 밴합니다. 그 반대도 마찬가지입니다.
 #
-# BanSynchronizationDiscordToMinecraft: 디스코드 서버의 차단을 마인크래프트 서버에 동기화합니다.
-# BanSynchronizationDiscordToMinecraftReason: 디스코드 서버의 차단 사유를 마인크래프트 서버에 동기화합니다.
-# BanSynchronizationMinecraftToDiscord: 마인크래프트 서버의 차단을 디스코드 서버에 동기화합니다.
+# BanSynchronizationDiscordToMinecraft: 디스코드 서버의 밴을 마인크래프트 서버에 동기화합니다.
+# BanSynchronizationDiscordToMinecraftReason: 디스코드 서버의 밴 사유를 마인크래프트 서버에 동기화합니다.
+# BanSynchronizationMinecraftToDiscord: 마인크래프트 서버의 밴을 디스코드 서버에 동기화합니다.
 #
 BanSynchronizationDiscordToMinecraft: false
 BanSynchronizationDiscordToMinecraftReason: "&c디스코드 서버에서 차단되어 마인크래프트 서버에서도 차단되었습니다. 이 차단은 추후 공지 시까지 유지됩니다."

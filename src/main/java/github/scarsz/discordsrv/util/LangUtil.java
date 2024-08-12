@@ -32,7 +32,7 @@ import java.util.Map;
  * <p>German translations by Androkai &amp; GerdSattler</p>
  * <p>Japanese translations by Ucchy</p>
  * <p>French translations by BrinDeNuage</p>
- * <p>Korean translations by Alex4386 (with MintNetwork)</p>
+ * <p>Korean translations by Alex4386 (with MintNetwork) and hwangsihu</p>
  * <p>Dutch translations by Mr Ceasar</p>
  * <p>Spanish translations by ZxFrankxZ</p>
  * <p>Russian translations by DmitryRendov</p>
@@ -114,16 +114,16 @@ public class LangUtil {
             put(Language.KO,
                     "\n" +
                     "\n" +
-                    "DiscordSRV를 ASM 4에서 구동 중 입니다.. DiscordSRV는 ASM 5 이상 버전에서 작동합니다.\n" +
-                    "DiscordSRV는 ASM 5없이는 작동 할 수 없습니다. 구식 라이브러리를 써서 만든 서버 소프트웨어 개발자 한테 따지세요.\n" +
+                    "DiscordSRV를 ASM 4에서 구동중입니다. DiscordSRV는 ASM 5 이상 버전에서 작동합니다.\n" +
+                    "DiscordSRV는 ASM 5 없이는 작동할 수 없습니다. 구식 라이브러리를 사용해서 만든 서버 소프트웨어의 개발자에게 따지도록 하십시오.\n" +
                     "\n" +
-                    "ASM 5로 업데이트 하는 방법:\n" +
+                    "ASM 5로 업데이트하는 방법:\n" +
                     "1. 서버의 {specialsourcefolder} 폴더로 들어갑니다.\n" +
-                    "2. SpecialSource-1.7-SNAPSHOT.jar 파일을 삭제 합니다.\n" +
+                    "2. SpecialSource-1.7-SNAPSHOT.jar 파일을 삭제합니다.\n" +
                     "3. SpecialSource v1.7.4를 https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar 에서 다운로드 받습니다.\n" +
-                    "4. {specialsourcefolder}로 3에서 다운로드 받은 파일을 복사합니다.\n" +
+                    "4. 3에서 다운로드 받은 파일을 {specialsourcefolder}로 복사합니다.\n" +
                     "5. 4에서 복사한 파일의 이름을 SpecialSource-1.7-SNAPSHOT.jar로 바꿉니다.\n" +
-                    "6. 서버를 재부팅 합니다.\n" +
+                    "6. 서버를 재부팅합니다.\n" +
                     "\n" +
                     "\n");
             put(Language.NL,
@@ -301,10 +301,10 @@ public class LangUtil {
             put(Language.KO,
                     "\n" +
                     "\n" +
-                    "RespectChatPlugins가 비활성화되었습니다.이 옵션은 테스트 목적으로 만 사용됩니다.\n" +
-                    "프로덕션 서버에서는 절대 비활성화하지 않아야합니다.\n" +
-                    "이 옵션을 비활성화하면 취소 된 메시지가 불일치로 전달됩니다.\n" +
-                    "/command가없는 개인 메시지 또는 직원 채팅 메시지를 포함하지만 이에 국한되지는 않습니다.\n" +
+                    "RespectChatPlugins가 비활성화되었습니다. 이 옵션은 테스트 목적으로만 사용됩니다.\n" +
+                    "프로덕션 서버에서는 절때 비활성화하지 않아야 합니다.\n" +
+                    "이 옵션을 비활성화하면 취소된 메시지가 디스코드로 전달됩니다.\n" +
+                    "/command가 없는 개인 메시지 또는 스테프 채팅 메시지를 포함하지만 이에 국한되지는 않습니다.\n" +
                     "\n" +
                     "\n");
             put(Language.NL,
@@ -429,7 +429,7 @@ public class LangUtil {
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
             put(Language.DE, "Konsolenkanal-ID ist ungültig, keine Konsolenausgabe Weiterleitung aktiv");
             put(Language.JA, "コンソールチャネルIDは無効であるため、コンソール転送は行われません");
-            put(Language.KO, "콘솔 채널 ID가 올바르지 않습니다. 콘솔 메세지를 채널로 보내지 않습니다.");
+            put(Language.KO, "콘솔 채널 ID가 올바르지 않습니다. 콘솔 메시지를 채널로 보내지 않습니다.");
             put(Language.NL, "Console kanaal ID is ongeldig, de console wordt niet verzonden");
             put(Language.ES, "El ID del canal de la consola no es válido, no se enviará ningún mensaje de la consola");
             put(Language.RU, "Неверный ID канала для перенаправления вывода консоли, сообщения консоли не будут пересылаться");
@@ -444,7 +444,7 @@ public class LangUtil {
             put(Language.FR, "Arrêt effectué en {ms}ms");
             put(Language.DE, "Herunterfahren wurde abgeschlossen in {ms}ms");
             put(Language.JA, "{ms}ミリ秒でシャットダウンしました");
-            put(Language.KO, "서버가 {ms}ms만에 종료 됨.");
+            put(Language.KO, "서버가 {ms}ms만에 종료되었습니다.");
             put(Language.NL, "Shutdown klaar in {ms}ms");
             put(Language.ES, "Apagado completado en {ms}ms");
             put(Language.RU, "Отключение завершено за {ms}мс");
@@ -474,7 +474,7 @@ public class LangUtil {
             put(Language.FR, "API listener {listenername} n'est plus associé");
             put(Language.DE, "API listener {listenername} Abmeldung");
             put(Language.JA, "API listener {listenername} が購読を終了しました");
-            put(Language.KO, "API listener {listenername} 의 구독이 취소 되었습니다.");
+            put(Language.KO, "API listener {listenername} 의 구독이 취소되었습니다.");
             put(Language.NL, "API listener {listenername} afgemeld");
             put(Language.ES, "API listener {listenername} anulado");
             put(Language.RU, "API listener {listenername} деактивирован");
@@ -489,7 +489,7 @@ public class LangUtil {
             put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
             put(Language.DE, "DiscordSRV API Listener {listenername} Methode {methodname} war unzugänglich trotz der Bemühungen, es zugänglich zu machen");
             put(Language.JA, "DiscordSRV API Listener {listenername} の Method {methodname} は、アクセスすることができなくなりました");
-            put(Language.KO, "DiscordSRV API Listener {listenername} 의 method {methodname} 의 액세스에 실패 하였습니다.");
+            put(Language.KO, "DiscordSRV API Listener {listenername} 의 method {methodname} 의 액세스에 실패하였습니다.");
             put(Language.NL, "DiscordSRV API Listener {listenername} methode {methodname} was onberijkbaar ondanks alle moeite om het berijkbaar te maken");
             put(Language.ES, "DiscordSRV API Listener {listenername} método {methodname} era inaccesible a pesar de los esfuerzos para hacerlo accesible");
             put(Language.RU, "DiscordSRV API Listener {listenername} метод {methodname} был недоступен, несмотря на все наши усилия сделать его доступным");
@@ -504,7 +504,7 @@ public class LangUtil {
             put(Language.FR, "Impossible de récuperer l'URL");
             put(Language.DE, "Fehler beim Abrufen der URL");
             put(Language.JA, "URLの取得に失敗しました");
-            put(Language.KO, "URL을 가져오는데 실패 하였습니다.");
+            put(Language.KO, "URL을 가져오지 못했습니다.");
             put(Language.NL, "Gefaald om de URL op te halen");
             put(Language.ES, "Fallo al buscar la URL");
             put(Language.RU, "Ошибка получения URL");
@@ -519,7 +519,7 @@ public class LangUtil {
             put(Language.FR, "Impossible de télécharger l'URL");
             put(Language.DE, "Fehler beim Download von URL");
             put(Language.JA, "URLからのダウンロードに失敗しました");
-            put(Language.KO, "URL 다운로드에 실패 하였습니다.");
+            put(Language.KO, "URL 다운로드에 실패하였습니다.");
             put(Language.NL, "Gefaald om de URL te downloaden");
             put(Language.ES, "Fallo al descargar la URL");
             put(Language.RU, "Ошибка загрузки URL");
@@ -534,7 +534,7 @@ public class LangUtil {
             put(Language.FR, "Activation de l'accrochage du plugin {plugin}");
             put(Language.DE, "Aktiviere {plugin} Verbindung");
             put(Language.JA, "{plugin} の接続を有効にしました");
-            put(Language.KO, "Plugin {plugin} 의 연동을 활성화합니다.");
+            put(Language.KO, "{plugin} 플러그인과의 연동을 활성화합니다.");
             put(Language.NL, "Inschakelen {plugin} hook");
             put(Language.ES, "Activando complementos de {plugin}");
             put(Language.RU, "Активация {plugin} подключения");
@@ -594,7 +594,7 @@ public class LangUtil {
             put(Language.FR, "Le channel de la console à été assigné à un channel utilisé pour le tchat. Avez vous copié aveuglement l'ID d'un channel");
             put(Language.DE, "Der Konsolenkanal wurde mit einem Kanal verbunden, der auch für den Chat genutzt werden soll. Bitte korrigiere das und folge den Installationsanweisungen!");
             put(Language.JA, "コンソールチャンネルは、チャットに使用されているチャンネルと同じものが指定されています。IDをチャンネルID設定オプションにそのままコピペしていませんか？");
-            put(Language.KO, "채팅 채널 ID가 콘솔 채널 ID와 같습니다. 정신 차리세요.");
+            put(Language.KO, "채팅 채널 ID가 콘솔 채널 ID와 같습니다. 채널 ID 구성 옵션에 무작정 ID를 복붙하셨나요? 정신 좀 차리시지요.");
             put(Language.NL, "Het console kanaal is gelinked met een kanaal dat voor chat gebruikt. Heb je het channel ID gekopieerd?? ;P");
             put(Language.ES, "El canal de la consola se asignó a un canal que se está utilizando para el chat. ¿Copió/pegó a ciegas el ID en la opción de configuración de identificación del canal?");
             put(Language.RU, "Канал для консоли был прикреплен к каналу серверного чата! Слепой копипаст ID канала в файле конфигурации?");
@@ -609,7 +609,7 @@ public class LangUtil {
             put(Language.FR, "Tchat");
             put(Language.DE, "Chat");
             put(Language.JA, "チャット");
-            put(Language.KO, "챗");
+            put(Language.KO, "채팅");
             put(Language.NL, "Chat");
             put(Language.ES, "Chat");
             put(Language.RU, "Чат");
@@ -624,7 +624,7 @@ public class LangUtil {
             put(Language.FR, "Erreur lors de la journalisation de l'action de la console");
             put(Language.DE, "Fehler beim Loggen einer Konsolenaktion nach");
             put(Language.JA, "動作記録失敗");
-            put(Language.KO, "콘솔 로깅중 오류 발생 ");
+            put(Language.KO, "콘솔 로깅 중 오류가 발생했습니다.");
             put(Language.NL, "Fout opgetreden tijdens het loggen van console acties");
             put(Language.ES, "Error al iniciar sesión en la consola");
             put(Language.RU, "Ошибка логирования действий консоли в");
@@ -639,7 +639,7 @@ public class LangUtil {
             put(Language.FR, "Le joueur {player} a rejoint le jeu avec une permission de silence lors de la connexion.");
             put(Language.DE, "Spieler {player} hat den Server mit Berechtigung zum stillen Betreten betreten, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discordsrv.silentjoin の権限があるので、サーバー参加メッセージが送信されません");
-            put(Language.KO, "플레이어 {player}가 discordsrv.slientjoin 퍼미션을 가지고 있습니다. 참가메세지를 보내지 않습니다.");
+            put(Language.KO, "플레이어 {player}가 discordsrv.slientjoin 퍼미션을 가지고 있습니다. 참가 메시지를 보내지 않습니다.");
             put(Language.NL, "Speler {speler} joined met toestemming om stil te joinen, geen join bericht wordt verstuurd.");
             put(Language.ES, "Jugador {player} entró con el permiso de entrada silenciosa, no se ha enviado mensaje de entrada");
             put(Language.RU, "Игрок {player} незаметно присоединился к серверу, безо всяких сообщений в чате");
@@ -654,7 +654,7 @@ public class LangUtil {
             put(Language.FR, "Le joueur {player} a quitté le jeu avec une permission de silence lors de le déconnexion.");
             put(Language.DE, "Spieler {player} hat den Server mit Berechtigung zum stillen Verlassen verlassen, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discordsrv.silentquit の権限があるので、サーバー退出メッセージが送信されません");
-            put(Language.KO, "플레이어 {player} 가 discordsrv.slientquit 퍼미션을 가지고 있습니다. 퇴장메세지를 보내지 않습니다.");
+            put(Language.KO, "플레이어 {player} 가 discordsrv.slientquit 퍼미션을 가지고 있습니다. 퇴장 메시지를 보내지 않습니다.");
             put(Language.NL, "Speler {speler} is weg gegaan met toestemming om stil weg te gaan, geen quit bericht wordt verstuurd.");
             put(Language.ES, "Jugador {player} salió con el permiso de salida silenciosa, no se ha enviado un mensaje de salida");
             put(Language.RU, "Игрок {player} незаметно вышел, не попрощавшись, безо всяких сообщений в чате");
@@ -669,7 +669,7 @@ public class LangUtil {
             put(Language.FR, "Sauvegarde des comptes liés en {ms}ms");
             put(Language.DE, "Speichern von verknüpften Accounts in {ms}ms");
             put(Language.JA, "{ms}ミリ秒でリンクされたアカウントを保存しました");
-            put(Language.KO, "{ms}ms 만에 연동계정 저장완료");
+            put(Language.KO, "{ms}ms 만에 연결된 계정 저장 완료");
             put(Language.NL, "Gekoppelde accounts opgeslagen in {ms}ms");
             put(Language.ES, "Cuentas vinculadas guardadas en {ms}ms");
             put(Language.RU, "Привязанные аккаунты успешно сохранены за {ms}мс");
@@ -714,7 +714,7 @@ public class LangUtil {
             put(Language.FR, "Impossible de trouver le rôle {rolename} lors de la synchronisation des groupes.Le bot est il sur le serveur ?");
             put(Language.DE, "Konnte keine Rolle mit id {rolename} für gruppensynchronisierung finden. Ist der Bot auf dem Server?");
             put(Language.JA, "グループを同期させるために、ID「{rolename}」のロールを見つけることができませんでした。 Botはサーバ上にありますか？");
-            put(Language.KO, "그룹 동기화를 할 Role ID를 찾을 수 없습니다. 봇이 디스코드 서버에 있나요?");
+            put(Language.KO, "그룹을 동기화할 Role ID를 찾을 수 없습니다. 봇이 디스코드 서버에 있나요?");
             put(Language.NL, "Kon role id {rolename} niet vinden dit word gebruikt voor groep synchronisatie. Is de bot in de server?");
             put(Language.ES, "No se pudo encontrar el rol {rolename} para usar con sincronización de grupo. ¿Está el bot en el servidor?");
             put(Language.RU, "Не могу найти подходящий ID роли {rolename}, чтобы произвести синхронизацию. Бот точно уже подключился к серверу?");
@@ -744,7 +744,7 @@ public class LangUtil {
             put(Language.FR, "Seuls les joueurs peuvent effectuer cette commande.");
             put(Language.DE, "Nur Spieler können diesen Befehl ausführen.");
             put(Language.JA, "ゲーム内プレイヤーのみがこのコマンドを実行することができます。");
-            put(Language.KO, "플레이어만 이 명령어를 실행 할 수 있습이다.");
+            put(Language.KO, "플레이어만 이 명령어를 실행할 수 있습니다.");
             put(Language.NL, "Alleen spelers kunnen dit command gebruiken.");
             put(Language.ES, "Solo los jugadores pueden ejecutar este comando");
             put(Language.RU, "Только игроки могут выполнить такую команду.");
@@ -759,7 +759,7 @@ public class LangUtil {
             put(Language.FR, "La configuration et les fichiers de langage de DiscordSRV ont été rechargé.");
             put(Language.DE, "Die DiscordSRV Konfiguration und Sprachdatei wurden neu eingelesen.");
             put(Language.JA, "DiscordSRVの設定と言語が再読込されました。");
-            put(Language.KO, "DiscordSRV 컨피그 및 언어 설정이 리로드 되었습니다.");
+            put(Language.KO, "DiscordSRV Config 및 언어 설정이 리로드되었습니다.");
             put(Language.NL, "De DiscordSRV config & lang is herladen.");
             put(Language.ES, "La configuración y el idioma de DiscordSRV han sido recargadas");
             put(Language.RU, "DiscordSRV конфигурация и языковые настройки успешно перезагружены.");
@@ -774,7 +774,7 @@ public class LangUtil {
             put(Language.FR, "Aucune cible spécifiée. Peut être un UUID, un ID Discord ou un nom de joueur.");
             put(Language.DE, "Kein Spieler angegeben. Dies kann eine UUID, ein Spielername oder eine Discord-ID sein.");
             put(Language.JA, "プレーヤーが指定されていません。これは、UUID、プレーヤー名、またはDiscord IDです。");
-            put(Language.KO, "대상이 지정되지 않았습니다. 플레이어 UUID, 플레이어 이름 또는 Discord ID 일 수 있습니다.");
+            put(Language.KO, "대상이 지정되지 않았습니다. 유효한 값은 플레이어 UUID, 플레이어 이름 또는 Discord ID 입니다.");
             put(Language.NL, "U moet opgeven wie u wilt ontkoppelen. Het kan een UUID, een Discord-ID of een spelersnaam zijn.");
             put(Language.ES, "Ningún objetivo especificado. Puede ser un UUID, una ID de Discord o un nombre de jugador.");
             put(Language.RU, "Ни один игрок не указан. Это может быть UUID, имя игрока или Discord ID.");
@@ -789,7 +789,7 @@ public class LangUtil {
             put(Language.FR, "Une erreur interne š'est produite lors du traitement.");
             put(Language.DE, "Während der Verarbeitung Ihres Befehls ist ein interner Fehler aufgetreten.");
             put(Language.JA, "コマンドの処理中に内部エラーが発生しました。");
-            put(Language.KO, "명령을 처리하는 중 내부 오류가 발생했습니다.");
+            put(Language.KO, "명령을 처리하는 도중 내부 오류가 발생했습니다.");
             put(Language.NL, "Een interne fout is opgetreden tijdens het uitvoeren van jouw opdracht.");
             put(Language.ES, "Se produjo un error interno al procesar su comando.");
             put(Language.RU, "Во время обработки вашей команды произошла внутренняя ошибка.");
@@ -804,7 +804,7 @@ public class LangUtil {
             put(Language.FR, "La synchronisation de groupe nécessite des entrées GroupRoleSynchronizationGroupsAndRolesToSync valides dans synchronization.yml");
             put(Language.DE, "Für die Gruppensynchronisierung sind gültige GroupRoleSynchronizationGroupsAndRolesToSync-Einträge in synchronization.yml erforderlich");
             put(Language.JA, "グループの同期には、synchronization.ymlの有効なGroupRoleSynchronizationGroupsAndRolesToSyncエントリが必要です。");
-            put(Language.KO, "그룹 동기화에는 동기화에 유효한 GroupRoleSynchronizationGroupsAndRolesToSync 항목이 synchronization.yml 합니다.");
+            put(Language.KO, "그룹 동기화를 위해서는 synchronization.yml에 유효한 GroupRoleSynchronizationGroupsAndRolesToSync 항목이 필요합니다.");
             put(Language.NL, "Groepsynchronisatie vereist geldige GroupRoleSynchronizationGroupsAndRolesToSync-vermeldingen in synchronization.yml");
             put(Language.ES, "La sincronización de grupo requiere entradas válidas de GroupRoleSynchronizationGroupsAndRolesToSync en synchronization.yml");
             put(Language.RU, "Синхронизация группы требует допустимых записей GroupRoleSynchronizationGroupsAndRolesToSync в synchronization.yml");
@@ -819,7 +819,7 @@ public class LangUtil {
             put(Language.FR, "DiscordSRV a été rechargé. Ceci n'est PAS pris en charge et des problèmes surviendront! Redémarrez votre serveur avant de demander de l'aide!");
             put(Language.DE, "DiscordSRV wurde neu geladen. Dies wird NICHT unterstützt und es treten Probleme auf! Starten Sie Ihren Server neu, bevor Sie um Unterstützung bitten!");
             put(Language.JA, "DiscordSRVがリロードされました。 これはサポートされておらず、問題が発生します！ サポートを求める前にサーバーを再起動してください！");
-            put(Language.KO, "DiscordSRV가 다시로드되었습니다. 이것은 지원되지 않으며 문제가 발생합니다! 지원을 요청하기 전에 서버를 다시 시작하십시오!");
+            put(Language.KO, "DiscordSRV가 리로드되었습니다. 이것은 지원되지 않으며 문제가 발생할 수 있습니다! 지원을 요청하기 전에 서버를 다시 시작하세요!");
             put(Language.NL, "DiscordSRV is opnieuw geladen. Dit wordt NIET ondersteund en er ZULLEN problemen optreden! Start uw server opnieuw op voordat u om ondersteuning vraagt!");
             put(Language.ES, "DiscordSRV ha sido recargado. ¡Esto NO es compatible, y OCURRIRÁN problemas! ¡Reinicie su servidor antes de solicitar asistencia!");
             put(Language.RU, "DiscordSRV был перезагружен. Это НЕ поддерживается, и проблемы будут происходить! Перезагрузите сервер, прежде чем обращаться за поддержкой!");
