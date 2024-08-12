@@ -114,11 +114,11 @@ public class LangUtil {
                     "\n" +
                     "\n" +
                     "DiscordSRV를 ASM 4에서 구동중입니다. DiscordSRV는 ASM 5 이상 버전에서 작동합니다.\n" +
-                    "DiscordSRV는 ASM 5 없이는 작동할 수 없습니다. 구식 라이브러리를 써서 만든 서버 소프트웨어의 개발자에게 따지도록 하십시오.\n" +
+                    "DiscordSRV는 ASM 5 없이는 작동할 수 없습니다. 구식 라이브러리를 사용해서 만든 서버 소프트웨어의 개발자에게 따지도록 하십시오. ㅏ, 그러기 전에 라이브러리부터 교체해야 하지 않겠어요?\n" +
                     "\n" +
                     "ASM 5로 업데이트하는 방법:\n" +
                     "1. 서버의 {specialsourcefolder} 폴더로 들어갑니다.\n" +
-                    "2. SpecialSource-1.7-SNAPSHOT.jar 파일을 삭제 합니다.\n" +
+                    "2. SpecialSource-1.7-SNAPSHOT.jar 파일을 삭제합니다.\n" +
                     "3. SpecialSource v1.7.4를 https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar 에서 다운로드 받습니다.\n" +
                     "4. {specialsourcefolder}로 3에서 다운로드 받은 파일을 복사합니다.\n" +
                     "5. 4에서 복사한 파일의 이름을 SpecialSource-1.7-SNAPSHOT.jar로 바꿉니다.\n" +
@@ -285,7 +285,7 @@ public class LangUtil {
             put(Language.KO,
                     "\n" +
                     "\n" +
-                    "RespectChatPlugins가 비활성화되었습니다.이 옵션은 테스트 목적으로만 사용됩니다.\n" +
+                    "RespectChatPlugins가 비활성화되었습니다. 이 옵션은 테스트 목적으로만 사용됩니다.\n" +
                     "프로덕션 서버에서는 절때 비활성화하지 않아야 합니다.\n" +
                     "이 옵션을 비활성화하면 취소된 메시지가 디스코드로 전달됩니다.\n" +
                     "/command가 없는 개인 메시지 또는 스테프 채팅 메시지를 포함하지만 이에 국한되지는 않습니다.\n" +
