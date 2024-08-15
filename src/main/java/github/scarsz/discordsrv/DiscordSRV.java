@@ -74,6 +74,7 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import okhttp3.*;
 import okhttp3.internal.Util;
 import okhttp3.internal.tls.OkHostnameVerifier;
@@ -1886,7 +1887,14 @@ public class DiscordSRV extends JavaPlugin {
             PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
             chatHook.broadcastMessageToChannel(channel, message);
+
+            // hacky fix to avoid api breakage :/
+            message = message.replaceText(TextReplacementConfig.builder()
+                    .match("%chatcolor%")
+                    .replacement("")
+                    .build());
         }
+
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
