@@ -8,13 +8,6 @@ ConfigVersion: ${version}
 # 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord
-# Leave this alone if you don't understand what it does
-ProxyHost: "https://example.com"
-ProxyPort: 1234
-ProxyUser: "USERNAME"
-ProxyPassword: "PASSWORD"
-
 # 게임에서 디스코드 채널로 연결하기
 # 작성방법은 Channels: {"마인크래프트 인게임 채팅 채널 이름": "숫자로 된 디스코드 채널 ID", "또 다른 마인크래프트 채팅 채널 이름": "숫자로 된 디스코드 채널 ID"} 와 같은 방식입니다.
 #
@@ -42,34 +35,6 @@ DiscordConsoleChannelId: "000000000000000000"
 
 # /discord 명령어를 사용하면 플레이어에게 초대 링크가 표시되고 계정 연동 안내가 표시됩니다.
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
-
-# 디버그 정보
-# 문제를 찾으려고하지 않는 한이 기능을 활성화하지 마십시오
-#
-# 사용 가능한 디버그 범주 :
-# MINECRAFT_TO_DISCORD  - Minecraft에서 오는 메시지
-# DISCORD_TO_MINECRAFT  - Discord에서 오는 메시지
-# GROUP_SYNC            - 그룹 동기화
-# PRESENCE              - 봇의 게임 상태 또는 존재
-# VOICE                 - 음성 모듈 (voice.yml 참조)
-# REQUIRE_LINK          - 모듈 연결에 필요한 링크 (linking.yml 참조)
-# NICKNAME_SYNC         - 닉네임 동기화
-# ALERTS                - 경고 (alerts.yml 참조)
-# WATCHDOG              - 서버 와치독(Watchdog)
-# BAN_SYNCHRONIZATION   - 밴 동기화
-# LP_CONTEXTS           - LuckPerm의 컨텍스트
-# ACCOUNT_LINKING       - discord/minecraft 계정 연결
-#
-# UNCATEGORIZED         - 위의 범주에 속하지 않는 것
-# ALL                   - 위의 모든 카테고리 (UNCATEGORIZED 포함)
-#
-# JDA                   - JDA의 디버그 메시지
-# JDA_REST_ACTIONS      - JDA의 휴식 조치 디버깅
-# CALLSTACKS            - DiscordSRV 디버그 호출에 대한 스택 추적을 표시합니다.
-#
-# 예: "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
 
 # 실험
 # 이러한 기능은 완전히 최적화되지 않았습니다. 자신의 책임하에 사용하십시오
@@ -351,3 +316,38 @@ MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# HTTP proxy used for connecting to the Discord API
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
+# 디버그 정보
+# 문제를 찾으려고하지 않는 한이 기능을 활성화하지 마십시오
+#
+# 사용 가능한 디버그 범주 :
+# MINECRAFT_TO_DISCORD  - Minecraft에서 오는 메시지
+# DISCORD_TO_MINECRAFT  - Discord에서 오는 메시지
+# GROUP_SYNC            - 그룹 동기화
+# PRESENCE              - 봇의 게임 상태 또는 존재
+# VOICE                 - 음성 모듈 (voice.yml 참조)
+# REQUIRE_LINK          - 모듈 연결에 필요한 링크 (linking.yml 참조)
+# NICKNAME_SYNC         - 닉네임 동기화
+# ALERTS                - 경고 (alerts.yml 참조)
+# WATCHDOG              - 서버 와치독(Watchdog)
+# BAN_SYNCHRONIZATION   - 밴 동기화
+# LP_CONTEXTS           - LuckPerm의 컨텍스트
+# ACCOUNT_LINKING       - discord/minecraft 계정 연결
+#
+# UNCATEGORIZED         - 위의 범주에 속하지 않는 것
+# ALL                   - 위의 모든 카테고리 (UNCATEGORIZED 포함)
+#
+# JDA                   - JDA의 디버그 메시지
+# JDA_REST_ACTIONS      - JDA의 휴식 조치 디버깅
+# CALLSTACKS            - DiscordSRV 디버그 호출에 대한 스택 추적을 표시합니다.
+#
+# 예: "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
