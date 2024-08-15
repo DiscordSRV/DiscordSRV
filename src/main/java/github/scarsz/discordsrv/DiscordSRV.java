@@ -1888,6 +1888,10 @@ public class DiscordSRV extends JavaPlugin {
             chatHook.broadcastMessageToChannel(channel, message);
         }
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
+
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(message).replace("»", ">")));
+        }
     }
 
     /**

@@ -320,10 +320,6 @@ public class DiscordChatListener extends ListenerAdapter {
                 postEvent.getMinecraftMessage(),
                 event.getAuthor()
         );
-
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(postEvent.getMinecraftMessage()).replace("»", ">")));
-        }
     }
 
     private boolean handleMessageAddons(GuildMessageReceivedEvent event, DiscordGuildMessagePreProcessEvent preEvent, List<Role> selectedRoles, Role topRole, String url) {
@@ -363,8 +359,6 @@ public class DiscordChatListener extends ListenerAdapter {
             return true;
         }
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), component, event.getAuthor());
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(component).replace("»", ">")));
         return false;
     }
 
