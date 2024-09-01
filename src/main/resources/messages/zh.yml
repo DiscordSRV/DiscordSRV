@@ -26,6 +26,8 @@
 #                    範例: NotchIsMe
 # %username%:       Discord的用戶名。
 #                    範例: Notch
+# %userid%:         person's ID on Discord
+#                    example: 1081004946872352958
 # %channelname%:    發送訊息的頻道名稱
 #                    範例: server-chat
 # %reply%:         當該消息是對另一條消息的答覆時顯示的消息。
@@ -41,6 +43,8 @@
 #                   範例:NotchIsMe
 # %username%:      在Discord上被回復的用戶的用戶名
 #                   範例:缺口
+# %userid%:        the ID of the user that is being replied to on Discord
+#                   example: 1081004946872352958
 # %message%:       要回復的消息內容
 #
 # 注意：如果您希望 DiscordToMinecraftMessageReplyFormat 顯示在您的消息中，則 %reply% 佔位符需要以格式存在。
