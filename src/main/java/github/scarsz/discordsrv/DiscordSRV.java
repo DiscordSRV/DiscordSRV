@@ -26,6 +26,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
+import com.neovisionaries.ws.client.ProxySettings;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
@@ -73,15 +74,8 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.kyori.adventure.text.Component;
-import okhttp3.Authenticator;
-import okhttp3.ConnectionPool;
-import okhttp3.Credentials;
-import okhttp3.Dispatcher;
-import okhttp3.Dns;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.Route;
+import net.kyori.adventure.text.TextReplacementConfig;
+import okhttp3.*;
 import okhttp3.internal.Util;
 import okhttp3.internal.tls.OkHostnameVerifier;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -150,10 +144,11 @@ public class DiscordSRV extends JavaPlugin {
 
     public static final ApiManager api = new ApiManager();
     public static boolean isReady = false;
-    public static boolean updateIsAvailable = false;
+    public static boolean shuttingDown = false;
     public static boolean updateChecked = false;
     public static boolean invalidBotToken = false;
     private static boolean offlineUuidAvatarUrlNagged = false;
+    public static boolean updateIsAvailable = false;
     public static String version = "";
 
     // Managers
@@ -736,6 +731,9 @@ public class DiscordSRV extends JavaPlugin {
         String authUser = config.getString("ProxyUser");
         String authPassword = config.getString("ProxyPassword");
 
+        WebSocketFactory websocketFactory = new WebSocketFactory()
+                .setDualStackMode(DualStackMode.IPV4_ONLY);
+
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
@@ -748,7 +746,7 @@ public class DiscordSRV extends JavaPlugin {
                         ? (hostname, sslSession) -> true
                         : OkHostnameVerifier.INSTANCE);
 
-        if (proxyHost != null && !proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
+        if (!proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
             try {
                 // This had to be set to empty string to avoid issue with basic auth
                 // Reference: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111
@@ -756,11 +754,19 @@ public class DiscordSRV extends JavaPlugin {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.trim(), proxyPort));
                 httpClientBuilder = httpClientBuilder.proxy(proxy);
 
+                ProxySettings proxySettings = websocketFactory.getProxySettings();
+                proxySettings.setHost(proxyHost.trim());
+
                 if (!authPassword.isEmpty()) {
+                    String trimmedUsername = authUser.trim();
+                    String trimmedPassword = authPassword.trim();
+
                     httpClientBuilder = httpClientBuilder.proxyAuthenticator((route, response) -> {
-                        String credential = Credentials.basic(authUser.trim(), authPassword.trim());
+                        String credential = Credentials.basic(trimmedUsername, trimmedPassword);
                         return response.request().newBuilder().header("Proxy-Authorization", credential).build();
                     });
+
+                    proxySettings.setCredentials(trimmedUsername, trimmedPassword);
                 }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to generate a proxy from config options.", e);
@@ -772,6 +778,17 @@ public class DiscordSRV extends JavaPlugin {
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
         RestAction.setDefaultFailure(throwable -> {
+            if (shuttingDown) {
+                Throwable t = throwable;
+                while (t != null) {
+                    if (t instanceof InterruptedException || t instanceof InterruptedIOException) {
+                        // Ignore interrupts when shutting down
+                        return;
+                    }
+                    t = t.getCause();
+                }
+            }
+
             if (throwable instanceof HierarchyException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action due to being lower in hierarchy than the action's target: " + throwable.getMessage());
             } else if (throwable instanceof PermissionException) {
@@ -870,9 +887,7 @@ public class DiscordSRV extends JavaPlugin {
                     .setCallbackPool(callbackThreadPool, false)
                     .setGatewayPool(gatewayThreadPool, true)
                     .setRateLimitPool(rateLimitThreadPool, true)
-                    .setWebsocketFactory(new WebSocketFactory()
-                            .setDualStackMode(DualStackMode.IPV4_ONLY)
-                    )
+                    .setWebsocketFactory(websocketFactory)
                     .setHttpClient(httpClient)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
@@ -1374,6 +1389,8 @@ public class DiscordSRV extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        shuttingDown = true;
+
         final long shutdownStartTime = System.currentTimeMillis();
 
         // prepare the shutdown message
@@ -1871,8 +1888,19 @@ public class DiscordSRV extends JavaPlugin {
             PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
             chatHook.broadcastMessageToChannel(channel, message);
+
+            // hacky fix to avoid api breakage :/
+            message = message.replaceText(TextReplacementConfig.builder()
+                    .match("%chatcolor%")
+                    .replacement("")
+                    .build());
         }
+
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
+
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(message).replace("»", ">")));
+        }
     }
 
     /**

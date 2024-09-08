@@ -8,13 +8,6 @@ ConfigVersion: ${version}
 # Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord
-# Leave this alone if you don't understand what it does
-ProxyHost: "https://example.com"
-ProxyPort: 1234
-ProxyUser: "USERNAME"
-ProxyPassword: "PASSWORD"
-
 # Kanalverbindungen vom Spiel zu Discord
 # Syntax ist Channels: {"Kanalname im Spiel von Minecraft": "numerische Kanal-ID von Discord", "ein anderer Kanalname im Spiel von Minecraft": "eine andere numerische Kanal-ID von Discord"}
 #
@@ -41,34 +34,6 @@ DiscordConsoleChannelId: "000000000000000000"
 
 # Der Einladungslink wird den Spielern bei Verwendung von /discord und in der Nachricht angezeigt, die den nicht verbundenen Spielern angezeigt wird, wenn die Verknüpfung erzwungen wird
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
-
-# Debug-Informationen
-# Aktivieren Sie diese nur, wenn Sie versuchen, ein Problem zu finden
-#
-# Verfügbare Debug-Kategorien:
-# MINECRAFT_TO_DISCORD  - Nachrichten von Minecraft
-# DISCORD_TO_MINECRAFT  - Nachrichten von Discord
-# GROUP_SYNC            - Gruppensynchronisation
-# PRESENCE              - Der Spielstatus oder die Präsenz des Bots
-# VOICE                 - Das Sprachmodul (siehe voice.yml)
-# REQUIRE_LINK          - Der Link zum Beitritt zum Modul erforderlich (siehe linking.yml)
-# NICKNAME_SYNC         - Spitznamensynchronisation
-# ALERTS                - Waarschuwingen (siehe alerts.yml)
-# WATCHDOG              - Server-Watchdog
-# BAN_SYNCHRONIZATION   - Synchronisierung von Bans
-# LP_CONTEXTS           - Kontexte von LuckPerm
-# ACCOUNT_LINKING       - Discord/Minecraft-Kontoverknüpfung
-#
-# UNCATEGORIZED         - Alles, was keiner der oben genannten Kategorien angehört
-# ALL                   - Alle oben genannten Kategorien (einschließlich UNCATEGORIZED)
-#
-# JDA                   - Debug-Meldungen von JDA
-# JDA_REST_ACTIONS      - Zum Debuggen der Restaktionen von JDA
-# CALLSTACKS            - Zeigt den Stack-Trace für DiscordSRV-Debug-Aufrufe an
-#
-# Beispiel: "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
 
 # Experimente
 # Diese Funktionen sind nicht vollständig optimiert. Benutzung auf eigene Gefahr
@@ -354,3 +319,38 @@ MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# HTTP proxy used for connecting to the Discord API
+# Leave this alone if you don't understand what it does
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
+# Debug-Informationen
+# Aktivieren Sie diese nur, wenn Sie versuchen, ein Problem zu finden
+#
+# Verfügbare Debug-Kategorien:
+# MINECRAFT_TO_DISCORD  - Nachrichten von Minecraft
+# DISCORD_TO_MINECRAFT  - Nachrichten von Discord
+# GROUP_SYNC            - Gruppensynchronisation
+# PRESENCE              - Der Spielstatus oder die Präsenz des Bots
+# VOICE                 - Das Sprachmodul (siehe voice.yml)
+# REQUIRE_LINK          - Der Link zum Beitritt zum Modul erforderlich (siehe linking.yml)
+# NICKNAME_SYNC         - Spitznamensynchronisation
+# ALERTS                - Waarschuwingen (siehe alerts.yml)
+# WATCHDOG              - Server-Watchdog
+# BAN_SYNCHRONIZATION   - Synchronisierung von Bans
+# LP_CONTEXTS           - Kontexte von LuckPerm
+# ACCOUNT_LINKING       - Discord/Minecraft-Kontoverknüpfung
+#
+# UNCATEGORIZED         - Alles, was keiner der oben genannten Kategorien angehört
+# ALL                   - Alle oben genannten Kategorien (einschließlich UNCATEGORIZED)
+#
+# JDA                   - Debug-Meldungen von JDA
+# JDA_REST_ACTIONS      - Zum Debuggen der Restaktionen von JDA
+# CALLSTACKS            - Zeigt den Stack-Trace für DiscordSRV-Debug-Aufrufe an
+#
+# Beispiel: "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []

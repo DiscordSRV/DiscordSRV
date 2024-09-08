@@ -20,6 +20,7 @@
 
 package github.scarsz.discordsrv.api.commands;
 
+import java.util.Objects;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.bukkit.plugin.Plugin;
@@ -170,37 +171,21 @@ public final class PluginSlashCommand {
         return this.priority;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
         if (!(o instanceof PluginSlashCommand)) return false;
-        final PluginSlashCommand other = (PluginSlashCommand) o;
-        final Object this$plugin = this.getPlugin();
-        final Object other$plugin = other.getPlugin();
-        if (this$plugin == null ? other$plugin != null : !this$plugin.equals(other$plugin)) return false;
-        final Object this$commandData = this.getCommandData();
-        final Object other$commandData = other.getCommandData();
-        if (this$commandData == null ? other$commandData != null : !this$commandData.equals(other$commandData))
-            return false;
-        final Object this$guilds = this.getGuilds();
-        final Object other$guilds = other.getGuilds();
-        if (this$guilds == null ? other$guilds != null : !this$guilds.equals(other$guilds)) return false;
-        final Object this$priority = this.getPriority();
-        final Object other$priority = other.getPriority();
-        if (this$priority == null ? other$priority != null : !this$priority.equals(other$priority)) return false;
-        return true;
+
+        PluginSlashCommand that = (PluginSlashCommand) o;
+        return Objects.equals(getPlugin(), that.getPlugin()) && Objects.equals(getCommandData(), that.getCommandData()) && getGuilds().equals(that.getGuilds()) && getPriority() == that.getPriority();
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $plugin = this.getPlugin();
-        result = result * PRIME + ($plugin == null ? 43 : $plugin.hashCode());
-        final Object $commandData = this.getCommandData();
-        result = result * PRIME + ($commandData == null ? 43 : $commandData.hashCode());
-        final Object $guilds = this.getGuilds();
-        result = result * PRIME + ($guilds == null ? 43 : $guilds.hashCode());
-        final Object $priority = this.getPriority();
-        result = result * PRIME + ($priority == null ? 43 : $priority.hashCode());
+        int result = Objects.hashCode(getPlugin());
+        result = 31 * result + Objects.hashCode(getCommandData());
+        result = 31 * result + getGuilds().hashCode();
+        result = 31 * result + Objects.hashCode(getPriority());
         return result;
     }
 
