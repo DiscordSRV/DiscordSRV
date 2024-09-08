@@ -1891,7 +1891,7 @@ public class DiscordSRV extends JavaPlugin {
 
             // hacky fix to avoid api breakage :/
             message = message.replaceText(TextReplacementConfig.builder()
-                    .match("%chatcolor%")
+                    .match("%channelcolor%")
                     .replacement("")
                     .build());
         }
