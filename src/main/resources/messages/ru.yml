@@ -26,6 +26,8 @@
 #                    пример: NotchIsMe
 # %username%:       пользователя в Discord
 #                    пример: Notch
+# %userid%:         person's ID on Discord
+#                    example: 1081004946872352958
 # %channelname%:    имя канала, из которого поступает сообщение
 #                    пример: server-chat
 # %reply%:          сообщение, отображаемое, когда сообщение является ответом на другое сообщение.
@@ -41,6 +43,8 @@
 #                    example: NotchIsMe
 # %username%:       имя пользователя, которому отвечают в Discord.
 #                    пример: Notch
+# %userid%:         the ID of the user that is being replied to on Discord
+#                    example: 1081004946872352958
 # %message%:        содержание сообщения, на которое идет ответ
 #
 # ПРИМЕЧАНИЕ: Заполнитель %reply% должен присутствовать в формате, если вы хотите, чтобы DiscordToMinecraftMessageReplyFormat отображался в вашем сообщении.
