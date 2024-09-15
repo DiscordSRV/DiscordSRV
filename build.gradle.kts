@@ -221,7 +221,7 @@ dependencies {
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.4-20240708.051538-1")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
