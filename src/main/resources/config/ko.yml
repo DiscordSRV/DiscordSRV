@@ -1,5 +1,5 @@
 # DiscordSRV 구성
-# 도움이 필요한가요? 우리의 디스코드 서버, https://discordsrv.com/discord 에 와서 도움을 받으세요!
+# 도움이 필요하신가요? 저희 디스코드 서버, https://discordsrv.com/discord 에 와서 도움을 받으세요!
 
 # 아래 설정은 수정하지 마세요.
 ConfigVersion: ${version}
@@ -9,7 +9,7 @@ ConfigVersion: ${version}
 BotToken: "BOTTOKEN"
 
 # 게임에서 디스코드 채널로 연결하기
-# 작성방법은 Channels: {"마인크래프트 인게임 채팅 채널 이름": "숫자로 된 디스코드 채널 ID", "또 다른 마인크래프트 채팅 채널 이름": "숫자로 된 디스코드 채널 ID"} 와 같은 방식입니다.
+# 작성 방법은 Channels: {"마인크래프트 인게임 채팅 채널 이름": "숫자로 된 디스코드 채널 ID", "또 다른 마인크래프트 채팅 채널 이름": "숫자로 된 디스코드 채널 ID"} 와 같은 방식입니다.
 #
 # 메시지의 유형별로 채널을 정의하지 않으면 DiscordSRV는 모든 메시지를 첫번째 채널로 전송합니다.
 # 호환되는 채팅 플러그인을 사용하고 있다면 채널 이름은 그 플러그인에서 가져옵니다. (채팅 메시지용)
@@ -19,7 +19,7 @@ BotToken: "BOTTOKEN"
 # 발전과제 달성 메시지: awards
 # 사망 메시지: deaths
 # 서버 참가 메시지: join
-# 서버 이탈 메시지: leave
+# 서버 퇴장 메시지: leave
 # dynmap 메시지: dynmap
 # watchdog 메시지: watchdog
 # /discord broadcast 명령어: broadcasts (명령어로 지정되지 않은 경우)
@@ -33,7 +33,7 @@ Channels: {"global": "000000000000000000"}
 # 디스코드 채널 ID는 채널 이름이 아닙니다!
 DiscordConsoleChannelId: "000000000000000000"
 
-# /discord 명령어를 사용하면 플레이어에게 초대 링크가 표시되고 계정 연동 안내가 표시됩니다.
+# /discord 명령어를 사용하면 플레이어에게 초대 링크와 계정 연동 안내가 표시됩니다.
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
 # 실험
