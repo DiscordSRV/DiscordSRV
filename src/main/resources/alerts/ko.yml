@@ -53,7 +53,7 @@
 #      - property == < > <= >= value 등
 #    채널: <discordsrv 채널 이름>
 #    IgnoreCancelled: true # 이벤트 알림에만 해당
-#    내용: ""
+#    Content: ""
 #    Webhook:
 #      Enabled: false
 #      AvatarUrl: "{botavatarurl}"
