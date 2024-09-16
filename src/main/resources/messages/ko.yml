@@ -26,6 +26,8 @@
 #                    예시: NotchIsMe
 # %username%:       디스코드 사용자 계정 이름을 표시합니다.
 #                    예시: Notch
+# %userid%:         person's ID on Discord
+#                    example: 1081004946872352958
 # %channelname%:    메시지가 전송된 디스코드 채널의 이름을 표시합니다.
 #                    예시: server-chat
 # %reply%:          메시지가 다른 메시지에 대한 응답 일 때 표시되는 메시지입니다.
@@ -41,6 +43,8 @@
 #                    예: NotchIsMe
 # %username%:       Discord에서 응답되는 사용자의 사용자 이름
 #                    예: Notch
+# %userid%:         the ID of the user that is being replied to on Discord
+#                    example: 1081004946872352958
 # %message%:         회신중인 메시지의 내용
 #
 # 참고: DiscordToMinecraftMessageReplyFormat을 메시지에 표시하려면 %reply% 자리 표시자가 형식으로 있어야합니다.

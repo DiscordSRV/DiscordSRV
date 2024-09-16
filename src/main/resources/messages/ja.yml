@@ -26,6 +26,8 @@
 #                    例: NotchIsMe
 # %username%:       Discordでの名前。
 #                    例: Notch
+# %userid%:         person's ID on Discord
+#                    example: 1081004946872352958
 # %channelname%:    メッセージが来るチャンネルの名前
 #                    例: server-chat
 # %reply%:          メッセージが別のメッセージへの返信である場合に表示されるメッセージ。
@@ -41,6 +43,8 @@
 #                    例:NotchIsMe
 # %username%:       Discordで返信されているユーザーのユーザー名
 #                    例:ノッチ
+# %userid%:         the ID of the user that is being replied to on Discord
+#                    example: 1081004946872352958
 # %message%: 返信されるメッセージの内容
 #
 # 注: DiscordToMinecraftMessageReplyFormatをメッセージに表示する場合は、%reply%プレースホルダーがフォーマットで存在する必要があります。

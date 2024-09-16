@@ -26,6 +26,8 @@
 #                    ejemplo: NotchIsMe
 # %username%:       el nombre de la persona en Discord
 #                    ejemplo: Notch
+# %userid%:         person's ID on Discord
+#                    example: 1081004946872352958
 # %channelname%:    nombre del canal del que proviene el mensaje
 #                    ejemplo: server-chat
 # %reply%:          el mensaje que se muestra cuando el mensaje es una respuesta a otro mensaje.
@@ -41,6 +43,8 @@
 #                    ejemplo: NotchIsMe
 # %username%:       el nombre de usuario del usuario al que se responde en Discord
 #                    ejemplo: Notch
+# %userid%:         the ID of the user that is being replied to on Discord
+#                    example: 1081004946872352958
 # %message%:        el contenido del mensaje al que se responde
 #
 # NOTA: El marcador de posición %reply% debe estar presente en el formato si desea que DiscordToMinecraftMessageReplyFormat se muestre en su mensaje.
