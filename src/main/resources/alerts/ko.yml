@@ -49,7 +49,7 @@
 # 구문/기본값:
 #  - Trigger: <이벤트 이름 또는 /명령어>
 #    Async: true # 선택 사항, 기본값은 true, 이 값을 변경해야 할 필요는 거의 없음
-#    조건:
+#    Conditions:
 #      - property == < > <= >= value 등
 #    Channel: <discordsrv 채널 이름>
 #    IgnoreCancelled: true # 이벤트 알림에만 해당
