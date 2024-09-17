@@ -1113,6 +1113,7 @@ public class DiscordSRV extends JavaPlugin {
         for (String hookClassName : new String[]{
                 // chat plugins
                 "github.scarsz.discordsrv.hooks.chat.ChattyChatHook",
+                "github.scarsz.discordsrv.hooks.chat.ChattyV3ChatHook",
                 "github.scarsz.discordsrv.hooks.chat.FancyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.HerochatHook",
                 "github.scarsz.discordsrv.hooks.chat.NChatHook", // nChat Hook needs to work before LegendChat
