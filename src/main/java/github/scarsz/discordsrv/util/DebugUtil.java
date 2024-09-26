@@ -207,11 +207,10 @@ public class DebugUtil {
             while (!done) {
                 String line = br.readLine();
                 if (line == null) done = true;
-                if (line != null
-                        && line.toLowerCase().contains("discordsrv")
-                        && !line.toLowerCase().contains("[discordsrv] chat:")) {
-                    output.add(DiscordUtil.aggressiveStrip(line));
-                }
+                else if (
+                    (line.toLowerCase().contains("discordsrv") && !line.toLowerCase().contains("[discordsrv] chat:"))
+                    || line.toLowerCase().contains(" /discord")
+                ) output.add(DiscordUtil.aggressiveStrip(line));
             }
         } catch (IOException e) {
             DiscordSRV.error(e);
