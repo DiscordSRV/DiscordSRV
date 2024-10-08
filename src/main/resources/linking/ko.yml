@@ -5,7 +5,7 @@ Require linked account to play:
   #
   # 참가 리스너 우선 순위
   # 사용 가능한 값은 처음부터 LOWEST, LOW, NORMAL, HIGH, HIGHEST 입니다.
-  # DiscordSRV가 거부하기 전에 차단 플러그인이 플레이어를 추방하면 아래 값을 변경해야 할 수도 있습니다.
+  # DiscordSRV가 추방하기 전에 다른 플러그인이 플레이어를 추방하면 아래 값을 변경해야 할 수도 있습니다.
   Listener priority: LOWEST
   # 링크 모듈이 로그인을 감지하고 차단해야하는 이벤트
   # 어떤 화이트리스트 플러그인은 AsyncPlayerPreLoginEvent(좋음)를 사용하고, 어떤 플러그인은 PlayerLoginEvent(별로 좋지 않음)를 사용합니다.
@@ -13,9 +13,9 @@ Require linked account to play:
   #
   # 이것이 무엇을 의미하는지 모른다면 수정하지 마세요.
 
-  # 계정 연결 또는 구독자 여부와 관계없이 항상 허용되는 마인크래프트 IGN 목록을 설정합니다.
+  # 계정 연결 또는 구독자 여부와 관계없이 항상 허용되는 마인크래프트 닉네임 목록을 설정합니다.
   Bypass names: [Scarsz, Vankka]
-  # 바닐라 화이트리스트를 계정 연결 여부나 구독자 역할 여부 검사를 건너뛸 지 설정합니다.
+  # 바닐라 화이트리스트가 계정 연결 여부나 구독자 역할 여부 검사를 건너뛸 지 설정합니다.
   Whitelisted players bypass check: true
   # 바닐라 차단 목록의 플레이어가 계정을 연결할 수 있도록 허용할지 설정합니다.
   Check banned players: false
@@ -28,7 +28,7 @@ Require linked account to play:
   # {INVITE} 사람들이 접속해야할 디스코드 서버의 초대 코드를 표시하는 변수입니다. config.yml 파일의 DiscordInviteLink 설정값을 따릅니다.
   Not linked message: "&7플레이하려면 &9디스코드 &7계정을 연결해야 합니다.\n\n&b{BOT}&7에게 인증 코드 &b{CODE}&7 를 개인 메시지로 전송하세요.\n\n&7디스코드 초대 코드 » &b{INVITE}"
 
-  # 만약 이 설정을 활성화하면 플레이어들은 필수적으로 계정을 연결해야할 뿐 아니라 봇이 참가하고 있는 서버에 참가해야 합니다.
+  # 만약 이 설정을 활성화하면 플레이어들은 필수적으로 계정을 연결해야할 뿐만 아니라 봇이 참가하고 있는 서버에 참가해야 합니다.
   #
   # 사용할 수 있는 설정값:
   #   true/false: 연결된 계정이 봇이 있는 서버에 한곳 이상 참가해야 하도록 설정합니다.

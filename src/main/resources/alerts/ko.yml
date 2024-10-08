@@ -1,58 +1,58 @@
-# This is an /advanced/ feature of DiscordSRV that allows you to send messages to Discord when a game event happens
-# or when a command is run. You will need a working knowledge of how Bukkit events work and their properties.
-# If you aren't sure about what you're doing here, maybe ask a developer or join our support server @ discordsrv.com/discord
-# Made something you'd like to share? You can do so in our Discord server's #alerts forum (invite above)
+# 이 설정은 DiscordSRV의 고급 기능으로, 게임 이벤트가 발생하거나 명령어가 실행될 때 디스코드로 메시지를 보내는 기능을 제공합니다.
+# Bukkit 이벤트의 동작 원리와 속성에 대한 기본 지식이 필요합니다.
+# 여기에서 무엇을 해야 할지 확신이 서지 않나요? 개발자에게 문의하거나 서포트 서버(@ discordsrv.com/discord)에 참여하세요.
+# 공유하고 싶은 설정을 만들었나요? Discord 서버의 #alerts 포럼에서 공유해보세요(위 초대 링크 참조).
 #
-# Refer to the Bukkit API javadoc to find events & properties to use:
+# 사용할 수 있는 이벤트와 속성에 대한 정보는 Bukkit API javadoc을 참조하세요:
 #  https://hub.spigotmc.org/javadocs/bukkit
-# Helpful resources for learning how to use SpEL:
+# SpEL 사용 방법을 배우기 위한 유용한 자료:
 #  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
 #  https://dzone.com/articles/learn-spring-expression-language-with-examples
 #
-# You can use the following placeholders:
-#  {tps} - server TPS
-#  {time} - formatted time
-#  {date} - formatted date
-#  {name} - if alert is for a player event, the name of the player
-#  {ping} - if alert is for a player event, the ping of the player
-#  {username} - if alert is for a player event, the username of the player
-#  {displayname} - if alert is for a player event, the display name of the player
-#  {usernamenoescapes} - if alert is for a player event, the username of the player without escaping discord format (for use in inline code & code block markdown)
-#  {displaynamenoescapes} - if alert is for a player event, the display name of the player without escaping discord format (for use in inline code & code block markdown)
-#  {world} - if alert is for a player event, the world the player is in
-#  {embedavatarurl} - if alert is for a player event, the avatar url for the player's head, otherwise, the bot's avatar url
-#  {botavatarurl} - the bot's avatar url
-#  {botname} - the bot's name
-#  %placeholder% - any PlaceholderAPI placeholders, can only use player ones when alert is for a player event
+# 다음과 같은 변수를 사용할 수 있습니다:
+#  {tps} - 서버 TPS
+#  {time} - 포맷된 시간
+#  {date} - 포맷된 날짜
+#  {name} - 플레이어 이벤트의 경우, 플레이어의 이름
+#  {ping} - 플레이어 이벤트의 경우, 플레이어의 핑
+#  {username} - 플레이어 이벤트의 경우, 플레이어의 사용자명
+#  {displayname} - 플레이어 이벤트의 경우, 플레이어의 표시 이름
+#  {usernamenoescapes} - 플레이어 이벤트의 경우, 디스코드 형식이 이스케이프되지 않은 플레이어의 사용자명 (인라인 코드 및 코드 블록 마크다운에서 사용)
+#  {displaynamenoescapes} - 플레이어 이벤트의 경우, 디스코드 형식이 이스케이프되지 않은 플레이어의 표시 이름 (인라인 코드 및 코드 블록 마크다운에서 사용)
+#  {world} - 플레이어 이벤트의 경우, 플레이어가 있는 월드
+#  {embedavatarurl} - 플레이어 이벤트의 경우, 플레이어의 머리 아바타 URL, 그 외에는 봇의 아바타 URL
+#  {botavatarurl} - 봇의 아바타 URL
+#  {botname} - 봇의 이름
+#  %placeholder% - PlaceholderAPI 변수, 플레이어 이벤트일 때만 플레이어 관련 변수 사용 가능
 #
-# You can also use SpEL expressions with ${expression...}, such as...
-#  - Getting a player's IP: ${#player.address.address.hostAddress}
-#  - Getting a player's game mode: ${#player.gameMode.name()}
-#  - Getting a player's linked Discord account ID: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
-#  - Getting the online player count: ${#server.onlinePlayers.size()}
-#  - Getting the status of DiscordSRV's connection to Discord: ${#jda.status.name()}
-#  - Checking if a player is in a specific world: ${#player.world.name == 'world_the_end'}
-#  - Checking if it's day in the world that the player is in: ${#player.world.time > 0 && #player.world.time < 13000}
-#  You can use the following expression placeholders, as seen above:
-#   #plugins.<plugin> - the specified plugin instance, null if doesn't exist
-#   #event - the event that's triggering the alert if this alert is an event alert
-#   #server - the Bukkit API server instance, equivalent to Bukkit#getServer
-#   #discordsrv - the DiscordSRV plugin instance
-#   #player - the player that the event is for, if this is a player event or command
-#   #sender - the command sender, if this is a command alert
-#   #command - the full command, with no leading slash, if this is a command alert
-#   #args - the command arguments, if this is a command alert
-#   #allArgs - the command arguments as one string, if this is a command alert
-#   #channel - the destination channel for this alert
-#   #jda - DiscordSRV's JDA instance that it uses to communicate with Discord
+# SpEL 표현식(${expression...})을 사용할 수 있으며, 예를 들어...
+#  - 플레이어의 IP 가져오기: ${#player.address.address.hostAddress}
+#  - 플레이어의 게임 모드 가져오기: ${#player.gameMode.name()}
+#  - 플레이어의 연결된 디스코드 계정 ID 가져오기: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - 온라인 플레이어 수 가져오기: ${#server.onlinePlayers.size()}
+#  - DiscordSRV가 디스코드와의 연결 상태 확인: ${#jda.status.name()}
+#  - 플레이어가 특정 월드에 있는지 확인: ${#player.world.name == 'world_the_end'}
+#  - 플레이어가 있는 월드가 낮인지 확인: ${#player.world.time > 0 && #player.world.time < 13000}
+#  다음과 같은 표현식 변수를 사용할 수 있습니다:
+#   #plugins.<plugin> - 지정된 플러그인 인스턴스, 존재하지 않으면 null
+#   #event - 이 알림을 트리거하는 이벤트 (이 알림이 이벤트 알림인 경우)
+#   #server - Bukkit API 서버 인스턴스, Bukkit#getServer와 동일
+#   #discordsrv - DiscordSRV 플러그인 인스턴스
+#   #player - 이 이벤트가 플레이어 이벤트 또는 명령어일 때 해당하는 플레이어
+#   #sender - 이 명령어가 명령어 알림일 때의 명령어 송신자
+#   #command - 명령어 알림일 때의 전체 명령어, 선행 슬래시 없음
+#   #args - 명령어 알림일 때의 명령어 인수
+#   #allArgs - 명령어 알림일 때의 명령어 인수를 하나의 문자열로 합침
+#   #channel - 이 알림의 대상 채널
+#   #jda - DiscordSRV가 디스코드와 통신하기 위해 사용하는 JDA 인스턴스
 #
-# Syntax/defaults:
-#  - Trigger: <event name or /command>
-#    Async: true # optional, defaults to true, you should almost never have to change this
+# 구문/기본값:
+#  - Trigger: <이벤트 이름 또는 /명령어>
+#    Async: true # 선택 사항, 기본값은 true, 이 값을 변경해야 할 필요는 거의 없음
 #    Conditions:
-#      - property == < > <= >= value etc
-#    Channel: <discordsrv channel name>
-#    IgnoreCancelled: true # only for event alerts
+#      - property == < > <= >= value 등
+#    Channel: <discordsrv 채널 이름>
+#    IgnoreCancelled: true # 이벤트 알림에만 해당
 #    Content: ""
 #    Webhook:
 #      Enabled: false
@@ -60,25 +60,25 @@
 #      Name: "{botname}"
 #    Embed:
 #      Enabled: true
-#      Color: "#00ff00" # accepts a hex color code (eg. "#ffffff") or a rgb integer (eg. 0)
+#      Color: "#00ff00" # 16진수 색상 코드(예: "#ffffff") 또는 RGB 정수(예: 0)를 허용
 #      Author:
 #        ImageUrl: "{embedavatarurl}"
-#        Name: "{username} did... something."
+#        Name: "{username}이(가) ... 무언가를 했습니다."
 #        Url: ""
 #      ThumbnailUrl: ""
 #      Title:
 #        Text: ""
 #        Url: ""
 #      Description: ""
-#      Fields: [] # format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
+#      Fields: [] # 형식은 "title;value;inline" (예: "누가 접속했나요?;%displayname%;true") 또는 빈 필드 추가를 위해 "blank"
 #      ImageUrl: ""
 #      Footer:
 #        Text: ""
 #        IconUrl: ""
-#      Timestamp: false # set to true to use the time the message was sent or use a epoch timestamp for a specific time (https://www.epochconverter.com/)
+#      Timestamp: false # 메시지가 전송된 시간 사용 여부를 설정하거나 특정 시간을 위한 epoch 타임스탬프 사용 (https://www.epochconverter.com/)
 #
 Alerts:
-  # Example config to send messages to the "fish" DiscordSRV channel when a player successfully catches a fish
+  # 플레이어가 물고기를 성공적으로 낚았을 때 "fish" DiscordSRV 채널로 메시지를 보내는 예시 구성
   #- Trigger: PlayerFishEvent
   #  Channel: fish
   #  Conditions:
@@ -87,20 +87,20 @@ Alerts:
   #    Color: "#00ff00"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+  #      Name: "{name}님이 ${caught.itemStack.type.name()}을(를) 낚았습니다!"
 
-  # Example config to send Matrix anti-cheat messages
+  # Matrix 반치트 메시지를 보내는 예시 구성
   #- Trigger: PlayerViolationEvent
   #  Channel: matrix
   #  Conditions:
-  #    - violations >= 5 # don't send events for players with < 5 violations
+  #    - violations >= 5 # 위반 점수가 5점 미만인 플레이어의 이벤트는 전송하지 않음
   #  Embed:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} failed ${hackType.name().toLowerCase()} check | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+  #      Name: "{username}님이 ${hackType.name().toLowerCase()} 검사를 실패했습니다 | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
 
-  # Example config to send /gamemode messages
+  # /gamemode 명령어를 보내는 예시 구성
   #- Trigger: /gamemode
   #  Channel: gamemode
   #  Conditions:
@@ -109,9 +109,9 @@ Alerts:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} changed gamemode to ${#args.get(0)}"
+  #      Name: "{username}님이 게임 모드를 ${#args.get(0)}(으)로 변경했습니다"
 
-  # Example config to send /me commands
+  # /me 명령어를 보내는 예시 구성
   #- Trigger: /me
   #  Channel: me
   #  Conditions:
