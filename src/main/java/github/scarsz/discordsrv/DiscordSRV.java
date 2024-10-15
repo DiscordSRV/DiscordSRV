@@ -756,6 +756,7 @@ public class DiscordSRV extends JavaPlugin {
 
                 ProxySettings proxySettings = websocketFactory.getProxySettings();
                 proxySettings.setHost(proxyHost.trim());
+                proxySettings.setPort(proxyPort);
 
                 if (!authPassword.isEmpty()) {
                     String trimmedUsername = authUser.trim();
