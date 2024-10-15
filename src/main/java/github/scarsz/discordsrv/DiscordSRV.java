@@ -746,7 +746,7 @@ public class DiscordSRV extends JavaPlugin {
                         ? (hostname, sslSession) -> true
                         : OkHostnameVerifier.INSTANCE);
 
-        if (!proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
+        if (!proxyHost.isEmpty() && !proxyHost.equals("example.com")) {
             try {
                 // This had to be set to empty string to avoid issue with basic auth
                 // Reference: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111

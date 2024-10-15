@@ -317,7 +317,7 @@ ServerWatchdogMessageCount: 3
 
 # HTTP proxy used for connecting to the Discord API
 # Ne touchez pas à cela si vous ne comprenez pas à quoi cela sert
-ProxyHost: "https://example.com"
+ProxyHost: "example.com"
 ProxyPort: 1234
 ProxyUser: "USERNAME"
 ProxyPassword: "PASSWORD"
