@@ -228,7 +228,8 @@ public class AlertListener implements Listener, EventListener {
         }
         if (!active) {
             // remove us from HandlerLists that we don't need (we can do this here, since we have the full class name)
-            if (event instanceof Event) ((Event) event).getHandlers().unregister(this);
+            if (event instanceof Event && Arrays.stream(event.getClass().getDeclaredMethods()).anyMatch(e -> e.getName().equals("getHandlers")))
+                ((Event) event).getHandlers().unregister(this);
             return;
         }
 

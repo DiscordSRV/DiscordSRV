@@ -26,6 +26,8 @@
 #                    eksempel: NotchIsMe
 # %username%:       persons brugernavn på Discord
 #                    eksempel: hak
+# %userid%:         person's ID on Discord
+#                    example: 1081004946872352958
 # %channelname%:    navnet på den kanal, som beskeden kommer fra
 #                    eksempel: server-chat
 # %reply%:          beskeden, der vises, når beskeden er et svar på en anden besked.
@@ -41,6 +43,8 @@
 #                   eksempel: NotchIsMe
 # %username%:      brugernavnet på den bruger, der bliver besvaret på Discord
 #                   eksempel: Notch
+# %userid%:        the ID of the user that is being replied to on Discord
+#                   example: 1081004946872352958
 # %message%:       indholdet af den besked, der besvares
 #
 # BEMÆRK: %reply% pladsholderen skal være til stede i formatet, hvis du ønsker, at DiscordToMinecraftMessageReplyFormat skal vises i din besked.

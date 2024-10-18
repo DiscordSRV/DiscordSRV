@@ -8,13 +8,6 @@ ConfigVersion: ${version}
 # После изменения этого параметра необходимо перезагрузить сервер.
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord
-# Leave this alone if you don't understand what it does
-ProxyHost: "https://example.com"
-ProxyPort: 1234
-ProxyUser: "USERNAME"
-ProxyPassword: "PASSWORD"
-
 # Ссылки на каналы из игры в Discord
 # синтаксис: Channels: {"название внутриигрового канала из Minecraft": "числовой идентификатор канала из Discord", "другое название внутриигрового канала из Minecraft": "другой числовой идентификатор канала из Discord"}
 #
@@ -41,34 +34,6 @@ DiscordConsoleChannelId: "000000000000000000"
 
 # Ссылка на приглашение, отображаемая игрокам при использовании /discord, и в сообщении, отображаемом несвязанным игрокам при обязательной привязке.
 DiscordInviteLink: "https://discord.gg/поменяйте-ссылку-в-config.yml"
-
-# Отладочная информация
-# Не включайте их, если вы не пытаетесь найти проблему
-#
-# Доступные категории отладки:
-# MINECRAFT_TO_DISCORD  - Сообщения из Minecraft
-# DISCORD_TO_MINECRAFT  - Сообщения из Discord
-# GROUP_SYNC            - Групповая синхронизация
-# PRESENCE              - Статус игры или присутствие бота
-# VOICE                 - Голосовой модуль (см. voice.yml)
-# REQUIRE_LINK          - Требуемая ссылка для присоединения модуля (см. linking.yml)
-# NICKNAME_SYNC         - Псевдоним синхронизации
-# ALERTS                - Оповещения (см. alerts.yml)
-# WATCHDOG              - Мониторинг сервера
-# BAN_SYNCHRONIZATION   - Синхронизация банов
-# LP_CONTEXTS           - Контексты LuckPerm
-# ACCOUNT_LINKING       - привязка учетной записи Discord/Minecraft
-#
-# UNCATEGORIZED         - Все, что не относится ни к одной из вышеуказанных категорий
-# ALL                   - Все вышеперечисленные категории (включая UNCATEGORIZED)
-#
-# JDA                   - Отладочные сообщения JDA
-# JDA_REST_ACTIONS      - Для отладки остальных действий JDA
-# CALLSTACKS            - Отображает трассировку стека для вызовов отладки DiscordSRV
-#
-# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
 
 # Эксперименты
 # Эти функции не полностью оптимизированы; Используйте на свой риск
@@ -352,3 +317,38 @@ MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# HTTP proxy used for connecting to the Discord API
+# Leave this alone if you don't understand what it does
+ProxyHost: "example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
+# Отладочная информация
+# Не включайте их, если вы не пытаетесь найти проблему
+#
+# Доступные категории отладки:
+# MINECRAFT_TO_DISCORD  - Сообщения из Minecraft
+# DISCORD_TO_MINECRAFT  - Сообщения из Discord
+# GROUP_SYNC            - Групповая синхронизация
+# PRESENCE              - Статус игры или присутствие бота
+# VOICE                 - Голосовой модуль (см. voice.yml)
+# REQUIRE_LINK          - Требуемая ссылка для присоединения модуля (см. linking.yml)
+# NICKNAME_SYNC         - Псевдоним синхронизации
+# ALERTS                - Оповещения (см. alerts.yml)
+# WATCHDOG              - Мониторинг сервера
+# BAN_SYNCHRONIZATION   - Синхронизация банов
+# LP_CONTEXTS           - Контексты LuckPerm
+# ACCOUNT_LINKING       - привязка учетной записи Discord/Minecraft
+#
+# UNCATEGORIZED         - Все, что не относится ни к одной из вышеуказанных категорий
+# ALL                   - Все вышеперечисленные категории (включая UNCATEGORIZED)
+#
+# JDA                   - Отладочные сообщения JDA
+# JDA_REST_ACTIONS      - Для отладки остальных действий JDA
+# CALLSTACKS            - Отображает трассировку стека для вызовов отладки DiscordSRV
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []

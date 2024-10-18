@@ -8,13 +8,6 @@ ConfigVersion: ${version}
 # Після зміни цього параметра необхідно перезавантажити сервер.
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord
-# Leave this alone if you don't understand what it does
-ProxyHost: "https://example.com"
-ProxyPort: 1234
-ProxyUser: "USERNAME"
-ProxyPassword: "PASSWORD"
-
 # Посилання на канали з гри в Discord
 # синтаксис: Channels: {"назва внутрішньоігрового каналу з Minecraft": "числовий ідентифікатор каналу з Discord", "інша назва внутрішньоігрового каналу з Minecraft": "інший числовий ідентифікатор каналу з Discord"}
 #
@@ -41,34 +34,6 @@ DiscordConsoleChannelId: "000000000000000000"
 
 # Посилання на запрошення, що відображається гравцям при використанні /discord, і в повідомленні, що відображається незв'язаним гравцям при обов'язковій прив'язці.
 DiscordInviteLink: "https://discord.gg/поміняйте-посилання-в-config.yml"
-
-# Налагоджувальна інформація
-# Не вмикайте їх, якщо ви не намагаєтеся знайти проблему
-#
-# Доступні категорії налагодження:
-# MINECRAFT_TO_DISCORD  - Повідомлення з Minecraft
-# DISCORD_TO_MINECRAFT  - Повідомлення з Discord
-# GROUP_SYNC            - Групова синхронізація
-# PRESENCE              - Статус гри або присутність бота
-# VOICE                 - Голосовий модуль (див. voice.yml)
-# REQUIRE_LINK          - Потрібне посилання для приєднання модуля (див. linking.yml)
-# NICKNAME_SYNC         - Псевдонім синхронізації
-# ALERTS                - Оповіщення (див. alerts.yml)
-# WATCHDOG              - Моніторинг сервера
-# BAN_SYNCHRONIZATION   - Синхронізація банів
-# LP_CONTEXTS           - Контексти LuckPerm
-# ACCOUNT_LINKING       - прив'язка облікового запису Discord/Minecraft
-#
-# UNCATEGORIZED - Все, що не відноситься до жодної з вищезгаданих категорій
-# ALL - Усі перелічені категорії (включаючи UNCATEGORIZED)
-#
-# JDA - Налагоджувальні повідомлення JDA
-# JDA_REST_ACTIONS - Для налагодження решти дій JDA
-# CALLSTACKS - Відображає трасування стека для викликів налагодження DiscordSRV
-#
-# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
 
 # Експерименти
 # Ці функції не повністю оптимізовані; Використовуйте на свій ризик
@@ -352,3 +317,38 @@ MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# HTTP proxy used for connecting to the Discord API
+# Leave this alone if you don't understand what it does
+ProxyHost: "example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
+# Налагоджувальна інформація
+# Не вмикайте їх, якщо ви не намагаєтеся знайти проблему
+#
+# Доступні категорії налагодження:
+# MINECRAFT_TO_DISCORD  - Повідомлення з Minecraft
+# DISCORD_TO_MINECRAFT  - Повідомлення з Discord
+# GROUP_SYNC            - Групова синхронізація
+# PRESENCE              - Статус гри або присутність бота
+# VOICE                 - Голосовий модуль (див. voice.yml)
+# REQUIRE_LINK          - Потрібне посилання для приєднання модуля (див. linking.yml)
+# NICKNAME_SYNC         - Псевдонім синхронізації
+# ALERTS                - Оповіщення (див. alerts.yml)
+# WATCHDOG              - Моніторинг сервера
+# BAN_SYNCHRONIZATION   - Синхронізація банів
+# LP_CONTEXTS           - Контексти LuckPerm
+# ACCOUNT_LINKING       - прив'язка облікового запису Discord/Minecraft
+#
+# UNCATEGORIZED - Все, що не відноситься до жодної з вищезгаданих категорій
+# ALL - Усі перелічені категорії (включаючи UNCATEGORIZED)
+#
+# JDA - Налагоджувальні повідомлення JDA
+# JDA_REST_ACTIONS - Для налагодження решти дій JDA
+# CALLSTACKS - Відображає трасування стека для викликів налагодження DiscordSRV
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
