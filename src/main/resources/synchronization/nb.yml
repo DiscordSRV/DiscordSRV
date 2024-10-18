@@ -1,0 +1,55 @@
+# Synkronisering av kallenavn - Minecraft -> Discord
+# Kan styres per spiller ved bruk av 'discordsrv.nicknamesync'-tillatelsen (som blir gitt som standard)
+#
+# NicknameSynchronizationEnabled: om Discord-brukerens kallenavn skal bruke formatet automatisk
+# NicknameSynchronizationCycleTime: antall minutter mellom synkronisering for alle påloggede spillere
+# NicknameSynchronizationFormat: format for kallenavn (kan ikke overstige 32 tegn)
+# %displayname%:            spillerens visningsnavn
+#                             f.eks: Jeb
+# %username%:               spillerens brukernavn
+#                             f.eks: Jeb_
+# %discord_name%:           spillerens Discord-brukernavn
+#                             f.eks: Jeb
+# %discord_discriminator%:  spillerens Discord-diskriminator
+#                             f.eks: 4988
+# PlaceholderAPI-placeholders er støttet for disse verdiene
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Minecraft-gruppe <-> Discord's rollesynkronisering
+# Trenger Vault for dette
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: dette er roller/grupper som du vil ha synkronisert mellom Discord og Minecraft
+#                                               {"MC_GRUPPE_NAVN": "DISCORD_ROLLE_ID"} er formated som blir brukt når fler gruppe-/rollepar blir lagt til
+#                                               for å hente Discord-serverens rolle-IDer kjør "/discord debug" og legg merke til den første seksjonen
+# GroupRoleSynchronizationMinecraftIsAuthoritative: om gruppeendringer i Minecraft overstyrer Discord's rolleendringer
+# GroupRoleSynchronizationOneWay: om synkronisering skal gå en vei. Måten synkronisering fungerer blir bestemt av verdien som er satt i
+#                                 GroupRoleSynchronizationMinecraftIsAuthoritative.
+# GroupRoleSynchronizationEnableDenyPermission: om discordsrv.sync.deny.<gruppe> tillatelser er skrudd på
+# GroupRoleSynchronizationPrimaryGroupOnly: Bare spillerens primære gruppe blir synkronisert hvis satt til "true"
+#                                           hvis ikke blir alle spillerens grupper tatt med inkludert overordnede grupper
+# GroupRoleSynchronizationOnLink: om resynkronisering skal skje når en spiller foretar en brukerlinking
+# GroupRoleSynchronizationCycleTime: antall minutter mellom regelmessige synkroniseringer for alle påloggede spillere
+# GroupRoleSynchronizationCycleCompletely: om tidsbaserte synkroniseringer skal synkronisere alle Discord-serverene botten er medlem i
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"klarert": "000000000000000000", "veldigviktigperson": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
+
+# Synkronisering av utestengelser
+# Når en spiller blir utestengt fra serveren mens de har en linket Discord-bruker kan du velge og samtidig kaste dem ut fra Discord-serveren og motsatt
+#
+# BanSynchronizationDiscordToMinecraft: om å utestenge folk på Minecraft-serveren hvis de blir utestengt fra Discord-serveren
+# BanSynchronizationDiscordToMinecraftReason: meldingen som skal brukes som forklaring for utestenging fra Minecraft-serveren
+# BanSynchronizationMinecraftToDiscord: om å utestenge folk på Discord-serveren hvis de blir utestengt fra Minecraft-serveren
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cDu har blitt utestengt på ubestemt tid fra serveren på grunn av at du ble utestengt fra Discord-serveren."
+BanSynchronizationMinecraftToDiscord: false

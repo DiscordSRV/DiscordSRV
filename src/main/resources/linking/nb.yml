@@ -1,0 +1,57 @@
+Require linked account to play:
+  Enabled: false
+
+  # Ikke rør hvis du ikke forstår hvordan disse fungerer
+  #
+  # Hvilken prioritet som join-listener skal ha
+  # Blir sortert fra først til siste. Tilgjengelige verdier er LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # Du kan endre dette senere til en annen prioritet for at et utestengningstillegg kan sparke ut en spiller før DiscordSRV avviser dem
+  Listener priority: LOWEST
+  # Eventen som linkingsmodulen skal høre på og avvise pålogning på
+  # Noen whitelist-tillegg bruker eventen AsyncPlayerPreLoginEvent (Bedre) og noen bruker PlayerLoginEvent (ikke like så bra)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # Ikke rør hvis du ikke forstår disse
+
+  # Minecraft-spillernavn som alltid får bli med linket, abonnent eller ikke
+  Bypass names: [Scarsz, Vankka]
+  # Om spillere på VANILLA-hviteliste skal omgå kravet om linking av brukere eller abonnent-rolle
+  Whitelisted players bypass check: true
+  # Om spillere som står på VANILLA utestengelseslisten kan linke sine brukere
+  Check banned players: false
+  # Om spillere som ikke står på VANILLA utestengelseslisten skal omgå kravet om linking av brukere eller abonnent-rolle
+  Only check banned players: false
+
+  # Melding som vises når en spiller blir sparket når de er nødt til å linke brukerene sine
+  # Bruk {BOT} som en placeholder for bottens navn
+  # Bruk {CODE} som en placeholder for koden som spillere må sende via DM til botten
+  # Bruk {INVITE} som en placeholder for invitasjonslenken folk må bli med i. Bruker DiscordInviteLink som settes i config.yml
+  Not linked message: "&7Du må linke din &9Discord-bruker &7for å spille.\n\n&7Send en DM til &b{BOT}&7 i Discord-serveren med bare &b{CODE}&7 for å linke din bruker.\n\n&7Invitasjonslenke » &b{INVITE}"
+
+  # Spillere må også være medlem i minst en Discord-server som botten også er i, i tillegg til å ha
+  # linket brukeren hvis dette er slått på
+  #
+  # Mulige formater:
+  #   true/false: linkede brukere må være medlem i minst en Discord-server som botten også er i
+  #     f.eks: true
+  #   <server id>: linket bruker må være medlem i den gitte Discord-serveren
+  #     f.eks: 135634590575493120
+  #   [<server id>, <server id>, ...]: linket bruker må være medlem i ALLE av Discord-serverene som er gitt
+  #     f.eks: [135634590575493120, 690411863766466590]
+  #
+  # Dette valget er avløst når abonnent-roller er håndhevet nedenfor
+  Must be in Discord server: true
+
+  # Valgfritt er at spillere ikke bare trenger å være linket men også at de trenger en eller alle spesifiserte roller nedenfor, nesten som en Twitch-rolle
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # Når dette er av er bare én av rollene påkrevd
+    Kick message: "&cDu må være abonnert på Twitch for å spille."
+
+  Messages:
+    DiscordSRV still starting: "&cKunne ikke sjekke status for linking fordi serveren kobles fortsatt opp mot Discord.\n\nPrøv en gang senere."
+    Not in server: "&cDu er ikke for tiden medlem i vår Discord-server.\n\nBli med på {INVITE}!"
+    Failed to find subscriber role: "&cKunne ikke finne noen abonnent-rolle på Discord.\n\nKontakt serveradministrator om denne feilen."
+    Failed for unknown reason: "&cEn feil oppstod ved verifisering av din bruker.\n\nKontakt serveradministrator om denne feilen."
+    Kicked for unlinking: "&cDu har blitt sparket ut av serveren fordi du avlinket brukerene dine.\n\nBli med serveren på nytt for å linke brukerene dine igjen."
