@@ -99,7 +99,7 @@ public class PlayerUtil {
         if (!soundClass.isEnum()) throw new IllegalStateException("Sound is not an enum");
         for (Object s : soundClass.getEnumConstants()) {
             Sound sound = (Sound) s;
-            if (sound.name().contains("PLING")) return sound;
+            if (sound.name().contains("_PLING")) return sound;
         }
         return null;
     }
