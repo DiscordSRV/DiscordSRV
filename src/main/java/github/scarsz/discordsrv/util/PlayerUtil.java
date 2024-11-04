@@ -85,7 +85,9 @@ public class PlayerUtil {
                 // handled below
             }
         }
-        if (notificationSound == null) throw new NullPointerException("Reflection failed to obtain notification sound");
+        if (notificationSound == null) {
+            DiscordSRV.error("Failed to get notification sound, chat notification sounds will not function properly");
+        }
     }
     private static Sound getNotificationSound_modern() throws Throwable {
         Object key = Class.forName("org.bukkit.NamespacedKey").getMethod("minecraft", String.class).invoke(null, "block.note_block.pling");
@@ -111,6 +113,7 @@ public class PlayerUtil {
      * @param message the message to be searched for players to ding
      */
     public static void notifyPlayersOfMentions(Predicate<? super Player> predicate, String message) {
+        if (notificationSound == null) return; // notification sound wasn't able to be found
         if (predicate == null) predicate = Objects::nonNull; // if null predicate given, that means everyone on the server would've gotten the message
                                                              // thus, default to a (hopefully) always true predicate
 
