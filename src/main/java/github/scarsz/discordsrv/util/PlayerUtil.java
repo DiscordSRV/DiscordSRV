@@ -86,7 +86,7 @@ public class PlayerUtil {
             }
         }
         if (notificationSound == null) {
-            DiscordSRV.error("Failed to get notification sound, chat notification sounds will not function properly");
+            System.err.println("Failed to get notification sound, chat notification sounds will not function properly");
         }
     }
     private static Sound getNotificationSound_modern() throws Throwable {
