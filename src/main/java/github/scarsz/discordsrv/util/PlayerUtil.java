@@ -76,11 +76,32 @@ public class PlayerUtil {
 
     private static Sound notificationSound = null;
     static {
-        for (Sound sound : Sound.class.getEnumConstants())
-            if (sound.name().contains("PLING")) notificationSound = sound;
-
-        // this'll never occur, but, in the case that it really didn't find a notification sound, go with a UI button click
-        if (notificationSound == null) notificationSound = Sound.UI_BUTTON_CLICK;
+        try {
+            notificationSound = getNotificationSound_modern();
+        } catch (Exception e) {
+            try {
+                notificationSound = getNotificationSound_legacy();
+            } catch (Exception ignored) {
+                // handled below
+            }
+        }
+        if (notificationSound == null) throw new NullPointerException("Reflection failed to obtain notification sound");
+    }
+    private static Sound getNotificationSound_modern() throws Exception {
+        Object key = Class.forName("org.bukkit.NamespacedKey").getMethod("minecraft", String.class).invoke(null, "block.note_block.pling");
+        Object soundRegistry = Class.forName("org.bukkit.Registry").getField("SOUNDS").get(null);
+        Object sound = soundRegistry.getClass().getMethod("get", key.getClass()).invoke(soundRegistry, key);
+        return (Sound) sound;
+    }
+    @SuppressWarnings("UnstableApiUsage") // method targets legacy versions
+    private static Sound getNotificationSound_legacy() throws Exception {
+        Class<?> soundClass = Class.forName("org.bukkit.Sound");
+        if (!soundClass.isEnum()) throw new IllegalStateException("Sound is not an enum");
+        for (Object s : soundClass.getEnumConstants()) {
+            Sound sound = (Sound) s;
+            if (sound.name().contains("PLING")) return sound;
+        }
+        return null;
     }
 
     /**
