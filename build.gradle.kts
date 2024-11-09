@@ -193,7 +193,7 @@ dependencies {
     }
 
     // JDA
-    api("net.dv8tion:JDA:4.4.0_352.fix-5") {
+    api("net.dv8tion:JDA:4.4.1_DiscordSRV.fix-6") {
         exclude(module = "opus-java") // we don't use voice features
     }
 
@@ -205,7 +205,7 @@ dependencies {
     }
 
     // Logging
-    implementation("me.scarsz.jdaappender:jda4:1.2.0")
+    implementation("me.scarsz.jdaappender:jda4:1.2.3")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9
@@ -215,13 +215,13 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-core:2.0-beta9")
 
     // adventure, adventure-platform, MCDiscordReserializer
-    val adventureVersion = "4.16.0"
+    val adventureVersion = "4.17.0"
     api("net.kyori:adventure-api:${adventureVersion}")
     api("net.kyori:adventure-text-minimessage:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
@@ -239,9 +239,9 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     // DynamicProxy
-    runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1-SNAPSHOT")
-    compileOnly("dev.vankka:dynamicproxy:1.0.1-SNAPSHOT")
-    annotationProcessor("dev.vankka:dynamicproxy:1.0.1-SNAPSHOT")
+    runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1-20240720.141742-6")
+    compileOnly("dev.vankka:dynamicproxy:1.0.1-20240720.141742-8")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.1-20240720.141742-8")
 
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
@@ -265,6 +265,7 @@ dependencies {
 
     // chat hooks
     compileOnly("ru.mrbrikster:chatty-api:2.18.2")
+    compileOnly("ru.brikster:chatty-api:3.0.0-20240908.194144-1") // most recent commit: ff0144c5fd9a692e3238dd8d03028023b94737b3
     compileOnly("br.com.finalcraft:fancychat:1.0.2")
     compileOnly("com.dthielke.herochat:Herochat:5.6.5")
     compileOnly("br.com.devpaulo:legendchat:1.1.5")
@@ -287,7 +288,7 @@ dependencies {
     compileOnly("org.dynmap:dynmap-api:2.0")
     compileOnly("com.gmail.nossr50:mcmmo:1.5.07")
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
-    compileOnly("me.clip:placeholderapi:2.10.7")
+    compileOnly("me.clip:placeholderapi:2.10.9")
 
     // debug hooks
     compileOnly("ch.njol:skript:2.5")

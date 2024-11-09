@@ -22,7 +22,6 @@ package github.scarsz.discordsrv.objects.log4j;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
-import net.dv8tion.jda.api.JDA;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -55,11 +54,8 @@ public class JdaFilter implements Filter {
                 }
 
                 // JDA forcefully logs this :(
-                JDA jda = DiscordSRV.getPlugin().getJda();
-                if (message.contains("There was an I/O error while executing a REST request: null")
-                        && jda != null && (jda.getStatus() == JDA.Status.SHUTDOWN || jda.getStatus() == JDA.Status.SHUTTING_DOWN)) {
-                    // Ignore InterruptedIOException's during shutdown, we can't hold up the server from stopping forever,
-                    // so some requests are cancelled during shutdown. Logging errors for those request failures isn't important.
+                if (message.contains("There was an I/O error while executing a REST request: null") && DiscordSRV.shuttingDown) {
+                    // Error executing request while shutting down (interrupted exceptions)
                     return Result.DENY;
                 }
 

@@ -1,4 +1,5 @@
 # Minecraft -> Synchronisation des pseudonymes Discord
+# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
 #
 # NicknameSynchronizationEnabled: définir automatiquement ou non le pseudonyme de l'utilisateur Discord au format pseudonyme
 # NicknameSynchronizationCycleTime: nombre de minutes entre le déclenchement répété de la synchronisation pour tous les joueurs en ligne

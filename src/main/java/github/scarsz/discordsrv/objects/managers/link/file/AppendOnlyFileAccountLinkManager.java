@@ -20,14 +20,12 @@
 
 package github.scarsz.discordsrv.objects.managers.link.file;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import lombok.SneakyThrows;
-import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,8 +41,8 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
 
     // matches "discordId uuid" with anything after https://regex101.com/r/oRiDUP
     private static final Pattern LINK_PATTERN = Pattern.compile("^(?<discord>\\d+) (?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
-    // matches "-discordId" or "-uuid" or "-discord uuid" or "-uuid discord" https://regex101.com/r/IkDT4K
-    private static final Pattern MODIFICATION_PATTERN = Pattern.compile("^-(?>(?>(?<discord>\\d+)|(?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})) ?){1,2}.*");
+    // matches "-discordId" or "-uuid" or "-discord uuid" or "-uuid discord" https://regex101.com/r/IkDT4K/3
+    private static final Pattern MODIFICATION_PATTERN = Pattern.compile("^-(?>(?>(?<discord>\\d{17,}+)|(?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})) ?){1,2}.*");
 
     public AppendOnlyFileAccountLinkManager() {
         super();
@@ -58,9 +56,23 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
 
     private void readAOF() throws IOException {
         File file = getFile();
-        if (!file.exists() || file.length() == 0) return;
+        if (!file.exists()) {
+            File temporaryFile = getTemporaryFile();
+            if (temporaryFile.exists() && temporaryFile.length() > 0) {
+                DiscordSRV.warning("AOF linked accounts file didn't exist but the temporary one does. Did the server die while saving?");
+                file = temporaryFile;
+            } else {
+                return;
+            }
+        } else if (file.length() == 0) {
+            return;
+        }
+
         String fileContent = FileUtils.readFileToString(file, "UTF-8");
         if (fileContent == null || StringUtils.isBlank(fileContent)) return;
+
+        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Reading accounts.aof file...");
+
         String[] split = fileContent.split("\n");
         boolean clean = split[split.length - 1].equals("");
         int modifications = 0;
@@ -69,20 +81,30 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
 
             matcher = LINK_PATTERN.matcher(line);
             if (matcher.matches()) {
+                String discordId = matcher.group("discord");
+                String uuid = matcher.group("uuid");
+
+                //DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Adding a link for " + uuid + " to " + discordId);
                 linkedAccounts.put(
-                        matcher.group("discord"),
-                        UUID.fromString(matcher.group("uuid"))
+                        discordId,
+                        UUID.fromString(uuid)
                 );
                 continue;
             }
 
             matcher = MODIFICATION_PATTERN.matcher(line);
             if (matcher.matches()) {
-                String discord = matcher.group("discord");
-                if (discord != null) linkedAccounts.remove(discord);
+                String discordId = matcher.group("discord");
+                if (discordId != null) {
+                    //DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Removing " + discordId + " since it was found to be modified");
+                    linkedAccounts.remove(discordId);
+                }
 
-                UUID uuid = matcher.group("uuid") != null ? UUID.fromString(matcher.group("uuid")) : null;
-                if (uuid != null) linkedAccounts.removeValue(uuid);
+                String uuid = matcher.group("uuid");
+                if (uuid != null) {
+                    //DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Removing " + uuid + " since it was found to be modified");
+                    linkedAccounts.removeValue(UUID.fromString(uuid));
+                }
 
                 modifications++;
                 continue;
@@ -92,6 +114,7 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
             clean = false;
             DiscordSRV.error("Invalid line in linked accounts file: " + line);
         }
+        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Finished reading accounts.aof file");
 
         if ((double) modifications / split.length >= .10) {
             // 10% of files are modifications, force a clean save
@@ -123,36 +146,49 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     }
 
     @Override
-    public void save() throws IOException {
-        try (FileWriter fileWriter = new FileWriter(getFile())) {
-            try (BufferedWriter writer = new BufferedWriter(fileWriter)) {
+    public void save() {
+        File file = getFile();
+        File tmpFile = getTemporaryFile();
+        tmpFile.deleteOnExit();
+
+
+        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Saving accounts.aof file...");
+
+        long startTime = System.currentTimeMillis();
+        try {
+            try (FileWriter fileWriter = new FileWriter(tmpFile);
+                 BufferedWriter writer = new BufferedWriter(fileWriter)) {
                 for (Map.Entry<String, UUID> entry : linkedAccounts.entrySet()) {
                     String discordId = entry.getKey();
                     UUID uuid = entry.getValue();
                     writer.write(discordId + " " + uuid + "\n");
                 }
+            } catch (IOException e) {
+                DiscordSRV.error(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_FAILED + ": " + e.getMessage());
+                return;
             }
+            //noinspection ResultOfMethodCallIgnored
+            file.delete();
+            try {
+                FileUtils.moveFile(tmpFile, file);
+            } catch (IOException e) {
+                DiscordSRV.error("Failed moving accounts.aof.tmp to accounts.aof: " + e.getMessage());
+            }
+        } finally {
+            //noinspection ResultOfMethodCallIgnored
+            tmpFile.delete();
         }
+        DiscordSRV.info(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVED.toString()
+                .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
+        );
     }
 
     @Override
     @SneakyThrows
     public void link(String discordId, UUID uuid) {
         super.link(discordId, uuid);
-        User user = DiscordUtil.getJda().getUserById(discordId);
-        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 
-        FileUtils.writeStringToFile(
-                getFile(),
-                String.format("%s %s // %s %s\n",
-                        discordId,
-                        uuid,
-                        user != null ? user.getName() : "<discord username unknown>",
-                        player.getName() != null ? player.getName() : "<player username unknown>"
-                ),
-                "UTF-8",
-                true
-        );
+        FileUtils.writeStringToFile(getFile(), discordId + " " + uuid + "\n", "UTF-8", true);
     }
 
     @Override
@@ -192,6 +228,9 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     @Override
     File getFile() {
         return new File(DiscordSRV.getPlugin().getDataFolder(), "accounts.aof");
+    }
+    File getTemporaryFile() {
+        return new File(DiscordSRV.getPlugin().getDataFolder(), "accounts.aof.tmp");
     }
 
 }

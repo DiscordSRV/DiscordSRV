@@ -8,13 +8,6 @@ ConfigVersion: ${version}
 # Po zmianie tej opcji musisz ponownie uruchomić serwer
 BotToken: "BOTTOKEN"
 
-# The proxy to be used for Discord  
-# Leave this alone if you don't understand what it does  
-ProxyHost: "https://example.com"  
-ProxyPort: 1234  
-ProxyUser: "USERNAME"  
-ProxyPassword: "PASSWORD"  
-
 # Linki kanału z gry do Discord
 # składnia to Kanały: {"nazwa kanału w grze z Minecrafta": "numeryczny identyfikator kanału z Discord", "inna nazwa kanału w grze z Minecrafta": "inny numeryczny identyfikator kanału z Discord"}
 #
@@ -41,38 +34,6 @@ DiscordConsoleChannelId: "000000000000000000"
 
 # Link z zaproszeniem pokazywany graczom podczas korzystania z /discord oraz w wiadomości wyświetlanej graczom odłączonym, gdy wymuszane jest łączenie
 DiscordInviteLink: "https://discord.gg/zmieńtowconfigu.yml"
-
-# Informacje debugowania
-# Nie włączaj ich, chyba że próbujesz zlokalizować problem
-#
-# Dostępne kategorie debugowania:
-# MINECRAFT_TO_DISCORD  - Wiadomości pochodzące z Minecrafta
-# DISCORD_TO_MINECRAFT  - Wiadomości pochodzące z Discord
-# GROUP_SYNC            - Synchronizacja grupowa
-# PRESENCE              - Stan gry lub obecność bota
-# VOICE                 - Moduł głosowy (patrz voice.yml)
-# REQUIRE_LINK          - Wymagany link do dołączenia do modułu (patrz linking.yml)
-# NICKNAME_SYNC         - Synchronizacja pseudonimów
-# ALERTS                - Alerty (patrz alerts.yml)
-# WATCHDOG              - Pies stróżujący
-# BAN_SYNCHRONIZATION   - Zablokuj synchronizację
-# LP_CONTEXTS           - Konteksty LuckPerm
-# ACCOUNT_LINKING       - łączenie kont discord/minecraft
-#
-# UNCATEGORIZED         - Wszystko, co nie należy do żadnej z powyższych kategorii
-# ALL                   - Wszystkie powyższe kategorie (w tym BEZ KATEGORYZACJI)
-#
-# JDA                   - Komunikaty debugowania JDA
-# JDA_REST_ACTIONS      - Do debugowania działań JDA dotyczących odpoczynku
-# CALLSTACKS            - Wyświetla ślad stosu dla wywołań debugowania DiscordSRV
-#
-# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
-
-# Legacy option for transitioning to the new Debug option,
-# setting this to anything above 0 is the same as setting Debug to [ALL]
-DebugLevel: 0
 
 # Eksperymenty
 # Te funkcje nie są w pełni zoptymalizowane; używaj na własne ryzyko
@@ -105,7 +66,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # Inny
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
-PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
@@ -129,15 +89,17 @@ EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
 # Informacje o grze
-# Ustawia wskaźnik „Gra: ______” dla bota.
+# Sets the user status for the bot
 # Może być pojedynczą, statyczną wartością lub przechodzić przez wiele różnych opcji
-# Możesz poprzedzić status słowami „odtwarzanie”, „oglądanie” lub „słuchanie”, aby ustawić typ aktywności
-# Symbole zastępcze interfejsu API są obsługiwane
+# Możesz poprzedzić status słowami „playing”, „watching”, „listening” lub „competing”, aby ustawić typ aktywności
+# You can set your own custom status by not including the prefixes
+#    %online%: number of online players
+#    Symbole zastępcze interfejsu API są obsługiwane
 #
 # DiscordGameStatus: tekst do wyświetlenia. Może być pojedynczą wartością, np. „Minecraft” lub wiele wartości, np. [„Minecraft”, „yourip.changeme.com”]
 # DiscordOnlineStatus: Status czynności, która ma być wyświetlana. Musi to być jedna z następujących wartości: ONLINE, DND, IDLE lub INVISIBLE.
 # StatusUpdateRateInMinutes: jak często zmieniać stan
-DiscordGameStatus: ["Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
@@ -355,3 +317,38 @@ MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# HTTP proxy used for connecting to the Discord API
+# Leave this alone if you don't understand what it does
+ProxyHost: "example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
+# Informacje debugowania
+# Nie włączaj ich, chyba że próbujesz zlokalizować problem
+#
+# Dostępne kategorie debugowania:
+# MINECRAFT_TO_DISCORD  - Wiadomości pochodzące z Minecrafta
+# DISCORD_TO_MINECRAFT  - Wiadomości pochodzące z Discord
+# GROUP_SYNC            - Synchronizacja grupowa
+# PRESENCE              - Stan gry lub obecność bota
+# VOICE                 - Moduł głosowy (patrz voice.yml)
+# REQUIRE_LINK          - Wymagany link do dołączenia do modułu (patrz linking.yml)
+# NICKNAME_SYNC         - Synchronizacja pseudonimów
+# ALERTS                - Alerty (patrz alerts.yml)
+# WATCHDOG              - Pies stróżujący
+# BAN_SYNCHRONIZATION   - Zablokuj synchronizację
+# LP_CONTEXTS           - Konteksty LuckPerm
+# ACCOUNT_LINKING       - łączenie kont discord/minecraft
+#
+# UNCATEGORIZED         - Wszystko, co nie należy do żadnej z powyższych kategorii
+# ALL                   - Wszystkie powyższe kategorie (w tym BEZ KATEGORYZACJI)
+#
+# JDA                   - Komunikaty debugowania JDA
+# JDA_REST_ACTIONS      - Do debugowania działań JDA dotyczących odpoczynku
+# CALLSTACKS            - Wyświetla ślad stosu dla wywołań debugowania DiscordSRV
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []

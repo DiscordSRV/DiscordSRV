@@ -125,6 +125,12 @@ public class ConfigUtil {
             if (key.equals("ConfigVersion")) continue;
             option = key;
             String value = lineSplit[1].trim();
+            if (option.equals("AvatarUrl") && value.contains("https://crafatar.com")) {
+                DiscordSRV.warning("AvatarUrl config option contained \"https://crafatar.com\"; Crafatar no longer allows queries from Discord so the new default provider will be used instead.");
+                value = "\"\"";
+            } else if (option.equals("ProxyHost") && value.equals("\"https://example.com\"")) {
+                value = "\"example.com\"";
+            }
             optionValue = new StringBuilder(value);
         }
         if (optionValue != null) options.put(option, optionValue.toString());

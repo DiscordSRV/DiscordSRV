@@ -175,8 +175,20 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         if (member.getRoles().isEmpty()) return "";
 
-        List<Role> selectedRoles = DiscordSRV.getPlugin().getSelectedRoles(member);
-        if (selectedRoles.isEmpty()) return "";
+        Role topSelectedRole = DiscordSRV.getPlugin().getTopSelectedRole(member);
+        if (topSelectedRole != null) {
+            switch (identifier) {
+                case "user_top_selected_role_id":
+                    return topSelectedRole.getId();
+                case "user_top_selected_role_name":
+                    return topSelectedRole.getName();
+                case "user_top_selected_role_color_hex":
+                    return applyOrEmptyString(topSelectedRole.getColorRaw(), this::getHex);
+                case "user_top_selected_role_color_code":
+                    String legacy = MessageUtil.toLegacy(Component.text(0).color(TextColor.color(topSelectedRole.getColorRaw())));
+                    return legacy.substring(0, legacy.length() - 1);
+            }
+        }
 
         Role topRole = DiscordUtil.getTopRole(member);
         if (topRole != null) {

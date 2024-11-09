@@ -21,7 +21,6 @@
 package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.util.MessageUtil;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -30,10 +29,11 @@ import net.kyori.adventure.text.Component;
  * <p>At the time this event is called, {@link #getMessage()} would return what the final message
  * would look like in-game, including text like the author before the actual message</p>
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class DiscordGuildMessagePostBroadcastEvent extends Event {
 
-    @Getter private final String channel;
-    @Getter private final Component message;
+    private final String channel;
+    private final Component message;
 
     @Deprecated
     public DiscordGuildMessagePostBroadcastEvent(String channel, String processedMessage) {
@@ -51,4 +51,11 @@ public class DiscordGuildMessagePostBroadcastEvent extends Event {
         return MessageUtil.toLegacy(message);
     }
 
+    public String getChannel() {
+        return this.channel;
+    }
+
+    public Component getMessage() {
+        return this.message;
+    }
 }
