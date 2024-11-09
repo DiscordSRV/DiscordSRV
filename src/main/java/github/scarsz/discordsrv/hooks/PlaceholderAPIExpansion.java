@@ -127,7 +127,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 return "";
             }
 
-            DiscordSRV.debug("role placeholder is valid, getting role color for role ID " + roleId);
+            DiscordSRV.debug("role placeholder is valid, getting role" + subPlaceholder + " for role ID " + roleId);
             switch (subPlaceholder) {
                 case "name":
                     return role.getName();
