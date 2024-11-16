@@ -76,11 +76,34 @@ public class PlayerUtil {
 
     private static Sound notificationSound = null;
     static {
-        for (Sound sound : Sound.class.getEnumConstants())
-            if (sound.name().contains("PLING")) notificationSound = sound;
-
-        // this'll never occur, but, in the case that it really didn't find a notification sound, go with a UI button click
-        if (notificationSound == null) notificationSound = Sound.UI_BUTTON_CLICK;
+        try {
+            notificationSound = getNotificationSound_modern();
+        } catch (Throwable e) {
+            try {
+                notificationSound = getNotificationSound_legacy();
+            } catch (Throwable ignored) {
+                // handled below
+            }
+        }
+        if (notificationSound == null) {
+            System.err.println("Failed to get notification sound, chat notification sounds will not function properly");
+        }
+    }
+    private static Sound getNotificationSound_modern() throws Throwable {
+        Object key = Class.forName("org.bukkit.NamespacedKey").getMethod("minecraft", String.class).invoke(null, "block.note_block.pling");
+        Object soundRegistry = Class.forName("org.bukkit.Registry").getField("SOUNDS").get(null);
+        Object sound = soundRegistry.getClass().getMethod("get", key.getClass()).invoke(soundRegistry, key);
+        return (Sound) sound;
+    }
+    @SuppressWarnings("UnstableApiUsage") // method targets legacy versions
+    private static Sound getNotificationSound_legacy() throws Throwable {
+        Class<?> soundClass = Class.forName("org.bukkit.Sound");
+        if (!soundClass.isEnum()) throw new IllegalStateException("Sound is not an enum");
+        for (Object s : soundClass.getEnumConstants()) {
+            Sound sound = (Sound) s;
+            if (sound.name().contains("_PLING")) return sound;
+        }
+        return null;
     }
 
     /**
@@ -90,6 +113,7 @@ public class PlayerUtil {
      * @param message the message to be searched for players to ding
      */
     public static void notifyPlayersOfMentions(Predicate<? super Player> predicate, String message) {
+        if (notificationSound == null) return; // notification sound wasn't able to be found
         if (predicate == null) predicate = Objects::nonNull; // if null predicate given, that means everyone on the server would've gotten the message
                                                              // thus, default to a (hopefully) always true predicate
 
