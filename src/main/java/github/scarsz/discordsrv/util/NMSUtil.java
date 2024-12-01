@@ -198,7 +198,7 @@ public class NMSUtil {
     }
 
     public static Object getHandle(Object advancement) {
-        if (failed) return null;
+        if (failed || method_Advancement_getHandle == null) return null;
 
         try {
             return method_Advancement_getHandle.invoke(advancement);
