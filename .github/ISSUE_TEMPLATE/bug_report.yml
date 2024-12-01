@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Before reporting a bug here, please make sure you use the latest stable version of DiscordSRV from [SpigotMC](https://www.spigotmc.org/resources/18494/) or [BukkitDev](https://dev.bukkit.org/projects/discordsrv).
+        Before reporting a bug here, please make sure you use the latest stable version of DiscordSRV from [Modrinth](https://modrinth.com/plugin/discordsrv/) or https://get.discordsrv.com/.
         If possible please also test against our [latest snapshot build](https://snapshot.discordsrv.com).
         Additionally, please join [DiscordSRV's Discord server](https://discord.discordsrv.com) and open a ticket in the #create-a-ticket channel with your issue so that we can confirm that it is a bug.
   - type: textarea
@@ -32,7 +32,7 @@ body:
     attributes:
       label: Server software and version
       description: Unless the problem is a completely different one, please specify the version of your server here. Run the `/version` command on your server to get it.
-      placeholder: "ex. git-Paper-110 (MC: 1.17.1)"
+      placeholder: "ex. This server is running Paper version 1.21.1-130-ver/1.21.1@4d2672e (2024-10-30T18:33:50Z) (Implementing API version 1.21.1-R0.1-SNAPSHOT)"
     validations:
       required: false
   - type: checkboxes

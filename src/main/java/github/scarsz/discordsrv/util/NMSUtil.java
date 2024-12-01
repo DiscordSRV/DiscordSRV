@@ -75,8 +75,12 @@ public class NMSUtil {
                 }
             }
 
-            class_Advancement = fixBukkitClass("org.bukkit.craftbukkit.advancement.CraftAdvancement");
-            method_Advancement_getHandle = class_Advancement.getMethod("getHandle");
+            try {
+                class_Advancement = fixBukkitClass("org.bukkit.craftbukkit.advancement.CraftAdvancement");
+                method_Advancement_getHandle = class_Advancement.getMethod("getHandle");
+            } catch (ClassNotFoundException ex) {
+                // Unsupported on the server
+            }
 
             class_CraftPlayer = fixBukkitClass("org.bukkit.craftbukkit.entity.CraftPlayer");
             method_CraftPlayer_getHandle = class_CraftPlayer.getMethod("getHandle");
@@ -193,8 +197,8 @@ public class NMSUtil {
         return null;
     }
 
-    public static Object getHandle(Advancement advancement) {
-        if (failed) return null;
+    public static Object getHandle(Object advancement) {
+        if (failed || method_Advancement_getHandle == null) return null;
 
         try {
             return method_Advancement_getHandle.invoke(advancement);
