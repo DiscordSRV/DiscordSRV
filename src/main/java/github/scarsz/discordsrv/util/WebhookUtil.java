@@ -132,7 +132,7 @@ public class WebhookUtil {
                     .replace("%username%", player.getName())
                     .replace("%message%", message.replace("[", "\\["));
             chatMessage = PlaceholderUtil.replacePlaceholdersToDiscord(chatMessage, player);
-            chatMessage = DiscordUtil.translateEmotes(message, channel.getGuild());
+            chatMessage = DiscordUtil.translateEmotes(chatMessage, channel.getGuild());
             username = PlaceholderUtil.replacePlaceholdersToDiscord(username, player);
             username = MessageUtil.strip(username);
 
