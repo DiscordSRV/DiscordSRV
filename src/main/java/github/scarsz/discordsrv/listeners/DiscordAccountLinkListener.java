@@ -92,6 +92,12 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         Member member = event.getMember();
+
+        if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
+            DiscordSRV.debug(Debug.ACCOUNT_LINKING, "AccountLinkManager is null, not processing join event");
+            return;
+        }
+
         // add linked role and nickname back to people when they rejoin the server
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
         if (uuid != null) {
