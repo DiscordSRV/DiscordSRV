@@ -123,11 +123,11 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             String subPlaceholder = rolePlaceholderMatcher.group(2);
 
             if (role == null) {
-                DiscordSRV.debug("role placeholder " + roleId + " is invalid");
+                //DiscordSRV.debug("role placeholder " + roleId + " is invalid");
                 return "";
             }
 
-            DiscordSRV.debug("role placeholder is valid, getting role" + subPlaceholder + " for role ID " + roleId);
+            //DiscordSRV.debug("role placeholder is valid, getting role" + subPlaceholder + " for role ID " + roleId);
             switch (subPlaceholder) {
                 case "name":
                     return role.getName();
