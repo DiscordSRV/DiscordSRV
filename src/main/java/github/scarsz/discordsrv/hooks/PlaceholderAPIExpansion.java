@@ -210,6 +210,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     return legacy.substring(0, legacy.length() - 1);
             }
         }
+
         return null;
     }
 
