@@ -25,6 +25,8 @@ import github.scarsz.configuralize.ParseException;
 import github.scarsz.configuralize.Provider;
 import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.DiscordSRV;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -37,6 +39,8 @@ import java.util.stream.Collectors;
 
 public class ConfigUtil {
 
+    public static final Pattern SNAPSHOT_VERSION_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-SNAPSHOT-(.+)");
+
     public static void migrate() {
         String configVersionRaw = DiscordSRV.config().getString("ConfigVersion");
         if (configVersionRaw.contains("/")) configVersionRaw = configVersionRaw.substring(0, configVersionRaw.indexOf("/"));
@@ -46,11 +50,15 @@ public class ConfigUtil {
         if (configVersionRaw.equals(pluginVersionRaw)) return;
 
         Version configVersion = configVersionRaw.split("\\.").length == 3
-                ? Version.valueOf(configVersionRaw.replace("-SNAPSHOT", ""))
-                : Version.valueOf("1." + configVersionRaw.replace("-SNAPSHOT", ""));
-        Version pluginVersion = Version.valueOf(pluginVersionRaw.replace("-SNAPSHOT", ""));
+                ? Version.valueOf(configVersionRaw.replaceFirst("-SNAPSHOT.*", ""))
+                : Version.valueOf("1." + configVersionRaw.replaceFirst("-SNAPSHOT.*", ""));
+        Version pluginVersion = Version.valueOf(pluginVersionRaw.replaceFirst("-SNAPSHOT.*", ""));
 
-        if (configVersion.equals(pluginVersion)) return; // no migration necessary
+        Matcher configVersionMatcher = SNAPSHOT_VERSION_PATTERN.matcher(configVersionRaw);
+        Matcher pluginVersionMatcher = SNAPSHOT_VERSION_PATTERN.matcher(pluginVersionRaw);
+        boolean isSameCommit = configVersionMatcher.matches() && pluginVersionMatcher.matches()
+                && configVersionMatcher.group(1).equals(pluginVersionMatcher.group(1));
+        if (configVersion.equals(pluginVersion) && !isSameCommit) return; // no migration necessary
         if (configVersion.greaterThan(pluginVersion)) {
             DiscordSRV.warning("You're attempting to use a higher config version than the plugin. Things probably won't work correctly.");
             return;
