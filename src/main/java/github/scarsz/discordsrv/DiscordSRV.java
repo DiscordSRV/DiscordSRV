@@ -746,7 +746,7 @@ public class DiscordSRV extends JavaPlugin {
                         ? (hostname, sslSession) -> true
                         : OkHostnameVerifier.INSTANCE);
 
-        if (!proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
+        if (!proxyHost.isEmpty() && !proxyHost.equals("example.com")) {
             try {
                 // This had to be set to empty string to avoid issue with basic auth
                 // Reference: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111
@@ -756,6 +756,7 @@ public class DiscordSRV extends JavaPlugin {
 
                 ProxySettings proxySettings = websocketFactory.getProxySettings();
                 proxySettings.setHost(proxyHost.trim());
+                proxySettings.setPort(proxyPort);
 
                 if (!authPassword.isEmpty()) {
                     String trimmedUsername = authUser.trim();
@@ -1881,7 +1882,7 @@ public class DiscordSRV extends JavaPlugin {
         if (chatHook == null || channel == null) {
             if (channel != null && !channel.equalsIgnoreCase("global")) return; // don't send messages for non-global channels with no plugin hooks
             DiscordGuildMessagePreBroadcastEvent preBroadcastEvent = api.callEvent(new DiscordGuildMessagePreBroadcastEvent
-                    (channel, message, PlayerUtil.getOnlinePlayers()));
+                    (author, channel, message, PlayerUtil.getOnlinePlayers()));
             message = preBroadcastEvent.getMessage();
             channel = preBroadcastEvent.getChannel();
             MessageUtil.sendMessage(preBroadcastEvent.getRecipients(), message);

@@ -10,7 +10,7 @@ plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("net.kyori.indra.git") version "2.1.1"
     id("net.researchgate.release") version "3.0.2"
-    id("xyz.jpenilla.run-paper") version "2.3.0"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.discordsrv"
@@ -180,7 +180,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     maven("https://nexus.scarsz.me/content/groups/public/")
@@ -205,7 +205,7 @@ dependencies {
     }
 
     // Logging
-    implementation("me.scarsz.jdaappender:jda4:1.2.2")
+    implementation("me.scarsz.jdaappender:jda4:1.2.3")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9
