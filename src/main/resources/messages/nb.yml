@@ -41,6 +41,8 @@
 #                   f.eks: JegErNotch
 # %username%:      brukernavnet til brukeren som blir svart til på Discord
 #                   f.eks: Notch
+# %userid%:        the ID of the user that is being replied to on Discord
+#                   example: 1081004946872352958
 # %message%:       innholdet av meldingen som blir svart med
 #
 # MERK: %reply%-placeholderen må være tilstede i formatet hvis DiscordToMinecraftMessageReplyFormat skal vise svaret som en melding
@@ -415,7 +417,7 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, serveren har ikke svart 
 #                               %mention%:      Discord-brukerens nevnelse
 # DiscordAccountAlreadyLinked:  %uuid%:         Minecraft-UUID til brukerens linket Minecraft-bruker
 #                               %username%:     Minecraft-brukernavnet til brukerens linket Minecraft-bruker
-#                               %mention%:      the mention to Discord account
+#                               %mention%:      Discord-brukerens nevnelse
 # DiscordLinkedAccountRequired  %message%:      brukerens melding som blir vist til dem når den ikke kan bli sendt pga. de ikke hadde linket
 # CodeGenerated:                %code%:         koden som blir generert for spilleren som brukes til å linke brukere medh
 #                               %botname%:      navnet til botten på Discord

@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * <p>Made by Scarsz</p>
- * <p>German translations by Androkai & GerdSattler</p>
+ * <p>German translations by Androkai &amp; GerdSattler</p>
  * <p>Japanese translations by Ucchy</p>
  * <p>French translations by BrinDeNuage</p>
  * <p>Korean translations by Alex4386 (with MintNetwork)</p>
@@ -40,8 +40,8 @@ import java.util.Map;
  * <p>Chinese translations by Kizajan</p>
  * <p>Polish translations by Zabujca997</p>
  * <p>Danish translations by Tauses</p>
- * <p>Norwegian translations by OPM_Expert</p>
  * <p>Ukrainian translations by FenixInc</p>
+ * <p>Norwegian translations by OPM_Expert</p>
  */
 public class LangUtil {
 
@@ -424,21 +424,6 @@ public class LangUtil {
             put(Language.DA, "Konsol videresendelse tildelt til kanal");
             put(Language.UK, "Вихід консолі успішно перенаправлений на канал");
             put(Language.NB, "Konsollsending er bundet til kanal");
-        }}), FOUND_SERVER(new HashMap<Language, String>() {{
-            put(Language.EN, "Found server");
-            put(Language.FR, "Serveur trouvé");
-            put(Language.DE, "Server wurde gefunden");
-            put(Language.JA, "見つかったサーバー");
-            put(Language.KO, "서버를 찾았습니다");
-            put(Language.NL, "Server gevonden");
-            put(Language.ES, "Servidor encontrado");
-            put(Language.RU, "Сервер найден");
-            put(Language.ET, "Server leitud");
-            put(Language.ZH, "已找到伺服器");
-            put(Language.PL, "Znaleziono serwer");
-            put(Language.DA, "Fundet server");
-            put(Language.UK, "Сервер знайдено");
-            put(Language.NB, "Fant server");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
@@ -468,7 +453,7 @@ public class LangUtil {
             put(Language.PL, "Wyłączenie zostanie zakończone za {ms}ms");
             put(Language.DA, "Nedlukning gennemført på {ms}ms");
             put(Language.UK, " відключення завершено за {ms}мс");
-            put(Language.NB, "Avslutning fullført på {ms} ms");
+            put(Language.NB, "Avslutning fullført på {ms}ms");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
@@ -483,7 +468,7 @@ public class LangUtil {
             put(Language.PL, "Odbiornik API {listenername} zasubskrybowano ({methodcount} metodą)");
             put(Language.DA, "API listener {listenername} abonneret ({methodcount} metoder)");
             put(Language.UK, " API listener {listener name} підписано на ({methodcount} методи)");
-            put(Language.NB, "API-lytter {listername} abonnerte på ({methodcount} måter)");
+            put(Language.NB, "API-lytter {listenername} abonnerte på ({methodcount} måter)");
         }}), API_LISTENER_UNSUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} unsubscribed");
             put(Language.FR, "API listener {listenername} n'est plus associé");
@@ -693,7 +678,7 @@ public class LangUtil {
             put(Language.PL, "Zapisane połączone konta w {ms}ms");
             put(Language.DA, "Gemte linkede brugere det tog {ms}ms");
             put(Language.UK, " Прив'язані акаунти успішно збережені за {ms}мс");
-            put(Language.NB, "Lagret tilkoplede brukere på {ms} ms");
+            put(Language.NB, "Lagret tilkoplede brukere på {ms}ms");
         }}), LINKED_ACCOUNTS_SAVE_FAILED(new HashMap<Language, String>() {{
             put(Language.EN, "Failed saving linked accounts");
             put(Language.FR, "Erreur lors de la sauvegarde des comptes liés");

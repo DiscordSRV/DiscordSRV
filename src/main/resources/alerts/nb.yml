@@ -80,7 +80,7 @@
 Alerts:
   # Konfigurasjonsmal for å sende en melding til DiscordSRV-kanalen "fisk" når en spiller fanger en fisk
   #- Trigger: PlayerFishEvent
-  #  Channel: fisk
+  #  Channel: fish
   #  Conditions:
   #    - state.name() == 'CAUGHT_FISH'
   #  Embed:

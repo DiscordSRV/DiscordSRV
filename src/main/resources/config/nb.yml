@@ -8,13 +8,6 @@ ConfigVersion: ${version}
 # Du MÅ starte om serveren etter du har endret dette
 BotToken: "BOTTOKEN"
 
-# Proxyen som skal bli brukt for Discord
-# La dette være hvis du ikke vet hva dette er
-ProxyHost: "https://example.com"
-ProxyPort: 1234
-ProxyUser: "USERNAME"
-ProxyPassword: "PASSWORD"
-
 # Kanallenker fra spill til Discord
 # syntaks er Channels: {"Kanalnavn i spillet fra Minecraft": "kanal-ID-nummeret fra Discord", "annet kanalnavn i spillet fra Minecraft": "annet kanal-ID fra Discord"}
 #
@@ -41,34 +34,6 @@ DiscordConsoleChannelId: "000000000000000000"
 
 # Invitasjonslenke som skal vises til spillere som bruker /discord og i meldingen som vises til spillere som ikke har benyttet seg av kontolinking hvis linking er påkrevd
 DiscordInviteLink: "https://discord.gg/endredenneiconfig.yml"
-
-# Feilsøkningsinformasjon
-# Ikke skru disse på med mindre du prøver å lete etter en feil
-#
-# Tilgjengelige kategorier for feilsøkning:
-# MINECRAFT_TO_DISCORD  - Meldinger fra Minecraft
-# DISCORD_TO_MINECRAFT  - Meldinger fra Discord
-# GROUP_SYNC            - Gruppesynkronisering
-# PRESENCE              - Bottens status
-# VOICE                 - Lydmodulen (se voice.yml)
-# REQUIRE_LINK          - Linken som benyttes for å linkingmodulet (se linking.yml)
-# NICKNAME_SYNC         - Synkronisering av kallenavn
-# ALERTS                - Alerts (se alerts.yml)
-# WATCHDOG              - Watchdog
-# BAN_SYNCHRONIZATION   - Synkronisering av utestengelser
-# LP_CONTEXTS           - LuckPerms' kontekster
-# ACCOUNT_LINKING       - Kontolinking
-#
-# UNCATEGORIZED         - Alt annet som ikke tilhører kategoriene ovenfor
-# ALL                   - Alle kategoriene ovenfor (inkludert UNCATEGORIZED)
-#
-# JDA                   - JDA-ens feilsøkningsmeldinger
-# JDA_REST_ACTIONS      - For feilsøking av JDA-ens rest actions
-# CALLSTACKS            - Viser stack traces fra DiscordSRVs debug calls
-#
-# F.eks. "Debug: [GROUP_SYNC, PRESENCE]"
-#
-Debug: []
 
 # Eksperimentell
 # Disse funksjonene er ikke helt optimale ennå; bruk på eget ansvar
@@ -105,7 +70,7 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
-DateFormat: dd.MM.yyyy
+DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
 # MinecraftMentionSound: Om en lyd skal bli spilt av til spilleren hvis de nevnes på Discord
@@ -193,7 +158,7 @@ DiscordChatChannelRoleAliases: {"Utvikler": "Utv"}
 # DiscordConsoleChannelLogRefreshRateInSeconds: Hastighet i sekunder mellom avsending av linjer fra konsollen
 # DiscordConsoleChannelUsageLog:
 #    %date%:  nåværende dato
-#              f.eks: 17.05.2024
+#              f.eks: 2017-01-01
 #    PlaceholderAPI-placeholders er støttet
 # DiscordConsoleChannelBlacklistActsAsWhitelist: Om svartelistede kommandolisten telles som en hviteliste istedenfor en svarteliste
 # DiscordConsoleChannelBlacklistedCommands: Setninger pakket inn i anførseltegn som brukere ikke skal kunne sende som kommandoer til konsollen
@@ -244,7 +209,7 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 # DiscordChatChannelListCommandExpirationDeleteRequest: Om meldingen fra personen som ba om spillerlisten også skal ha deres melding slettet
 #
 DiscordChatChannelListCommandEnabled: true
-DiscordChatChannelListCommandMessage: "spillerliste"
+DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
@@ -254,7 +219,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: Regulære uttrykk som skal bli brukt i chatmeldinger sendt til Minecraft, Hvis tomt blir ikke meldingen sendt i det hele tatt
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Påloggede spillere \\(.*": "", ".*\\*\\*Ingen påloggede spillere\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Innstillinger for oppdatering av kanalemne
 #
@@ -311,7 +276,7 @@ ChannelUpdater:
 # Hvis du ikke ønsker å bruke denne funksjonen så sett bare {}
 # PlaceholderAPI-placeholders er støttet som verdier
 #
-DiscordCannedResponses: {"!ip": "dinserverip.no", "!site": "http://dinnettside.no"}
+DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
 # Brukerlinking - Minecraft til Discord
 # Dette er valgene som bestemmer hvordan linking av en Minecraft-bruker til en Discord-bruker skal fungere
@@ -352,3 +317,38 @@ MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# Proxyen som skal bli brukt for Discord
+# La dette være hvis du ikke vet hva dette er
+ProxyHost: "https://example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
+# Feilsøkningsinformasjon
+# Ikke skru disse på med mindre du prøver å lete etter en feil
+#
+# Tilgjengelige kategorier for feilsøkning:
+# MINECRAFT_TO_DISCORD  - Meldinger fra Minecraft
+# DISCORD_TO_MINECRAFT  - Meldinger fra Discord
+# GROUP_SYNC            - Gruppesynkronisering
+# PRESENCE              - Bottens status
+# VOICE                 - Lydmodulen (se voice.yml)
+# REQUIRE_LINK          - Linken som benyttes for å linkingmodulet (se linking.yml)
+# NICKNAME_SYNC         - Synkronisering av kallenavn
+# ALERTS                - Alerts (se alerts.yml)
+# WATCHDOG              - Watchdog
+# BAN_SYNCHRONIZATION   - Synkronisering av utestengelser
+# LP_CONTEXTS           - LuckPerms' kontekster
+# ACCOUNT_LINKING       - Kontolinking
+#
+# UNCATEGORIZED         - Alt annet som ikke tilhører kategoriene ovenfor
+# ALL                   - Alle kategoriene ovenfor (inkludert UNCATEGORIZED)
+#
+# JDA                   - JDA-ens feilsøkningsmeldinger
+# JDA_REST_ACTIONS      - For feilsøking av JDA-ens rest actions
+# CALLSTACKS            - Viser stack traces fra DiscordSRVs debug calls
+#
+# F.eks. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []

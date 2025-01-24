@@ -1,4 +1,5 @@
 # Dette er konfigurasjonsfilen for DiscordSRVs stemmemodul
+# Dette er konfigurasjonsfilen for DiscordSRVs stemmemodul
 # Siden dette er en eksperimentell funskjon så kan det hende at ting ikke fungerer som det skal
 # Hvis du bestemmer deg for å prøve deg fram så kan du sende en tilbakemelding til oss
 # om noen feil på vår Discord-server: https://discordsrv.com/discord
@@ -23,8 +24,8 @@ Network:
   # Maksdistanse mellom spillere for å bli koblet til
   Vertical Strength: 40
   Horizontal Strength: 80
-  # Når en spiller har blitt med i nettverket så kan de være (strength + falloff)-blokker
-  # unna før de blir koblet fra
+  # Når en spiller har blitt med i nettverket så kan de være
+  # (strength + falloff)-blokker unna før de blir koblet fra
   Falloff: 5
   # Om nettverkets lydkanal skal være synlig for alle t.o.m. de som ikke er koblet til
   # Sørger for at spillere vet at folk bruker lydnettverket for tiden
