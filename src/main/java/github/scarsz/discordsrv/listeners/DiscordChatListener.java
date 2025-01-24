@@ -320,10 +320,6 @@ public class DiscordChatListener extends ListenerAdapter {
                 postEvent.getMinecraftMessage(),
                 event.getAuthor()
         );
-
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(postEvent.getMinecraftMessage()).replace("»", ">")));
-        }
     }
 
     private boolean handleMessageAddons(GuildMessageReceivedEvent event, DiscordGuildMessagePreProcessEvent preEvent, List<Role> selectedRoles, Role topRole, String url) {
@@ -363,8 +359,6 @@ public class DiscordChatListener extends ListenerAdapter {
             return true;
         }
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), component, event.getAuthor());
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(component).replace("»", ">")));
         return false;
     }
 
@@ -398,6 +392,7 @@ public class DiscordChatListener extends ListenerAdapter {
         return input.replace("%channelname%", event.getChannel().getName())
                 .replace("%name%", escape.apply(MessageUtil.strip(event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName())))
                 .replace("%username%", escape.apply(MessageUtil.strip(event.getAuthor().getName())))
+                .replace("%userid%", event.getAuthor().getId())
                 .replace("%toprole%", escape.apply(DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null)))
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? escape.apply(DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1)) : "")
                 .replace("%toprolealias%", getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
@@ -428,6 +423,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         return format.replace("%name%", escape.apply(MessageUtil.strip(repliedUserName)))
                 .replace("%username%", escape.apply(MessageUtil.strip(repliedMessage.getAuthor().getName())))
+                .replace("%userid%", repliedMessage.getAuthor().getId())
                 .replace("%message%", message);
     }
 

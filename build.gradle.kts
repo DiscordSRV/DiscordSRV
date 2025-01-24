@@ -10,7 +10,7 @@ plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("net.kyori.indra.git") version "2.1.1"
     id("net.researchgate.release") version "3.0.2"
-    id("xyz.jpenilla.run-paper") version "2.3.0"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.discordsrv"
@@ -181,7 +181,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     maven("https://nexus.scarsz.me/content/groups/public/")
@@ -206,7 +206,7 @@ dependencies {
     }
 
     // Logging
-    implementation("me.scarsz.jdaappender:jda4:1.2.2")
+    implementation("me.scarsz.jdaappender:jda4:1.2.3")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9
@@ -222,7 +222,7 @@ dependencies {
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.4-20240708.051538-1")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
@@ -266,6 +266,7 @@ dependencies {
 
     // chat hooks
     compileOnly("ru.mrbrikster:chatty-api:2.18.2")
+    compileOnly("ru.brikster:chatty-api:3.0.0-20240908.194144-1") // most recent commit: ff0144c5fd9a692e3238dd8d03028023b94737b3
     compileOnly("br.com.finalcraft:fancychat:1.0.2")
     compileOnly("com.dthielke.herochat:Herochat:5.6.5")
     compileOnly("br.com.devpaulo:legendchat:1.1.5")

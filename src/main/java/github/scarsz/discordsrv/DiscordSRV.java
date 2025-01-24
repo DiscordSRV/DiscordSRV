@@ -26,6 +26,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
+import com.neovisionaries.ws.client.ProxySettings;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
@@ -73,6 +74,7 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import okhttp3.*;
 import okhttp3.internal.Util;
 import okhttp3.internal.tls.OkHostnameVerifier;
@@ -729,6 +731,9 @@ public class DiscordSRV extends JavaPlugin {
         String authUser = config.getString("ProxyUser");
         String authPassword = config.getString("ProxyPassword");
 
+        WebSocketFactory websocketFactory = new WebSocketFactory()
+                .setDualStackMode(DualStackMode.IPV4_ONLY);
+
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
@@ -741,7 +746,7 @@ public class DiscordSRV extends JavaPlugin {
                         ? (hostname, sslSession) -> true
                         : OkHostnameVerifier.INSTANCE);
 
-        if (proxyHost != null && !proxyHost.isEmpty() && !proxyHost.equals("https://example.com")) {
+        if (!proxyHost.isEmpty() && !proxyHost.equals("example.com")) {
             try {
                 // This had to be set to empty string to avoid issue with basic auth
                 // Reference: https://stackoverflow.com/questions/41806422/java-web-start-unable-to-tunnel-through-proxy-since-java-8-update-111
@@ -749,11 +754,20 @@ public class DiscordSRV extends JavaPlugin {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.trim(), proxyPort));
                 httpClientBuilder = httpClientBuilder.proxy(proxy);
 
+                ProxySettings proxySettings = websocketFactory.getProxySettings();
+                proxySettings.setHost(proxyHost.trim());
+                proxySettings.setPort(proxyPort);
+
                 if (!authPassword.isEmpty()) {
+                    String trimmedUsername = authUser.trim();
+                    String trimmedPassword = authPassword.trim();
+
                     httpClientBuilder = httpClientBuilder.proxyAuthenticator((route, response) -> {
-                        String credential = Credentials.basic(authUser.trim(), authPassword.trim());
+                        String credential = Credentials.basic(trimmedUsername, trimmedPassword);
                         return response.request().newBuilder().header("Proxy-Authorization", credential).build();
                     });
+
+                    proxySettings.setCredentials(trimmedUsername, trimmedPassword);
                 }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to generate a proxy from config options.", e);
@@ -874,9 +888,7 @@ public class DiscordSRV extends JavaPlugin {
                     .setCallbackPool(callbackThreadPool, false)
                     .setGatewayPool(gatewayThreadPool, true)
                     .setRateLimitPool(rateLimitThreadPool, true)
-                    .setWebsocketFactory(new WebSocketFactory()
-                            .setDualStackMode(DualStackMode.IPV4_ONLY)
-                    )
+                    .setWebsocketFactory(websocketFactory)
                     .setHttpClient(httpClient)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
@@ -1102,6 +1114,7 @@ public class DiscordSRV extends JavaPlugin {
         for (String hookClassName : new String[]{
                 // chat plugins
                 "github.scarsz.discordsrv.hooks.chat.ChattyChatHook",
+                "github.scarsz.discordsrv.hooks.chat.ChattyV3ChatHook",
                 "github.scarsz.discordsrv.hooks.chat.FancyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.HerochatHook",
                 "github.scarsz.discordsrv.hooks.chat.NChatHook", // nChat Hook needs to work before LegendChat
@@ -1869,15 +1882,26 @@ public class DiscordSRV extends JavaPlugin {
         if (chatHook == null || channel == null) {
             if (channel != null && !channel.equalsIgnoreCase("global")) return; // don't send messages for non-global channels with no plugin hooks
             DiscordGuildMessagePreBroadcastEvent preBroadcastEvent = api.callEvent(new DiscordGuildMessagePreBroadcastEvent
-                    (channel, message, PlayerUtil.getOnlinePlayers()));
+                    (author, channel, message, PlayerUtil.getOnlinePlayers()));
             message = preBroadcastEvent.getMessage();
             channel = preBroadcastEvent.getChannel();
             MessageUtil.sendMessage(preBroadcastEvent.getRecipients(), message);
             PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
             chatHook.broadcastMessageToChannel(channel, message);
+
+            // hacky fix to avoid api breakage :/
+            message = message.replaceText(TextReplacementConfig.builder()
+                    .match("%channelcolor%")
+                    .replacement("")
+                    .build());
         }
+
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
+
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(message).replace("»", ">")));
+        }
     }
 
     /**
