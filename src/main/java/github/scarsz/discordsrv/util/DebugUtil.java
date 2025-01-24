@@ -208,7 +208,7 @@ public class DebugUtil {
                 String line = br.readLine();
                 if (line == null) done = true;
                 else if (
-                    (line.toLowerCase().contains("discordsrv") && !line.toLowerCase().contains("[discordsrv] chat:"))
+                    line.toLowerCase().contains("discordsrv") && !line.toLowerCase().contains("[discordsrv] chat:")
                     || line.toLowerCase().contains(" /discord")
                 ) output.add(DiscordUtil.aggressiveStrip(line));
             }
