@@ -812,7 +812,7 @@ public class LangUtil {
             put(Language.ZH, "群組同步需要在synchronization.yml中有效的GroupRoleSynchronizationGroupsAndRolesToSync條目");
             put(Language.PL, "Synchronizacja grupowa wymaga ważnego GroupRoleSynchronizationGroupsAndRolesToSync wpisu w synchronization.yml");
             put(Language.DA, "Gruppe synkronisation kræver valid GroupRoleSynchronizationGroupsAndRolesToSync entréer i synchronization.yml");
-            put(Language.UK, "Синхронізація групи вимагає дійсних записів GroupRoleSynchronizationGroupsAndrolestosync у synchronization.yml");
+            put(Language.UK, "Синхронізація групи вимагає дійсних записів GroupRoleSynchronizationGroupsAndRolesToSync у synchronization.yml");
             put(Language.NB, "Gruppesynkronisering krever gyldig GroupRoleSynchronizationGroupsAndRolesToSync-oppføringer i synchronization.yml");
         }}), PLUGIN_RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV has been reloaded. This is NOT supported, and issues WILL occur! Restart your server before asking for support!");
