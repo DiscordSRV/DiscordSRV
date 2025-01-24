@@ -18,7 +18,7 @@ val minecraftVersion = project.properties["minecraftVersion"]!!.toString()
 val targetJavaVersion = 1.8
 
 val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
-val fullVersion = (project.version.toString()) + if (project.version.toString().endsWith("-SNAPSHOT")) (if (commit.length >= 7) "-" + commit.substring(0, 7) else "") else ""
+val fullVersion = (project.version.toString()) + if (project.version.toString().endsWith("-SNAPSHOT")) (if (commit.length >= 7) "+" + commit.substring(0, 7) else "") else ""
 
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
