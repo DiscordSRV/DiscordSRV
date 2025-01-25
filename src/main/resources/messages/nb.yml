@@ -41,7 +41,7 @@
 #                   f.eks: JegErNotch
 # %username%:      brukernavnet til brukeren som blir svart til på Discord
 #                   f.eks: Notch
-# %userid%:        the ID of the user that is being replied to on Discord
+# %userid%:        Brukerens ID som blir svart til på Discord
 #                   example: 1081004946872352958
 # %message%:       innholdet av meldingen som blir svart med
 #
@@ -425,7 +425,7 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, serveren har ikke svart 
 #                               %username%:     Discord-navnet til Discord-brukeren som brukerens Minecraft-bruker ble linket til
 # LinkedCommandSuccess:         %name%:         Discord-brukernavnet til Discord-brukeren som brukerens Minecraft-bruker ble linket til
 # UnlinkCommandSuccess:         %name%:         Discord-navnet til Discord-brukeren som brukerens Minecraft-bruker ble linket til
-# MinecraftNobodyFound:         %target%:       the input that led to no results being found
+# MinecraftNobodyFound:         %target%:       Forsøket som endte med at ingen resultater ble funnet
 #
 # Discord
 UnknownCode: "Jeg kjenner ikke til en slik code. Prøv igjen."
