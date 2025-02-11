@@ -75,7 +75,7 @@ public class CommandBroadcast {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
                 DiscordSRVBroadcastEvent event = new DiscordSRVBroadcastEvent(sender, MessageUtil.reserializeToDiscord(MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))));
                 Bukkit.getPluginManager().callEvent(event);
-                if (DiscordSRV.config().getBoolean("Experiment_BlockBroadcast")) {
+                if (!DiscordSRV.config().getBoolean("Experiment_BlockBroadcast")) {
                     DiscordUtil.queueMessage(
                             target,
                             MessageUtil.reserializeToDiscord(MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))),
@@ -85,7 +85,7 @@ public class CommandBroadcast {
             } else {
                 DiscordSRVBroadcastEvent event = new DiscordSRVBroadcastEvent(sender, rawMessage);
                 Bukkit.getPluginManager().callEvent(event); 
-                if (DiscordSRV.config().getBoolean("Experiment_BlockBroadcast")) {               
+                if (!DiscordSRV.config().getBoolean("Experiment_BlockBroadcast")) {               
                     DiscordUtil.queueMessage(target, rawMessage, true);
                 }
             }
