@@ -1,0 +1,30 @@
+# Dies ist die Konfigurationsdatei für das Sprachmodul von DiscordSRV.
+# Es ist eine experimentelle Funktion. Dinge funktionieren möglicherweise nicht richtig.
+# Wenn Sie mit diesem Modul herumspielen, senden Sie uns bitte ein Feedback zu
+# unserer Zwietracht: https://discordsrv.com/discord
+#
+
+# Gibt an, ob das Sprachmodul aktiviert werden soll
+# Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
+Voice enabled: false
+# Anzahl der Ticks zwischen Netzwerkaktualisierungen
+Tick speed: 5
+# Die Hauptkategorie, in der das Sprachmodul Sprachkanäle erstellt / löscht / mischt
+# Keine anderen Kanäle als der Lobby-Kanal (unten) sollten in diese Kategorie fallen
+Voice category: 000000000000000000
+# Der Lobby-Kanal (innerhalb der Sprachkategorie), in dem Personen bewegt werden
+# wenn sie sich nicht in Reichweite eines Netzwerks befinden. Dies ist auch der Kanal, mit dem sich die Leute verbinden.
+Lobby channel: 0000000000000000
+# Schaltet Benutzer in der Lobby stumm, die über die Berechtigungen "Andere sprechen" und "Andere stumm schalten" in der Lobby verfügen
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # Maximaler Abstand zwischen den zu verbindenden Spielern
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # Sobald sich ein Spieler einem Netzwerk anschließt, muss er eine Entfernung von
+  # "Stärke + Abnahme" vom nächsten Knoten haben, bevor die Verbindung getrennt wird
+  Falloff: 5
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false

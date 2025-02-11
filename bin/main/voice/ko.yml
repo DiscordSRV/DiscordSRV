@@ -1,0 +1,31 @@
+# DiscordSRV 음성 모듈의 설정 파일입니다.
+# 이 기능은 실험 기능입니다. 제대로 작동하지 않을 수 있습니다.
+# 이 모듈을 시험 삼아 사용하고 있다면, 우리에게 피드백을 보내주세요.
+# 우리의 디스코드에 이슈를 보내주세요. https://discordsrv.com/discord
+#
+
+# 음성 모듈 활성화
+# 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.
+Voice enabled: false
+# 네트워크 업데이트 틱 간격
+Tick speed: 5
+# 음성 모듈이 음성 채널을 생성/삭제/이동할수 있는 메인 카테고리
+# 이 카테고리에는 로비 채널 이외의 그 어떤 채널도 있어선 안됩니다.
+Voice category: 000000000000000000
+# 사람들이 사용할 수 있는 메인 음성 카테고리 하위 로비 채널
+# 사람들이 어떤 네트워크 범위 내에도 속해있지 않은 경우, 그들을 연결시킬 채널이기도 합니다.
+Lobby channel: 000000000000000000
+# 로비의 제한된 발언 권한을 우회할 수 있는 사용자 음소거
+# 디스코드 서버 내의 다른 역할을 통해 로비의 발언/음소거 권한을 우회할 수 있는 사용자를 음소거합니다.
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # 음성 채널 연결이 유지될 수 있는 플레이어 간 최대 거리
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # 사용자가 네트워크에 참여했을때, 사용자는 연결이 끊기기 전에
+  # 연결 강도와 연결 해제 거리를 무시할 수 있습니다.
+  Falloff: 5
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false

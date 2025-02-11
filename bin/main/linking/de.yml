@@ -1,0 +1,57 @@
+Require linked account to play:
+  Enabled: false
+
+  # Wenn Sie nicht wissen, was diese bedeuten, berühren Sie sie nicht
+  #
+  # Die Priorität, die der Join-Listener haben soll
+  # In der Reihenfolge von Anfang bis Ende sind die verfügbaren Werte LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # Möglicherweise müssen Sie dies auf eine spätere Priorität ändern, damit ein Ban-Plugin den Player kickt, bevor DiscordSRV sie ablehnt
+  Listener priority: LOWEST
+  # Das Ereignis, dass das Link-Modul Anmeldungen abhören und nicht zulassen soll
+  # Einige Whitelist-Plugins verwenden AsyncPlayerPreLoginEvent (gut), andere PlayerLoginEvent (nicht so gut).
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # Wenn Sie nicht wissen, was diese bedeuten, berühren Sie sie nicht
+
+  # Minecraft-IGNs, um immer zuzulassen, ob verknüpft oder Abonnent oder nicht
+  Bypass names: [Scarsz, Vankka]
+  # Ob Spieler auf der VANILLA-Whitelist die Notwendigkeit umgehen, ihre Konten zu verknüpfen oder eine Unterrolle haben
+  Whitelisted players bypass check: true
+  # Ob Spieler in der VANILLA-Banlist ihre Konten verknüpfen können
+  Check banned players: false
+  # Ob Spieler, die nicht in der VANILLA-Banlist sind, die Notwendigkeit umgehen, ihre Konten zu verknüpfen oder eine Unterrolle haben
+  Only check banned players: false
+
+  # Nachricht an die Spieler, die aufgefordert werden, ihre Konten zu verknüpfen
+  # Verwenden Sie {BOT} als Platzhalter für den Namen des Bots
+  # Verwenden Sie {CODE} als Platzhalter für den Code, den Benutzer zum DM des Bots benötigen
+  # Verwenden Sie {INVITE} als Platzhalter für den Einladungslink, den Benutzer benötigen, um dem Discord-Server beizutreten. Verwenden Sie den in config.yml konfigurierten DiscordInviteLink
+  Not linked message: "&7Sie müssen Ihr &9Discord&7-Konto verknüpfen, um spielen zu können.\n\n&7Senden Sie eine DM an &b{BOT}&7 auf dem Discord-Server, die nur &b{CODE}&7 enthält, um Ihr Konto zu verknüpfen.\n\n&7Discord Server » &b{INVITE}"
+
+  # Wenn diese Option aktiviert ist, müssen die Spieler nicht nur ihre Konten verknüpft haben, sondern auch
+  # um Mitglied eines Discord-Servers zu sein, auf dem sich der Bot auch befindet.
+  #
+  # Akzeptable Formate:
+  #   true/false: Das verknüpfte Konto muss sich auf mindestens einem Discord-Server befinden, auf dem sich der Bot ebenfalls befindet
+  #     ex: true
+  #   <Server-ID>: Das verknüpfte Konto muss sich auf dem angegebenen Discord-Server befinden
+  #     ex: 135634590575493120
+  #   [<Server-ID>, <Server-ID>, ...]: Das verknüpfte Konto muss sich auf ALLEN angegebenen Discord-Servern befinden
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # Der Wert dieser Option wird ersetzt, wenn unten Abonnentenrollen erzwungen werden.
+  Must be in Discord server: true
+
+  # Optional müssen Personen nicht nur verknüpft sein, sondern auch eine oder alle angegebenen Rollen wie eine Twitch-Unterrolle haben
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # Wenn false, ist nur eine der oben genannten Rollen erforderlich
+    Kick message: "&cSie müssen Twitch abonniert haben, um spielen zu können."
+
+  Messages:
+    DiscordSRV still starting: "&cDerzeit nicht verfügbar, um den Verbindungsstatus zu überprüfen, da der Server noch eine Verbindung zu Discord herstellt.\n\nVersuchen Sie es in einer Minute erneut."
+    Not in server: "&cSie sind derzeit nicht Teil unseres Discord-Servers.\n\nMach mit bei {INVITE}!"
+    Failed to find subscriber role: "&cEs konnte keine Abonnentenrolle in Discord gefunden werden.\n\nWenden Sie sich bezüglich dieses Problems an Ihre Serveradministratoren."
+    Failed for unknown reason: "&cBeim Versuch, Ihr Konto zu überprüfen, ist ein Fehler aufgetreten.\n\nWenden Sie sich bezüglich dieses Problems an Ihren Serveradministrator."
+    Kicked for unlinking: "&cSie wurden vom Server geworfen, weil Sie die Verknüpfung Ihrer Konten aufgehoben haben.\n\nBitte treten Sie dem Server erneut bei, um Ihre Konten erneut zu verknüpfen."

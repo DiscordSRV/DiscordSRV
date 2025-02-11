@@ -25,6 +25,7 @@ import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -72,13 +73,21 @@ public class CommandBroadcast {
             rawMessage = PlayerUtil.convertTargetSelectors(rawMessage, sender);
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
-                DiscordUtil.queueMessage(
-                        target,
-                        MessageUtil.reserializeToDiscord(MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))),
-                        true
-                );
+                DiscordSRVBroadcastEvent event = new DiscordSRVBroadcastEvent(sender, MessageUtil.reserializeToDiscord(MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))));
+                Bukkit.getPluginManager().callEvent(event);
+                if (DiscordSRV.config().getBoolean("Experiment_BlockBroadcast")) {
+                    DiscordUtil.queueMessage(
+                            target,
+                            MessageUtil.reserializeToDiscord(MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))),
+                            true
+                    );
+                }
             } else {
-                DiscordUtil.queueMessage(target, rawMessage, true);
+                DiscordSRVBroadcastEvent event = new DiscordSRVBroadcastEvent(sender, rawMessage);
+                Bukkit.getPluginManager().callEvent(event); 
+                if (DiscordSRV.config().getBoolean("Experiment_BlockBroadcast")) {               
+                    DiscordUtil.queueMessage(target, rawMessage, true);
+                }
             }
         }
     }
