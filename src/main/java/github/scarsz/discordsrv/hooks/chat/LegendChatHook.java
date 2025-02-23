@@ -24,15 +24,22 @@ import br.com.devpaulo.legendchat.api.Legendchat;
 import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import br.com.devpaulo.legendchat.channels.types.Channel;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreBroadcastEvent;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.dv8tion.jda.api.entities.User;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LegendChatHook implements ChatHook {
 
@@ -45,9 +52,19 @@ public class LegendChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channelName, Component message) {
+    public void broadcastMessageToChannel(String channelName, Component message, User author) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channelName);
         if (chatChannel == null) return; // no suitable channel found
+
+        DiscordGuildMessagePreBroadcastEvent event = DiscordSRV.api.callEvent(new DiscordGuildMessagePreBroadcastEvent
+                (channelName, message, author, Collections.unmodifiableList(getChannelRecipients(chatChannel))));
+        message = event.getMessage();
+
+        if (!channelName.equals(event.getChannel())) {
+            chatChannel = getChannelByCaseInsensitiveName(event.getChannel());
+            if (chatChannel == null) return; // no suitable channel found
+        }
+
         String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
@@ -58,7 +75,9 @@ public class LegendChatHook implements ChatHook {
 
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         chatChannel.sendMessage(translatedMessage);
-        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), legacy);
+
+        List<Player> recipients = getChannelRecipients(chatChannel);
+        PlayerUtil.notifyPlayersOfMentions(recipients::contains, legacy);
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {
@@ -72,4 +91,9 @@ public class LegendChatHook implements ChatHook {
         return PluginUtil.getPlugin("LegendChat");
     }
 
+    private List<Player> getChannelRecipients(Channel channel) {
+        return PlayerUtil.getOnlinePlayers().stream()
+                .filter(player -> channel.getPlayersWhoCanSeeChannel().contains(player))
+                .collect(Collectors.toList());
+    }
 }

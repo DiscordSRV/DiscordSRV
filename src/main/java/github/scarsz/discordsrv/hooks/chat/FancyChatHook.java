@@ -24,16 +24,21 @@ import br.com.finalcraft.fancychat.api.FancyChatApi;
 import br.com.finalcraft.fancychat.api.FancyChatSendChannelMessageEvent;
 import br.com.finalcraft.fancychat.config.fancychat.FancyChannel;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreBroadcastEvent;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.dv8tion.jda.api.entities.User;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
+
+import java.util.Collections;
+import java.util.List;
 
 public class FancyChatHook implements ChatHook {
 
@@ -52,9 +57,18 @@ public class FancyChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, Component message) {
+    public void broadcastMessageToChannel(String channel, Component message, User author) {
         FancyChannel fancyChannel = FancyChatApi.getChannel(channel);
         if (fancyChannel == null) return; // no suitable channel found
+
+        DiscordGuildMessagePreBroadcastEvent event = DiscordSRV.api.callEvent(new DiscordGuildMessagePreBroadcastEvent
+                (channel, message, author, Collections.unmodifiableList(fancyChannel.getPlayersOnThisChannel())));
+        message = event.getMessage();
+        if (!channel.equals(event.getChannel())) {
+            fancyChannel = FancyChatApi.getChannel(event.getChannel());
+            if (fancyChannel == null) return; // no suitable channel found
+        }
+
         String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
@@ -65,7 +79,9 @@ public class FancyChatHook implements ChatHook {
 
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         FancyChatApi.sendMessage(translatedMessage, fancyChannel);
-        PlayerUtil.notifyPlayersOfMentions(player -> fancyChannel.getPlayersOnThisChannel().contains(player), legacy);
+
+        List<Player> recipients = fancyChannel.getPlayersOnThisChannel();
+        PlayerUtil.notifyPlayersOfMentions(recipients::contains, legacy);
     }
 
     @Override

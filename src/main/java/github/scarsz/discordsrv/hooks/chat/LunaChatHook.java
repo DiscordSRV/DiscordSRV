@@ -27,10 +27,12 @@ import com.github.ucchyocean.lc3.member.ChannelMemberBukkit;
 import com.github.ucchyocean.lc3.member.ChannelMemberPlayer;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreBroadcastEvent;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.dv8tion.jda.api.entities.User;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
@@ -38,6 +40,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class LunaChatHook implements ChatHook {
@@ -54,15 +58,29 @@ public class LunaChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, Component message) {
+    public void broadcastMessageToChannel(String channel, Component message, User author) {
+
         Channel chatChannel = LunaChatBukkit.getInstance().getLunaChatAPI().getChannel(channel);
         DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Resolved LunaChat channel " + channel + " -> " + chatChannel + (chatChannel != null ? " (" + chatChannel.getName() + ")" : ""));
         if (chatChannel == null) return; // no suitable channel found
+
+        DiscordGuildMessagePreBroadcastEvent event = DiscordSRV.api.callEvent(new DiscordGuildMessagePreBroadcastEvent
+                (channel, message, author, Collections.unmodifiableList(getChannelRecipients(chatChannel))));
+        message = event.getMessage();
+
+        if (!channel.equals(event.getChannel())) {
+            chatChannel = LunaChatBukkit.getInstance().getLunaChatAPI().getChannel(event.getChannel());
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Resolved LunaChat channel " + event.getChannel() + " -> " + chatChannel + (chatChannel != null ? " (" + chatChannel.getName() + ")" : ""));
+            if (chatChannel == null) return; // no suitable channel found
+        }
+
+        List<Player> recipients = getChannelRecipients(chatChannel);
+
         String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelname%", chatChannel.getName())
-                .replace("%channelnickname%", (chatChannel.getAlias().equals(""))
+                .replace("%channelnickname%", (chatChannel.getAlias().isEmpty())
                         ? chatChannel.getName() : chatChannel.getAlias())
                 .replace("%message%", legacy)
                 .replace("%channelcolor%", MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(chatChannel.getColorCode()))));
@@ -70,18 +88,23 @@ public class LunaChatHook implements ChatHook {
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         chatChannel.chatFromOtherSource("Discord", null, translatedMessage);
 
-        PlayerUtil.notifyPlayersOfMentions(player ->
-                        chatChannel.getMembers().stream()
-                                .filter(member -> member instanceof ChannelMemberBukkit)
-                                .map(member -> ((ChannelMemberBukkit) member).getPlayer())
-                                .collect(Collectors.toList())
-                                .contains(player),
-                legacy);
+        PlayerUtil.notifyPlayersOfMentions(recipients::contains, legacy);
     }
 
     @Override
     public Plugin getPlugin() {
         return PluginUtil.getPlugin("LunaChat");
+    }
+
+    private List<Player> getChannelRecipients(Channel channel) {
+        return PlayerUtil.getOnlinePlayers()
+                .stream()
+                .filter(player -> channel.getMembers().stream()
+                        .filter(member -> member instanceof ChannelMemberBukkit)
+                        .map(member -> ((ChannelMemberBukkit) member).getPlayer())
+                        .collect(Collectors.toList())
+                        .contains(player))
+                .collect(Collectors.toList());
     }
 
 }

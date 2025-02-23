@@ -20,27 +20,36 @@
 
 package github.scarsz.discordsrv.api.events;
 
+import net.dv8tion.jda.api.entities.User;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
+
 /**
- * <p>If there are no chat hooks found this event is called directly before a message from Discord is processed
- * and broadcasted to the Minecraft server</p>
+ * <p>Called before DiscordSRV broadcasts a message to a chat channel on the Minecraft server.</p>
+ *
+ * <p>Depending on the type of chat plugin used, {@link #getRecipients()} may return an immutable list.
+ * Using {@link #isRecipientsMutable()} can be used to check if the list is mutable, and recipients can
+ * be added or removed.</p>
+ *
+ * <p>Currently, only TownyChat and VentureChat support mutable recipient lists.</p>
  *
  * <p>At the time this event is called, the message, channel, and recipients can still be changed</p>
  */
-@SuppressWarnings("LombokGetterMayBeUsed")
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class DiscordGuildMessagePreBroadcastEvent extends Event {
 
     private String channel;
     private Component message;
+    private final User author;
     private final List<? extends CommandSender> recipients;
 
-    public DiscordGuildMessagePreBroadcastEvent(String channel, Component message, List<? extends CommandSender> recipients) {
+    public DiscordGuildMessagePreBroadcastEvent(String channel, Component message, User author, List<? extends CommandSender> recipients) {
         this.channel = channel;
         this.message = message;
+        this.author = author;
         this.recipients = recipients;
     }
 
@@ -50,6 +59,10 @@ public class DiscordGuildMessagePreBroadcastEvent extends Event {
 
     public Component getMessage() {
         return this.message;
+    }
+
+    public User getAuthor() {
+        return author;
     }
 
     public List<? extends CommandSender> getRecipients() {
@@ -62,5 +75,17 @@ public class DiscordGuildMessagePreBroadcastEvent extends Event {
 
     public void setMessage(Component message) {
         this.message = message;
+    }
+
+    public boolean isRecipientsMutable() {
+        // You can really only check if a list is mutable
+        // in java by trying to add or remove an element.
+        try {
+            recipients.add(null);
+            recipients.remove(null);
+            return true;
+        } catch (UnsupportedOperationException e) {
+            return false;
+        }
     }
 }

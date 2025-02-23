@@ -22,10 +22,12 @@ package github.scarsz.discordsrv.hooks.chat;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreBroadcastEvent;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.dv8tion.jda.api.entities.User;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +38,9 @@ import ru.mrbrikster.chatty.api.chats.Chat;
 import ru.mrbrikster.chatty.api.events.ChattyMessageEvent;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 public class ChattyChatHook implements ChatHook {
@@ -47,7 +51,7 @@ public class ChattyChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, Component message) {
+    public void broadcastMessageToChannel(String channel, Component message, User author) {
         ChattyApi api = getApi();
         if (api == null) return;
 
@@ -58,6 +62,19 @@ public class ChattyChatHook implements ChatHook {
         }
 
         Chat chat = optChat.get();
+
+        DiscordGuildMessagePreBroadcastEvent event = DiscordSRV.api.callEvent(new DiscordGuildMessagePreBroadcastEvent
+                (channel, message, author, Collections.unmodifiableList(new ArrayList<>(chat.getRecipients(null)))));
+        message = event.getMessage();
+
+        if (!channel.equals(event.getChannel())) {
+            chat = api.getChat(event.getChannel()).orElse(null);
+            if (chat == null) {
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
+                return;
+            }
+        }
+
         String legacy = MessageUtil.toLegacy(message);
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", "")

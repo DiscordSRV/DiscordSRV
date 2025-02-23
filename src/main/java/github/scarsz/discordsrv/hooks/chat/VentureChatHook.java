@@ -23,6 +23,7 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.comphenix.protocol.events.PacketContainer;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreBroadcastEvent;
 import github.scarsz.discordsrv.api.events.VentureChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.VentureChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.util.*;
@@ -34,6 +35,7 @@ import mineverse.Aust1n46.chat.utilities.Format;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -215,12 +217,36 @@ public class VentureChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, Component component) {
+    public void broadcastMessageToChannel(String channel, Component component, User author) {
         ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive
         if (chatChannel == null) {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
             return;
         }
+        ChatChannel finalChatChannel = chatChannel;
+        List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream()
+                .filter(p -> p.getListening().contains(finalChatChannel.getName()))
+                .filter(p -> !finalChatChannel.hasPermission() || p.getPlayer().hasPermission(finalChatChannel.getPermission()))
+                .collect(Collectors.toList());
+
+        List<Player> recipients = playersToNotify.stream()
+                .map(MineverseChatPlayer::getPlayer)
+                .collect(Collectors.toList());
+        DiscordGuildMessagePreBroadcastEvent event = DiscordSRV.api.callEvent(new DiscordGuildMessagePreBroadcastEvent(channel, component, author, recipients));
+        component = event.getMessage();
+        if (!channel.equals(event.getChannel())) {
+            chatChannel = ChatChannel.getChannel(event.getChannel());
+            if (chatChannel == null) {
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + event.getChannel() + "\" but the channel doesn't exist (returned null); aborting message send");
+                return;
+            }
+        }
+
+        playersToNotify = MineverseChat.onlinePlayers.stream()
+                .filter(it -> recipients.contains(it.getPlayer()))
+                .collect(Collectors.toList());
+
+
         String legacy = MessageUtil.toLegacy(component);
 
         String channelColor = null;
@@ -245,10 +271,6 @@ public class VentureChatHook implements ChatHook {
             MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), translatedMessage);
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Sent a message to VentureChat via BungeeCord (channel: " + chatChannel.getName() + ")");
         } else {
-            List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream()
-                    .filter(p -> p.getListening().contains(chatChannel.getName()))
-                    .filter(p -> !chatChannel.hasPermission() || p.getPlayer().hasPermission(chatChannel.getPermission()))
-                    .collect(Collectors.toList());
             for (MineverseChatPlayer player : playersToNotify) {
                 String playerMessage = (player.hasFilter() && chatChannel.isFiltered()) ? Format.FilterChat(message) : message;
 
@@ -261,8 +283,9 @@ public class VentureChatHook implements ChatHook {
                 Format.sendPacketPlayOutChat(player.getPlayer(), packet);
             }
 
+            List<MineverseChatPlayer> finalPlayersToNotify = playersToNotify;
             PlayerUtil.notifyPlayersOfMentions(player ->
-                            playersToNotify.stream()
+                            finalPlayersToNotify.stream()
                                     .map(MineverseChatPlayer::getPlayer)
                                     .collect(Collectors.toList())
                                     .contains(player),
