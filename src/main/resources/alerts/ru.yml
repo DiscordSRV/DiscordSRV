@@ -78,7 +78,7 @@
 #
 Alerts:
   # Конфиг-образец, отправляет сообщение в канал "fish", когда игрок ловит рыбу
-  #- Trigger: PlayerFishEvent
+  #- Trigger: org.bukkit.event.player.PlayerFishEvent
   #  Channel: fish
   #  Conditions:
   #    - state.name() == 'CAUGHT_FISH'
@@ -89,7 +89,7 @@ Alerts:
   #      Name: "{name} поймал ${caught.itemStack.type.name()}!"
 
   # Конфиг-образец, чтобы отправлять уведомления античита Matrix
-  #- Trigger: PlayerViolationEvent
+  #- Trigger: me.rerere.matrix.api.events.PlayerViolationEvent
   #  Channel: matrix
   #  Conditions:
   #    - violations >= 5 # Не отправлять инфу про тех, у кого меньше 5 нарушений

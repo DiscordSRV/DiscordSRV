@@ -79,7 +79,7 @@
 #
 Alerts:
   # Eksempel konfiguration på at sende en besked til "fish" DiscordSRV kanal, når en spiller successfuldt fanger en fisk
-  #- Trigger: PlayerFishEvent
+  #- Trigger: org.bukkit.event.player.PlayerFishEvent
   #  Channel: fisk
   #  Conditions:
   #    - state.name() == 'CAUGHT_FISH'
@@ -90,7 +90,7 @@ Alerts:
   #      Name: "{name} fangede en ${caught.itemStack.type.name()}!"
 
   # Eksempel konfiguration til at sende Matrix anti-cheat beskeder
-  #- Trigger: PlayerViolationEvent
+  #- Trigger: me.rerere.matrix.api.events.PlayerViolationEvent
   #  Channel: matrix
   #  Conditions:
   #    - violations >= 5 # Ikke send events til spillere med < 5 krænkelser
