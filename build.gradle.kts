@@ -180,7 +180,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     maven("https://nexus.scarsz.me/content/groups/public/")
@@ -215,7 +215,7 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-core:2.0-beta9")
 
     // adventure, adventure-platform, MCDiscordReserializer
-    val adventureVersion = "4.17.0"
+    val adventureVersion = "4.20.0"
     api("net.kyori:adventure-api:${adventureVersion}")
     api("net.kyori:adventure-text-minimessage:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
