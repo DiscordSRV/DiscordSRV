@@ -1,0 +1,446 @@
+# Discord -> Minecraft-meldinger
+#
+# DiscordToMinecraftChatMessageFormat: formatet som skal brukes når meldinger sendes fra Discord to Minecraft
+# DiscordToMinecraftChatMessageFormatNoRole: formatet som brukes når meldinger sendes fra Discord to Minecraft når en spiller mangler roller
+#
+# Du kan ha forskjellige formater per kanal. Ta for eksempel at du har en kanal kalt: "MinKanal".
+# Hvis du vil bruke en annen formatering enn den globale kan du legge til følgende egenskaper:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord Fra MinKanal &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord Fra MinKanal&r] %name% » %message%"
+#
+# Tilgjengelige placeholders:
+# %allroles%:       alle rollene personen har kombinert med tegn fra DiscordToMinecraftAllRolesSeparator mellom alle
+#                    f.eks: Eier | Utvikler | Sjefen
+# %message%:        meldingsinnhold
+#                    f.eks: Hallo!
+# %toprole%:        personens høyest rangerte rolle
+#                    f.eks: Eier
+# %toprolealias%:   aliaset for rollen fra DiscordChatChannelRoleAliases i config.yml ellers rollenavnet
+#                    f.eks: Utv
+# %toproleinitial%: første tegn fra personens høyeste rangerte rolle
+#                    f.eks: O
+# %toprolecolor%:   omtrentlig farge fra personens høyeste rangerte rolle
+#                    f.eks: &4
+# %name%:           personens fungerende navn på Discord (bruker kallenavn hvis satt ellers brukes brukernavnet)
+#                    f.eks: JegErNotch
+# %username%:       personens brukernavn på Discord
+#                    f.eks: Notch
+# %channelname%:    navnet på kanalen som meldingen kommer fra
+#                    f.eks: server-chat
+# %reply%:          meldingen som blir vist når meldingen er et svar til en annen melding.
+#                    Meldingsformatet kan bli konfigurert med DiscordToMinecraftMessageReplyFormat,
+#                    dette vil stå tomt hvis meldingen ikke er et svar til en annen melding
+#
+# DiscordToMinecraftAllRolesSeparator: skilletegnet som skal bli brukt mellom roller i %allroles%
+#
+# DiscordToMinecraftMessageReplyFormat: meldingsformatet som vises for å indikere at meldingen er et svar
+#
+# Tilgjengelige placeholders:
+# %name%:          fungerende navnet til brukeren som blir svart til på Discord (bruker kallenavn hvis satt eller brukes brukernavnet)
+#                   f.eks: JegErNotch
+# %username%:      brukernavnet til brukeren som blir svart til på Discord
+#                   f.eks: Notch
+# %userid%:        Brukerens ID som blir svart til på Discord
+#                   example: 1081004946872352958
+# %message%:       innholdet av meldingen som blir svart med
+#
+# MERK: %reply%-placeholderen må være tilstede i formatet hvis DiscordToMinecraftMessageReplyFormat skal vise svaret som en melding
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (svarer %name%)"
+
+# Minecraft -> Discord-meldinger
+#
+# MinecraftChatToDiscordMessageFormat: formatet som brukes når meldinger sendes fra Minecraft til Discord
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: brukt istedenfor MinecraftChatToDiscordMessageFormat 
+#                                                    når primærgruppen til spilleren ikke ble funnet
+#
+# Tilgjengelige placeholders:
+# %username%:     ubehandlet brukernavn
+#                  f.eks: jeb_
+# %displayname%:  kallenavnet i serverprofil, kallenavn i brukerprofil eller annet
+#                  f.eks: SelvesteSjefenJeb
+# %usernamenoescapes%:     ubehandlet brukernavn uten å flykte fra Discord-formatet (for bruk av innebygd kode og markdown i kodeblokker)
+#                  f.eks: jeb_
+# %displaynamenoescapes%:  kallenavnet i serverprofil, kallenavn i brukerprofil eller annet uten å flykte fra Discord-formatet (for bruk av innebygd kode og markdown i kodeblokker)
+#                  f.eks: SelvesteSjefenJeb
+# %message%:      meldingsinnhold
+#                  f.eks: Hallo!
+# %primarygroup%: navnet til brukerens primærgruppe
+# %world%:        navn på verden spiller er i
+#                  f.eks: world
+# %worldalias%:   alias for verden som spiller er i ved bruk av Multiverse-Core
+#                  f.eks: Mainland
+# %date%:         nåværende dato og tid
+#                  f.eks: Søn Jan 1. 15:30:45 CEST 2017
+# %channelname%:  navnet på kanalen som meldingen ble sendt i hvis meldingen ble sendt fra en kanal
+#                  f.eks: Global
+# PlaceholderAPI-placeholders er også støttet
+#
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+
+# Melding for chat-channel-plugins
+# Dette er en spesiell melding som bare blir brukt når en støttet chat-channel-plugin er tilknyttet
+# Den endrer hvordan meldingen ser ut i spillet for å legge til informasjon om hvilken kanal meldingen kom fra
+#
+# Available placeholders:
+# %channelcolor%:    fargetegnet som korresponderer til kanalen
+#                     f.eks: meldinger fra kanalen er røde. Dette vil da byttet ut med rød fargetegn
+# %channelname%:     det virkelige navnet til kanalen. Dette er vanligvis det server internt kjenner til
+#                     f.eks: personale
+# %channelnickname%: det formelle kallenavnet til kanalen. Dette er vanligvis det navnet spillere ser
+#                     f.eks: Personale
+# %message%:         meldingen som resultat etter DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole
+#                     f.eks: jeb_ > Hei fra serveren!
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap-meldinger
+#
+# DynmapNameFormat: formatet for brukernavn-delen for meldinger sendt til Dynmap (kan være sjult avhengig av innstilling)
+# DynmapChatFormat: formatet for meldingsdelen  for meldinger sendt til Dynmap
+#
+# Tilgjengelige placeholders:
+# Samme som Discord -> Minecraft placeholders
+#
+# DynmapDiscordFormat: formatet for Dynmap-meldinger sendt til Discord
+#
+# Tilgjengelige placeholders:
+# %message%:  meldingsinnhold
+#              f.eks: Hallo!
+# %name%:     brukernavnet for meldingen som sendes til Dynmaps WebChat (kan også være tom)
+#              f.eks: Notch
+# PlaceholderAPI-placeholders er også støttet
+#
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
+
+# Konsollkanal-meldinger på Discord
+# Dette er formatet som brukes ved sending av linjer fra konsollen til konsollkanalen når det er skrudd på
+#
+# Tilgjengelige placeholders:
+# {level}:    alvorlighetsgrad for meldinger
+#              f.eks: INFO, WARN, ERROR
+# {name}:     loggernavn
+#              f.eks: Server
+# {datetime}: nåværende tid og dato
+#              f.eks: Søn Jan 1. 15:30:45 CEST 2017
+# PlaceholderAPI-placeholders er også støttet
+#
+# DiscordConsoleChannelTimestampFormat: Datoformatet som vil bli brukt for {date} og {datetime} placeholdere
+# DiscordConsoleChannelPrefix: Prefikset å legge foran
+# DiscordConsoleChannelSuffix: Suffikset å legge bak
+#
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
+
+# !c feilmelding i Discords chatkanal
+# Brukt når en feil oppstår med tillatelser for spiller som kjører en kommando, men ikke selve utføringen
+# Dette blir sendt via DM til brukeren
+#
+# Tilgjengelige placeholders:
+# %user%:  navnet til brukeren som prøvde å utføre kommandoen
+#           f.eks: Notch
+# %error%: grunnen til feilen
+#           f.eks: Ingen tilgang
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, det oppsto en feil %error% da du prøvde å utføre en kommando"
+
+# Spillerliste-kommando i Discords chatkanal
+# Meldinger brukt når noen kjører spillerliste-kommandoen i en chatkanal
+#
+# DiscordChatChannelListCommandFormatOnlinePlayers: meldingen i begynnelsen av listen før alle spillernavnene
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: brukt istedenfor når ingen spillere er pålogget
+# DiscordChatChannelListCommandPlayerFormat: formatet for hvordan en spiller vises i listen
+#   Tilgjengelige placeholders:
+#   %username%:     ubehandlet spillernavn
+#   %displayname%:  visningsnavn fra kallenavn
+#   %primarygroup%: navnet til brukerens primærgruppe
+#   %world%:        navnet på verden som spiller er i
+#   %worldalias%:   alias for verden som spiller er i ved bruk av Multiverse-Core
+#   PlaceholderAPI-placeholders er også støttet
+# DiscordChatChannelListCommandAllPlayersSeparator: skilletegnet som blir brukt mellom spillere
+#
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Påloggede spillere (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Ingen spillere pålogget**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
+
+# Minecraft-varselsmeldinger -> Discord
+#
+#
+# Embed-information:
+# Color:      tar en fargekode i heksadesimal (HEX) (f.eks "#ffffff") eller et heltall i RGB-spekteret (f.eks 0)
+# Fields:     formatet er "title;value;inline" (f.eks "Hvem ble med?;%displayname%;true") eller "blank" for å sette inn et tomt felt
+# Timestamp:  sett til true for å bruke tiden som meldingen ble sendt eller bruk et tidsstempel (https://www.epochconverter.com/)
+#
+# Tilgjengelige placeholders for PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
+# %displayname%:         visningsnavn for kallenavn
+# %username%:            ubehandlet spillernavn
+# %displaynamenoescapes%:         visningsnavn for kallenavn uten å flykte fra Discord-formatet (for bruk av innebygd kode og markdown i kodeblokker
+# %usernamenoescapes%:            ubehandlet spillernavn uten å flykte fra Discord-formatet (for bruk av innebygd kode og markdown i kodeblokker
+# %date%:                nåværende tid og dato
+# %embedavatarurl%:      brukerens avatar
+# %botavatarurl%:        bottens avatar
+# %botname%:             bottens navn
+# PlaceholderAPI-placeholders er også støttet
+#
+# Tilgjengelige placeholders for PlayerJoin-meldinger:
+# %message%:        påloggingsmelding sett slik som i spillet
+#
+MinecraftPlayerJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% ble med i serveren"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Available placeholders for PlayerFirstJoin messages:
+# %message%:        påloggingsmelding sett slik som i spillet
+#
+MinecraftPlayerFirstJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% ble med for første gang i serveren"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Available placeholders for PlayerLeave messages:
+# %message%:        frakoblingsmelding sett slik som i spillet
+#
+MinecraftPlayerLeaveMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% forlot serveren"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Tilgjengelige placeholders for PlayerDeath-meldinger:
+# %deathmessage%: ubehandlet dødsmeldinger
+# %world%:        navn på verden som spiller døde i
+#
+MinecraftPlayerDeathMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Tilgjengelige placeholders for PlayerAchievement-meldinger:
+# %achievement%: navnet til prestasjon/fremgang
+# %world%:       navn på verden som spiller er i
+#
+MinecraftPlayerAchievementMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% har oppnådd prestasjonen %achievement%!"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+# Melding for kanaloppdatering
+# Hører til automatisk oppdatering av chat- eller konsollkanalens emne med serverinformasjon
+#
+# ChannelTopicUpdater______ChannelTopicFormat: melding som skal settes som kanalens emne hvert sekund
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: melding som skal settes som kanalens emne når serveren avsluttes
+#
+# Tilgjengelige placeholders:
+# %playercount%:   nåværende antall spillere
+# %playermax%:     maks antall spillere
+# %date%:          nåværende dato
+# %totalplayers%:  alle spillere som har blitt med i hovedverdenen
+# %uptimemins%:    antall minutter siden DiscordSRV startet
+# %uptimehours%:   antall timer siden DiscordSRV startet
+# %motd%:          serverens motd (message of the day)
+# %serverversion%: serverversjonen f.eks paper-1.21
+# %freememory%:    antall fritt minne for JVM i Megabyte
+# %usedmemory%:    antall brukt minne for JVM i Megabyte
+# %totalmemory%:   total minne for JVM i Megabyte
+# %maxmemory%:     maks antall minne for JVM i Megabyte
+# %freememorygb%:  antall fritt minne for JVM i Gigabyte
+# %usedmemorygb%:  antall brukt minne for JVM i Gigabyte
+# %totalmemorygb%: total minne for JVM i Gigabyte
+# %maxmemorygb%:   maks antall minne for JVM i Gigabyte
+# %tps%:           gjennomsnitnlig Server-TPS
+# PlaceholderAPI-placeholders er også støttet
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% spillere pålogget | %totalplayers% unike spillere noensinne har blitt med | Server online for %uptimemins% minutter | Siste oppdatering: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Minne: %usedmemorygb%GB brukt/%freememorygb%GB fri/%maxmemorygb%GB max | %serverversion%"
+# AtServerShutdownFormats støtter BARE %totalplayers%, %serverversion%, og %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server er offline | %totalplayers% unike spillere noensinne har blitt med"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server er offline | %serverversion%"
+
+# Discords kommando-melding
+# Dette er meldingen som blir sendt til spillere når de kjører "/discord". Det er anbefalt å legge igjen syntaks for kommando for dette
+# Bruk {INVITE} som en placeholder for invitasjonslenken som spillere trenger for å bli med i Discord-serveren. Bruker verdien "DiscordInviteLink" konfigurert i config.yml
+#
+DiscordCommandFormat: "&bBli med på Discord-serveren vår med: {INVITE}&b. For hjelp kjør \"/discord ?\""
+
+# No permission message
+NoPermissionMessage: "&cDu har ikke tillatelse til å utføre denne kommandoen."
+
+# Unknown command message
+UnknownCommandMessage: "&bDen kommandoen finnes ikke!"
+
+# Meldinger for serveroppstart og serveravslutning
+# DiscordChatChannelServerStartupMessage: melding som blir sendt når server starter. Sett blank for å skru av
+# DiscordChatChannelServerShutdownMessage: melding som blir sendt når server avsluttes; Sett blank for å skru av
+#
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server har startet**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server har stoppet**"
+
+# Server-watchdog-melding
+#
+# Watchdog overvåker alltid sist gang serveren utførte et spilltick
+# Discord-messages kan ble utløst hvis tiden det tok siden siste tick er lengere enn tiden satt i sekunder
+#
+# ServerWatchdogMessage: meldingen som blir sendt til hovedkanalen.
+#                        du kan @nevne brukere ved å bruke "<@USERID>", dvs. "<@12345678901234567890>"
+#                        du kan @nevne roller ved å bruke "<@&ROLEID>", dvs. "<@&12345678901234567890>"; bruk konsollen for å se når discordsrv laster rolle-IDer
+#                        du kan @nevne servereier ved å bruke "%guildowner%"
+#                        du kan bruke dato og tid for serverkrasj i meldingen ved å bruke %date%
+#                        du kan bruke ServerWatchdogTimeout som en placeholder ved å bruke %timeout%
+#                        du kan bruke %timestamp%-placeholderen for bruk av Discords tidstempel-format
+#
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, serveren har ikke svart for %timeout% sekunder siden :fire::bangbang:"
+
+# Meldinger for brukerlinking
+# Dette er meldinger som blir brukt når brukere blir linket
+#
+# Tilgjengelige placeholders:
+# UnknownCode/InvalidCode:      %code%:         koden som blir generert for spilleren som brukes til å linke brukere med
+#                               %mention%:      Discord-brukerens nevnelse
+# DiscordAccountLinked:         %name%:         navnet til Minecraft-spilleren som brukerens Discord-bruker ble linket til
+#                               %displayname%:  visningsnavnet til Minecraft-spilleren som brukerens Discord-bruker ble linket til
+#                               %uuid%:         Minecraft-spillerens UUID som brukerens Discord-bruker ble linket til
+#                               %mention%:      Discord-brukerens nevnelse
+# DiscordAccountAlreadyLinked:  %uuid%:         Minecraft-UUID til brukerens linket Minecraft-bruker
+#                               %username%:     Minecraft-brukernavnet til brukerens linket Minecraft-bruker
+#                               %mention%:      Discord-brukerens nevnelse
+# DiscordLinkedAccountRequired  %message%:      brukerens melding som blir vist til dem når den ikke kan bli sendt pga. de ikke hadde linket
+# CodeGenerated:                %code%:         koden som blir generert for spilleren som brukes til å linke brukere medh
+#                               %botname%:      navnet til botten på Discord
+# MinecraftAccountLinked:       %id%:           Discord-IDen til Discord-brukeren som brukerens Minecraft-bruker ble linket til
+#                               %username%:     Discord-navnet til Discord-brukeren som brukerens Minecraft-bruker ble linket til
+# LinkedCommandSuccess:         %name%:         Discord-brukernavnet til Discord-brukeren som brukerens Minecraft-bruker ble linket til
+# UnlinkCommandSuccess:         %name%:         Discord-navnet til Discord-brukeren som brukerens Minecraft-bruker ble linket til
+# MinecraftNobodyFound:         %target%:       Forsøket som endte med at ingen resultater ble funnet
+#
+# Discord
+UnknownCode: "Jeg kjenner ikke til en slik code. Prøv igjen."
+InvalidCode: "Er det koden din? Link-koder er fire numre lange."
+DiscordAccountLinked: "Discord-brukeren din har blitt tilknyttet til to %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "Du er allerede tilknyttet til %username% (%uuid%)"
+DiscordLinkedAccountRequired: "Du prøvde å si følgende meding til spill-chatten, men dette kreves at du har linket Minecraft-brukeren din til Discord. Link den i spillet med `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Kunne ikke sjekke om bruker er linket. Prøv igjen senere"
+# Minecraft
+CodeGenerated: "Din link-kode er %code%. Send en DM til botten (%botname%) på Discord med denne koden som eneste innhold for å linke brukerene dine."
+ClickToCopyCode: "Klikk for å kopiere"
+MinecraftAccountLinked: "&bDin UUID har blir linket til Discord-bruker %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bDin Minecraft-bruker er allerede tilknyttet en Discord-bruker. Du kan avkoble brukeren din med /discord unlink hvis du har tillatelse til å gjennomføre dette."
+LinkedCommandSuccess: "&bMinecraft-brukeren din er nå tilknyttet til %name%."
+UnlinkCommandSuccess: "&bMinecraft-brukeren din er ikke lenger tilknyttet til %name%."
+MinecraftNoLinkedAccount: "&cMinecraft-brukeren din er ikke tilknyttet til en Discord-bruker."
+LinkingError: "&cKan ikke linke brukere på grunn av en intern feil. Kontakt serveradministrator."
+MinecraftNobodyFound: "&cFant ingen med Discord-ID / Discord-navn / Minecraft-navn / Minecraft-UUID som tilhører \"%target%\" å lete etter."
