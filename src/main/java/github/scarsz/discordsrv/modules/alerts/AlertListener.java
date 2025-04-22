@@ -212,10 +212,10 @@ public class AlertListener implements Listener, EventListener {
                     Method method = null;
                     Class<?> handlerListClass = eventClass;
                     while (method == null && handlerListClass != null) {
-                        handlerListClass = handlerListClass.getSuperclass();
                         try {
-                            method = eventClass.getDeclaredMethod("getHandlerList");
+                            method = handlerListClass.getDeclaredMethod("getHandlerList");
                         } catch (NoSuchMethodException ignored) {}
+                        handlerListClass = handlerListClass.getSuperclass();
                     }
 
                     if (method == null) {
