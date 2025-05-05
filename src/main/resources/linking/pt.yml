@@ -1,0 +1,56 @@
+Require linked account to play:
+  Enabled: false
+
+  # Se você não sabe o que isso significa, não mexa aqui
+  #
+  # A prioridade que o listener de entrada deve ter
+  # Em ordem do primeiro para o último: LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # Talvez seja necessário mudá-la para que um plugin de banimento expulse o jogador antes do DiscordSRV negar o login
+  Listener priority: LOWEST
+  # O evento que o módulo de vinculação deve ouvir para proibir o login
+  # Alguns plugins de whitelist usam AsyncPlayerPreLoginEvent (bom), outros usam PlayerLoginEvent (menos bom)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # Se você não sabe o que isso significa, não mexa aqui
+
+  # Nomes IGN do Minecraft que sempre serão permitidos, esteja vinculado ou não
+  Bypass names: [Scarsz, Vankka]
+  # Se jogadores na whitelist VANILLA ignoram necessidade de vincular conta/ter papel de assinante
+  Whitelisted players bypass check: true
+  # Se jogadores na banlist VANILLA podem vincular suas contas
+  Check banned players: false
+  # Se jogadores não banidos ignoram necessidade de vincular conta/ter papel de assinante
+  Only check banned players: false
+
+  # Mensagem para expulsar jogadores informando que precisam vincular a conta
+  # Use {BOT} como placeholder para o nome do bot
+  # Use {CODE} como placeholder para o código que precisam enviar no DM
+  # Use {INVITE} como placeholder para o link de convite do Discord (conforme DiscordInviteLink em config.yml)
+  Not linked message: "&7Você deve vincular sua conta do &9Discord &7para jogar.\n\n&7Envie uma DM para &b{BOT}&7 no servidor Discord contendo apenas &b{CODE}&7 para vincular sua conta.\n\n&7Convite do Discord » &b{INVITE}"
+
+  # Se habilitado, além de vincular a conta, o jogador deverá ser membro de um servidor Discord onde o bot também esteja.
+  #
+  # Formatos aceitos:
+  #   true/false : conta vinculada deve estar em pelo menos um servidor Discord do bot
+  #     ex: true
+  #   <server id> : conta vinculada deve estar no servidor Discord especificado
+  #     ex: 135634590575493120
+  #   [<server id>, …] : conta vinculada deve estar em TODOS os servidores da lista
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # Este valor é ignorado se houver papéis de assinante exigidos abaixo.
+  Must be in Discord server: true
+
+  # Opcionalmente exija que, além de vinculada, o jogador tenha um ou todos os papéis especificados (ex: papel de assinante Twitch)
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # quando false, basta um dos papéis acima
+    Kick message: "&cVocê deve ser assinante na Twitch para poder jogar."
+
+  Messages:
+    DiscordSRV still starting: "&cIndisponível para verificar status de vinculação porque o servidor ainda está conectando ao Discord.\n\nTente novamente em um minuto."
+    Not in server: "&cVocê não faz parte do nosso servidor Discord.\n\nEntre em {INVITE}!"
+    Failed to find subscriber role: "&cFalha ao encontrar qualquer papel de assinante no Discord.\n\nContate os administradores do servidor sobre este problema."
+    Failed for unknown reason: "&cOcorreu um erro ao tentar verificar sua conta.\n\nContate seu administrador do servidor sobre este problema."
+    Kicked for unlinking: "&cVocê foi expulso do servidor por desvincular suas contas.\n\nReentre no servidor para vincular suas contas novamente."
