@@ -1,0 +1,123 @@
+# Este é um recurso /avançado/ do DiscordSRV que permite enviar mensagens ao Discord quando um evento de jogo acontece
+# ou quando um comando é executado. Você precisará de conhecimento prático de como eventos Bukkit funcionam e suas propriedades.
+# Se você não tiver certeza do que está fazendo aqui, talvez pergunte a um desenvolvedor ou entre no nosso servidor de suporte em discordsrv.com/discord
+# Fez algo que gostaria de compartilhar? Você pode fazê-lo no fórum #alerts do nosso servidor Discord (link acima)
+#
+# Consulte a javadoc da API Bukkit para encontrar eventos e propriedades a usar:
+#  https://hub.spigotmc.org/javadocs/bukkit
+# Recursos úteis para aprender a usar SpEL:
+#  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
+#  https://dzone.com/articles/learn-spring-expression-language-with-examples
+#
+# Você pode usar os seguintes espaços reservados:
+#  {tps} - TPS do servidor
+#  {time} - hora formatada
+#  {date} - data formatada
+#  {name} - se o alerta for para evento de jogador, o nome do jogador
+#  {ping} - se o alerta for para evento de jogador, o ping do jogador
+#  {username} - se o alerta for para evento de jogador, o nome de usuário do jogador
+#  {displayname} - se o alerta for para evento de jogador, o nome de exibição do jogador
+#  {usernamenoescapes} - se o alerta for para evento de jogador, o nome de usuário sem escapar formatação do Discord (para uso em inline code e code blocks)
+#  {displaynamenoescapes} - se o alerta for para evento de jogador, o nome de exibição sem escapar formatação do Discord (para uso em inline code e code blocks)
+#  {world} - se o alerta for para evento de jogador, o mundo onde o jogador está
+#  {embedavatarurl} - se o alerta for para evento de jogador, a URL do avatar da cabeça do jogador; caso contrário, URL do avatar do bot
+#  {botavatarurl} - URL do avatar do bot
+#  {botname} - nome do bot
+#  %placeholder% - qualquer espaço reservado do PlaceholderAPI; pode usar apenas espaços reservados de jogador quando for alerta de jogador
+#
+# Você também pode usar expressões SpEL com ${expression...}, como:
+#  - Para obter o IP de um jogador: ${#player.address.address.hostAddress}
+#  - Para obter o modo de jogo de um jogador: ${#player.gameMode.name()}
+#  - Para obter o ID da conta Discord vinculada de um jogador: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - Para obter a contagem de jogadores online: ${#server.onlinePlayers.size()}
+#  - Para obter o status da conexão do DiscordSRV com o Discord: ${#jda.status.name()}
+#  - Para verificar se um jogador está em um mundo específico: ${#player.world.name == 'world_the_end'}
+#  - Para verificar se é dia no mundo em que o jogador está: ${#player.world.time > 0 && #player.world.time < 13000}
+# Você pode usar os seguintes espaços reservados de expressão, como mostrado acima:
+#   #plugins.<plugin> - instância do plugin especificado; nulo se não existir
+#   #event - evento que dispara o alerta
+#   #server - instância do servidor Bukkit, equivalente a Bukkit#getServer
+#   #discordsrv - instância do plugin DiscordSRV
+#   #player - jogador ao qual o evento se refere (se for evento de jogador ou comando)
+#   #sender - quem enviou o comando (se for alerta de comando)
+#   #command - comando completo, sem barra inicial, se for alerta de comando
+#   #args - argumentos do comando, se for alerta de comando
+#   #allArgs - argumentos do comando como uma única string, se for alerta de comando
+#   #channel - canal de destino para este alerta
+#   #jda - instância JDA do DiscordSRV usada para comunicar com o Discord
+#
+# Sintaxe/padrões:
+#  - Trigger: <nome do evento ou /comando>
+#    Async: true # opcional, padrão true; você quase nunca precisará mudar
+#    Conditions:
+#      - propriedade == < > <= >= valor etc
+#    Channel: <nome do canal do DiscordSRV>
+#    IgnoreCancelled: true # apenas para alertas de evento
+#    Content: ""
+#    Webhook:
+#      Enabled: false
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{botname}"
+#    Embed:
+#      Enabled: true
+#      Color: "#00ff00" # aceita código hexadecimal (ex: "#ffffff") ou inteiro RGB (ex: 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{username} fez... algo."
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # formato "título;valor;inline" (ex: "Quem entrou?;%displayname%;true") ou "blank" para campo em branco
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # defina como true para usar hora do envio ou timestamp epoch para hora específica (https://www.epochconverter.com/)
+#
+Alerts:
+# Exemplo de configuração para enviar mensagens ao canal "fish" do DiscordSRV quando um jogador pegar um peixe
+#- Trigger: PlayerFishEvent
+#  Channel: fish
+#  Conditions:
+#    - state.name() == 'CAUGHT_FISH'
+#  Embed:
+#    Color: "#00ff00"
+#    Author:
+#      ImageUrl: "{embedavatarurl}"
+#      Name: "{name} pegou um ${caught.itemStack.type.name()}!"
+
+# Exemplo de configuração para enviar mensagens do Matrix anti-cheat
+#- Trigger: PlayerViolationEvent
+#  Channel: matrix
+#  Conditions:
+#    - violations >= 5 # não enviar eventos para jogadores com < 5 violações
+#  Embed:
+#    Color: "#ff0000"
+#    Author:
+#      ImageUrl: "{embedavatarurl}"
+#      Name: "{username} falhou no teste ${hackType.name().toLowerCase()} | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+# Exemplo de configuração para enviar mensagens de /gamemode
+#- Trigger: /gamemode
+#  Channel: gamemode
+#  Conditions:
+#    - '#player.hasPermission("minecraft.command.gamemode") == true'
+#  Embed:
+#    Color: "#ff0000"
+#    Author:
+#      ImageUrl: "{embedavatarurl}"
+#      Name: "{username} alterou o modo de jogo para ${#args.get(0)}"
+
+# Exemplo de configuração para enviar comandos /me
+#- Trigger: /me
+#  Channel: me
+#  Conditions:
+#    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+#  Embed:
+#    Color: "#00ff00"
+#    Author:
+#      ImageUrl: "{embedavatarurl}"
+#      Name: "* {username} ${#allArgs}"
