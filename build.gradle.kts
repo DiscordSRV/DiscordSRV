@@ -184,6 +184,8 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     maven("https://nexus.scarsz.me/content/groups/public/")
+    // Multiverse-Core v5
+    maven("https://repo.onarandombox.com/content/groups/public/")
 }
 
 dependencies {
@@ -283,6 +285,7 @@ dependencies {
 
     // world hooks
     compileOnly("com.onarandombox.MultiverseCore:Multiverse-Core:2.4")
+    compileOnly("org.mvplugins.multiverse.core:multiverse-core:5.0.0-SNAPSHOT")
 
     // misc hooks
     compileOnly("org.dynmap:dynmap-api:2.0")
