@@ -37,7 +37,7 @@ import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.vanish.VanishHook;
-import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
+import github.scarsz.discordsrv.hooks.world.WorldHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
@@ -1130,7 +1130,10 @@ public class DiscordSRV extends JavaPlugin {
                 // dynmap
                 "github.scarsz.discordsrv.hooks.DynmapHook",
                 // luckperms
-                "github.scarsz.discordsrv.hooks.permissions.LuckPermsHook"
+                "github.scarsz.discordsrv.hooks.permissions.LuckPermsHook",
+                // world hooks
+                "github.scarsz.discordsrv.hooks.world.MultiverseCoreV4Hook",
+                "github.scarsz.discordsrv.hooks.world.MultiverseCoreV5Hook"
         }) {
             try {
                 Class<?> hookClass = Class.forName(hookClassName);
@@ -1659,6 +1662,23 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
 
+    /**
+     * Gets the alias for the given world
+     *
+     * @param world The name of the world to get the alias for
+     * @return The world's alias or the provided string if no alias or supported WorldHook was found
+     */
+    public String getWorldAlias(String world) {
+        WorldHook worldHook = pluginHooks.stream()
+                .filter(hook -> hook instanceof WorldHook)
+                .map(hook -> (WorldHook) hook)
+                .findAny()
+                .orElse(null);
+
+        if (worldHook == null) return world;
+        return worldHook.getWorldAlias(world);
+    }
+
     @Deprecated
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
         this.processChatMessage(player, message, channel, cancelled, null);
@@ -1786,7 +1806,7 @@ public class DiscordSRV extends JavaPlugin {
                     .replace("%primarygroup%", userPrimaryGroup)
                     .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
                     .replace("%world%", player.getWorld().getName())
-                    .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+                    .replace("%worldalias%", MessageUtil.strip(getWorldAlias(player.getWorld().getName())));
             // Replace the PAPI placeholders in the message pattern
             discordMessagePattern = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessagePattern, player);
 
