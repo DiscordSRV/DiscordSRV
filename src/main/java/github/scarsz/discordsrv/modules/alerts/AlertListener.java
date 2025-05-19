@@ -77,6 +77,8 @@ public class AlertListener implements Listener, EventListener {
 
     private final Map<String, String> validClassNameCache = new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(1));
     private final Set<String> activeTriggers = new HashSet<>();
+    private boolean anyCommandTrigger = false;
+    private final Set<Class<?>> unregisteredEventClasses = new HashSet<>();
 
     static {
         for (String className : BLACKLISTED_CLASS_NAMES) {
@@ -179,6 +181,7 @@ public class AlertListener implements Listener, EventListener {
     public void reloadAlerts() {
         validClassNameCache.clear();
         activeTriggers.clear();
+        anyCommandTrigger = false;
         alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
         if (registered) unregister();
@@ -195,10 +198,13 @@ public class AlertListener implements Listener, EventListener {
             Dynamic alert = Dynamic.from(map);
             alerts.add(alert);
             Set<String> triggers = getTriggers(alert);
-            activeTriggers.addAll(triggers);
 
             for (String trigger : triggers) {
-                if (trigger.startsWith("/")) continue;
+                if (trigger.startsWith("/")) {
+                    anyCommandTrigger = true;
+                    continue;
+                }
+                activeTriggers.add(trigger.toLowerCase(Locale.ROOT));
 
                 if (!trigger.contains(".")) {
                     simpleClassNames.add(trigger);
@@ -270,22 +276,32 @@ public class AlertListener implements Listener, EventListener {
 
     private void runAlertsForEvent(Object event) {
         boolean command = event instanceof PlayerCommandPreprocessEvent || event instanceof ServerCommandEvent;
-
-        boolean active = false;
-        String fullClassName = event.getClass().getName();
-        String simpleEventName = getEventName(event);
-        for (String trigger : activeTriggers) {
-            if (command && trigger.startsWith("/")) {
-                active = true;
-                break;
-            } else if (trigger.equals(fullClassName) || trigger.equalsIgnoreCase(simpleEventName)) {
-                active = true;
-                break;
-            }
-        }
+        String eventClassName = event.getClass().getName();
+        boolean active = (command && anyCommandTrigger)
+                || activeTriggers.contains(eventClassName.toLowerCase(Locale.ROOT))
+                || activeTriggers.contains(getEventName(event).toLowerCase(Locale.ROOT));
         if (!active) {
-            // remove us from HandlerLists that we don't need (we can do this here, since we have the full class name)
-            if (event instanceof Event) ((Event) event).getHandlers().unregister(this);
+            if (event instanceof Event) {
+                // remove us from HandlerLists that we don't need (we can do this here, since we have the full class name)
+                // but we need to ignore events where the HandlerList may be inherited from a super class
+                Class<?> checkClass = event.getClass().getSuperclass();
+
+                boolean anySuperClassHasHandlersMethod = false;
+                while (checkClass != null) {
+                    try {
+                        checkClass.getDeclaredMethod("getHandlers");
+                        anySuperClassHasHandlersMethod = true;
+                        break;
+                    } catch (NoSuchMethodException ignored) {}
+
+                    checkClass = checkClass.getSuperclass();
+                }
+
+                if (!anySuperClassHasHandlersMethod) {
+                    HandlerList handlerList = ((Event) event).getHandlers();
+                    handlerList.unregister(this);
+                }
+            }
             return;
         }
 
@@ -303,7 +319,7 @@ public class AlertListener implements Listener, EventListener {
             }
 
             for (String syncName : SYNC_EVENT_NAMES) {
-                if (fullClassName.equals(syncName)) {
+                if (eventClassName.equals(syncName)) {
                     async = false;
                     break;
                 }
