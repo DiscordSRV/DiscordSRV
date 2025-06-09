@@ -1,0 +1,29 @@
+# 這是 DiscordSRV 語音模組的設定檔。
+# 這是一項實驗性功能。某些部分可能無法正常運作。
+# 如果您嘗試使用此模組，請到我們的 Discord 提供任何問題的反饋。 https://discordsrv.com/discord
+#
+
+# 是否啟用 DiscordSRV 的鄰近語音聊天功能
+# 更改此選項後必須重啟您的伺服器
+Voice enabled: false
+# 網路更新之間的遊戲刻 (tick) 數量
+Tick speed: 5
+# 語音模組將在其中建立/刪除/移動語音頻道的主要分類
+# 除了下方的大廳頻道外，此分類中不應有任何其他頻道
+Voice category: 000000000000000000
+# 大廳頻道 (位於語音分類內)，當玩家不在任何網路範圍內時，會被移動到此處。
+# 這也是玩家加入以連接到鄰近語音網路的頻道。
+Lobby channel: 000000000000000000
+# 將在大廳中擁有「說話」和「將他人靜音」權限的使用者靜音
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # 玩家之間為了保持連線的最大距離
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # 一旦玩家加入網路，他們可以在
+  # strength + falloff 的方塊距離內才斷開連線
+  Falloff: 5
+  # 語音網路頻道是否對所有人可見，即使是未連線的人
+  # 這有助於讓玩家知道目前是否有人正在使用語音網路
+  Channels are visible: false

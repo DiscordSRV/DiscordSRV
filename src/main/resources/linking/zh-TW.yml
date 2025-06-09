@@ -1,0 +1,57 @@
+# 要求連結帳號才能遊玩
+Require linked account to play:
+  Enabled: false
+
+  # 如果您不知道這些是什麼意思，請不要動它們
+  #
+  # 加入事件監聽器的優先級
+  # 順序從先到後為：LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # 您可能需要將此更改為較晚的優先級，以便讓封鎖插件在 DiscordSRV 拒絕玩家之前踢出玩家
+  Listener priority: LOWEST
+  # 連結模組應監聽並禁止登入的事件
+  # 有些白名單插件使用 AsyncPlayerPreLoginEvent (較好)，有些使用 PlayerLoginEvent (沒那麼好)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # 如果您不知道這些是什麼意思，請不要動它們
+
+  # 總是允許遊玩的 Minecraft IGN (遊戲內名稱)，無論是否已連結或是否為訂閱者
+  Bypass names: [Scarsz, Vankka]
+  # 在遊戲內建白名單上的玩家是否能繞過連結帳號/擁有訂閱者身份組的需求
+  Whitelisted players bypass check: true
+  # 是否允許在遊戲內建封鎖名單上的玩家連結他們的帳號
+  Check banned players: false
+  # 不在遊戲內建封鎖名單上的玩家是否能繞過連結帳號/擁有訂閱者身份組的需求
+  Only check banned players: false
+
+  # 用於踢出玩家，告知他們需要連結帳號的訊息
+  # 使用 {BOT} 作為機器人名稱的佔位符
+  # 使用 {CODE} 作為人們需要私訊給機器人的代碼的佔位符
+  # 使用 {INVITE} 作為人們需要加入 Discord 伺服器的邀請連結的佔位符，此連結使用 config.yml 中設定的 DiscordInviteLink
+  Not linked message: "&7您必須連結您的 &9Discord &7帳號才能遊玩。\n\n&7請在 Discord 伺服器中，私訊 &b{BOT}&7 代碼 &b{CODE}&7 以連結您的帳號。\n\n&7Discord 邀請連結 » &b{INVITE}"
+
+  # 若啟用，玩家不僅需要連結帳號，還必須是機器人所在的一個 Discord 伺服器的成員。
+  #
+  # 可接受的格式：
+  #   true/false: 已連結的帳號必須至少在一個機器人也在的 Discord 伺服器中
+  #     範例: true
+  #   <server id>: 已連結的帳號必須在指定的 Discord 伺服器中
+  #     範例: 135634590575493120
+  #   [<server id>, <server id>, ...]: 已連結的帳號必須在所有指定的 Discord 伺服器中
+  #     範例: [135634590575493120, 690411863766466590]
+  #
+  # 當您在下方強制要求訂閱者身份組時，此選項的值將被覆蓋。
+  Must be in Discord server: true
+
+  # 可選功能，要求玩家不僅要連結帳號，還需要擁有一個或所有指定的身份組，例如 Twitch 訂閱者身份組
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # 當設定為 false 時，只需要擁有上述身份組中的其中一個
+    Kick message: "&c您必須在 Twitch 上訂閱才能遊玩。"
+
+  Messages:
+    DiscordSRV still starting: "&c目前無法檢查連結狀態，因為伺服器仍在連接到 Discord。\n\n請在一分鐘後再試。"
+    Not in server: "&c您目前不是我們 Discord 伺服器的成員。\n\n請透過 {INVITE} 加入！"
+    Failed to find subscriber role: "&c在 Discord 上找不到任何訂閱者身份組。\n\n請就此問題聯繫您的伺服器管理員。"
+    Failed for unknown reason: "&c嘗試驗證您的帳號時發生錯誤。\n\n請就此問題聯繫您的伺服器管理員。"
+    Kicked for unlinking: "&c您因取消連結帳號而被踢出伺服器。\n\n請重新加入伺服器以再次連結您的帳號。"

@@ -1,0 +1,54 @@
+# Minecraft -> Discord 暱稱同步
+# 可以透過 'discordsrv.nicknamesync' 權限 (預設授予) 為每位玩家單獨控制
+#
+# NicknameSynchronizationEnabled: 是否自動將 Discord 使用者的暱稱設定為指定的暱稱格式
+# NicknameSynchronizationCycleTime: 為所有在線玩家重複觸發同步之間的間隔分鐘數
+# NicknameSynchronizationFormat: 暱稱的格式 (請注意，長度不應超過 32 個字元)
+# %displayname%:            玩家的顯示名稱
+#                             範例：Jeb
+# %username%:               玩家的使用者名稱
+#                             範例：Jeb_
+# %discord_name%:           玩家的 Discord 使用者名稱
+#                             範例：Jeb
+# %discord_discriminator%:  玩家的 Discord 識別碼
+#                             範例：4988
+# 這些值支援 PlaceholderAPI 的佔位符
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Minecraft 群組 <-> Discord 身分組 同步
+# 需要 Vault 插件
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: 這些是您希望在 Discord 和 Minecraft 之間同步的身分組/群組
+#                                               新增更多群組/身分組配對時，請遵循 {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} 的格式
+#                                               要獲取您 Discord 公會的身分組 ID，請執行 "/discord debug" 並查看第一部分
+# GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraft 的群組變更是否會覆蓋 Discord 的身分組變更
+# GroupRoleSynchronizationOneWay: 是否僅單向同步，同步方向取決於 GroupRoleSynchronizationMinecraftIsAuthoritative 的值
+# GroupRoleSynchronizationEnableDenyPermission: 是否啟用 discordsrv.sync.deny.<group> 權限
+# GroupRoleSynchronizationPrimaryGroupOnly: 若為 true，則同步時僅計算玩家的主要群組，
+#                                           否則，群組同步會計算玩家所在的所有群組，包括父群組
+# GroupRoleSynchronizationOnLink: 玩家連結帳號時是否重新同步
+# GroupRoleSynchronizationCycleTime: 為所有在線玩家重複觸發同步之間的間隔分鐘數
+# GroupRoleSynchronizationCycleCompletely: 在計時器上運行的同步是否應同步機器人所在 Discord 伺服器中的每一個成員
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
+
+# 封鎖同步
+# 當擁有已連結 Discord 帳號的玩家在伺服器上被封鎖時，您可以選擇性地將他們也在 Discord 伺服器上封鎖，反之亦然
+#
+# BanSynchronizationDiscordToMinecraft: 如果玩家在 Discord 伺服器被封鎖，是否也在 Minecraft 伺服器上封鎖他們
+# BanSynchronizationDiscordToMinecraftReason: 將玩家從 Minecraft 伺服器封鎖時使用的封鎖理由訊息
+# BanSynchronizationMinecraftToDiscord: 如果玩家在 Minecraft 伺服器被封鎖，是否也在 Discord 伺服器上封鎖他們
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&c您已被伺服器封鎖，因為您在我們的 Discord 伺服器上已被封鎖。"
+BanSynchronizationMinecraftToDiscord: false

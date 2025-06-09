@@ -1,0 +1,447 @@
+# Discord -> Minecraft 訊息
+#
+# DiscordToMinecraftChatMessageFormat: 從 Discord 向 Minecraft 發送訊息時使用的格式
+# DiscordToMinecraftChatMessageFormatNoRole: 當使用者沒有任何身份組時，從 Discord 向 Minecraft 發送訊息所使用的格式
+#
+# 您可以為每個頻道指定不同的格式。假設您有一個名為 "mychannel" 的頻道。
+# 如果您希望它的格式與全域定義的不同，可以添加以下屬性：
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&b來自 MyChannel 的 Discord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&b來自 MyChannel 的 Discord&r] %name% » %message%"
+#
+# 可用佔位符：
+# %allroles%:       使用者所有身份組的組合，身份組之間由 DiscordToMinecraftAllRolesSeparator 分隔
+#                    範例：Owner | Developer | Boss man
+# %message%:        訊息內容
+#                    範例：你好！
+# %toprole%:        使用者等級最高的身份組
+#                    範例：Owner
+# %toprolealias%:   來自 DiscordChatChannelRoleAliases 的身份組別名，若無則為身份組名稱
+#                    範例：Dev
+# %toproleinitial%: 使用者最高身份組的第一個字母
+#                    範例：O
+# %toprolecolor%:   使用者最高身份組的大致顏色
+#                    範例：&4
+# %name%:           使用者在 Discord 上的有效名稱 (如有暱稱則為暱稱，否則為使用者名稱)
+#                    範例：NotchIsMe
+# %username%:       使用者在 Discord 上的使用者名稱
+#                    範例：Notch
+# %userid%:         使用者在 Discord 上的 ID
+#                    範例：1081004946872352958
+# %channelname%:    訊息來源的頻道名稱
+#                    範例：server-chat
+# %reply%:          當訊息是回覆另一則訊息時顯示的內容。
+#                    其格式可透過 DiscordToMinecraftMessageReplyFormat 設定，
+#                    如果訊息不是回覆，此佔位符將為空
+#
+# DiscordToMinecraftAllRolesSeparator: 在 %allroles% 中用於分隔身份組的分隔符
+#
+# DiscordToMinecraftMessageReplyFormat: 用於表示訊息為回覆的顯示格式
+#
+# 可用佔位符：
+# %name%:          被回覆使用者在 Discord 上的有效名稱 (如有暱稱則為暱稱，否則為使用者名稱)
+#                   範例：NotchIsMe
+# %username%:      被回覆使用者在 Discord 上的使用者名稱
+#                   範例：Notch
+# %userid%:        被回覆使用者在 Discord 上的 ID
+#                   範例：1081004946872352958
+# %message%:       被回覆的訊息內容
+#
+# 注意：如果希望 DiscordToMinecraftMessageReplyFormat 的內容顯示出來，格式中必須包含 %reply% 佔位符。
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (回覆 %name%)"
+
+# Minecraft -> Discord 訊息
+#
+# MinecraftChatToDiscordMessageFormat: 從 Minecraft 向 Discord 發送訊息時使用的格式
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: 當找不到玩家的主要群組時，用來替代 MinecraftChatToDiscordMessageFormat 的格式
+#
+# 可用佔位符：
+# %username%:     原始玩家使用者名稱
+#                  範例：jeb_
+# %displayname%:  顯示名稱，例如暱稱
+#                  範例：BigBossManJeb
+# %usernamenoescapes%:     原始玩家使用者名稱 (不跳脫 Discord 格式，用於行內代碼與代碼區塊)
+#                  範例：jeb_
+# %displaynamenoescapes%:  顯示名稱 (不跳脫 Discord 格式，用於行內代碼與代碼區塊)
+#                  範例：BigBossManJeb
+# %message%:      訊息內容
+#                  範例：你好！
+# %primarygroup%: 使用者主要群組的名稱
+# %world%:        玩家所在世界的名稱
+#                  範例：world
+# %worldalias%:   透過 Multiverse-Core 設定的玩家所在世界的別名
+#                  範例：Mainland
+# %date%:         目前日期與時間
+#                  範例：Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  訊息發送的頻道名稱 (如果訊息是從頻道發送的話)
+#                  範例：Global
+# 也支援 PlaceholderAPI 的佔位符
+#
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+
+# 聊天頻道插件訊息
+# 這是一條特殊訊息，僅在掛接了受支援的聊天頻道插件時使用
+# 它會修改遊戲內的訊息樣式，以包含訊息來源頻道的相關資訊
+#
+# 可用佔位符：
+# %channelcolor%:    與頻道對應的顏色代碼
+#                     範例：若頻道的訊息是紅色的，這裡會替換成紅色代碼
+# %channelname%:     頻道的字面名稱，通常是伺服器內部使用的名稱
+#                     範例：staff
+# %channelnickname%: 頻道的正式暱稱，通常是玩家看到的頻道名稱
+#                     範例：Staff
+# %message%:         經過 DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole 處理後的訊息
+#                     範例：jeb_ > 來自伺服器的問候！
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap 訊息
+#
+# DynmapNameFormat: 發送到 Dynmap 的訊息中，使用者名稱部分的格式 (此部分可能根據 Dynmap 設定而隱藏)
+# DynmapChatFormat: 發送到 Dynmap 的訊息中，訊息內容部分的格式
+#
+# 可用佔位符：
+# 與 Discord -> Minecraft 的佔位符相同
+#
+# DynmapDiscordFormat: 從 Dynmap 發送到 Discord 的訊息格式
+#
+# 可用佔位符：
+# %message%:  訊息內容
+#              範例：你好！
+# %name%:     在 Dynmap 網頁聊天中發送訊息的使用者名稱 (可能為空)
+#              範例：Notch
+# 也支援 PlaceholderAPI 的佔位符
+#
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
+
+# Discord 主控台頻道訊息
+# 這是從主控台發送一行訊息到主控台頻道時使用的格式 (如果已啟用)
+#
+# 可用佔位符：
+# {level}:    訊息嚴重性等級
+#              範例：INFO, WARN, ERROR
+# {name}:     日誌記錄器名稱
+#              範例：Server
+# {datetime}: 目前日期與時間
+#              範例：Sun Jan 1 15:30:45 PDT 2017
+# 也支援 PlaceholderAPI 的佔位符
+#
+# DiscordConsoleChannelTimestampFormat: 用於 {date} 和 {datetime} 佔位符的日期格式
+# DiscordConsoleChannelPrefix: 加在訊息前的字首
+# DiscordConsoleChannelSuffix: 加在訊息後的字尾
+#
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
+
+# Discord 聊天頻道 !c 指令錯誤訊息
+# 當玩家執行指令的權限出錯時使用，而不是指令本身執行出錯
+# 這會以私訊 (PM) 方式發送給使用者
+#
+# 可用佔位符：
+# %user%:  嘗試執行指令的使用者名稱
+#           範例：Notch
+# %error%: 錯誤原因
+#           範例：no permission
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**，您嘗試執行一個指令。不幸的是，發生了一個錯誤：%error%"
+
+# Discord 聊天頻道玩家列表指令
+# 當有人在聊天頻道執行玩家列表指令時使用的訊息
+#
+# DiscordChatChannelListCommandFormatOnlinePlayers: 列表開頭的訊息，位於所有玩家名稱之前
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: 當沒有玩家在線時，用來替代的訊息
+# DiscordChatChannelListCommandPlayerFormat: 列表中每個玩家的顯示格式
+#   可用佔位符：
+#   %username%:     原始玩家使用者名稱
+#   %displayname%:  顯示名稱，例如暱稱
+#   %primarygroup%: 使用者的主要群組名稱
+#   %world%:        玩家所在的世界名稱
+#   %worldalias%:   透過 Multiverse-Core 設定的世界別名
+#   也支援 PlaceholderAPI 的佔位符
+# DiscordChatChannelListCommandAllPlayersSeparator: 玩家之間的分隔符
+#
+DiscordChatChannelListCommandFormatOnlinePlayers: "**在線玩家 (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**沒有在線玩家**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
+
+# Minecraft -> Discord 通知訊息
+#
+#
+# 嵌入訊息 (Embed) 資訊：
+# Color:      接受十六進位色碼 (例如 "#ffffff") 或 RGB 整數 (例如 0)
+# Fields:     格式為 "標題;內容;是否並排" (例如 "誰加入了?;%displayname%;true") 或 "blank" 來新增一個空白欄位
+# Timestamp:  設定為 true 以使用訊息發送的時間，或使用 epoch 時間戳來指定特定時間 (https://www.epochconverter.com/)
+#
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement 可用佔位符：
+# %displayname%:         顯示名稱，例如暱稱
+# %username%:            原始玩家使用者名稱
+# %displaynamenoescapes%: 顯示名稱 (不跳脫 Discord 格式，用於行內代碼與代碼區塊)
+# %usernamenoescapes%:    原始玩家使用者名稱 (不跳脫 Discord 格式，用於行內代碼與代碼區塊)
+# %date%:                目前日期與時間
+# %embedavatarurl%:      使用者的頭像
+# %botavatarurl%:        機器人的頭像
+# %botname%:             機器人的名稱
+# 也支援 PlaceholderAPI 的佔位符
+#
+# PlayerJoin 訊息可用佔位符：
+# %message%:        遊戲內所見的加入訊息
+#
+MinecraftPlayerJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% 加入了伺服器"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerFirstJoin 訊息可用佔位符：
+# %message%:        遊戲內所見的加入訊息
+#
+MinecraftPlayerFirstJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% 首次加入了伺服器"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerLeave 訊息可用佔位符：
+# %message%:        遊戲內所見的離開訊息
+#
+MinecraftPlayerLeaveMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% 離開了伺服器"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerDeath 訊息可用佔位符：
+# %deathmessage%: 原始死亡訊息
+# %world%:        玩家死亡時所在世界的名稱
+#
+MinecraftPlayerDeathMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerAchievement 訊息可用佔位符：
+# %achievement%: 成就/進度的標題
+# %world%:       玩家所在世界的名稱
+#
+MinecraftPlayerAchievementMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% 達成了進度 [%achievement%]！"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+# 頻道主題更新器訊息
+# 這些是與自動更新聊天或主控台頻道主題相關的所有內容
+#
+# ChannelTopicUpdater______ChannelTopicFormat: 每隔 X 秒設定頻道主題的訊息
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: 伺服器關閉時設定頻道主題的訊息
+#
+# 可用佔位符：
+# %playercount%:   目前玩家數量
+# %playermax%:     最大玩家數量
+# %date%:          目前日期
+# %totalplayers%:  曾加入主世界的玩家總數
+# %uptimemins%:    自 DiscordSRV 啟動以來的分鐘數
+# %uptimehours%:   自 DiscordSRV 啟動以來的小時數
+# %motd%:          伺服器的每日訊息 (MOTD)
+# %serverversion%: 伺服器版本，例如 Spigot-1.9
+# %freememory%:    JVM 的可用記憶體 (MB)
+# %usedmemory%:    JVM 的已用記憶體 (MB)
+# %totalmemory%:   JVM 的總記憶體 (MB)
+# %maxmemory%:     JVM 的最大記憶體 (MB)
+# %freememorygb%:  JVM 的可用記憶體 (GB)
+# %usedmemorygb%:  JVM 的已用記憶體 (GB)
+# %totalmemorygb%: JVM 的總記憶體 (GB)
+# %maxmemorygb%:   JVM 的最大記憶體 (GB)
+# %tps%:           伺服器的平均 TPS
+# 也支援 PlaceholderAPI 的佔位符
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 位玩家在線 | %totalplayers% 位獨立玩家曾加入 | 伺服器已運行 %uptimemins% 分鐘 | 最後更新: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | 記憶體: %usedmemorygb%GB 已用/%freememorygb%GB 可用/%maxmemorygb%GB 最大 | %serverversion%"
+# AtServerShutdownFormats 僅支援 %totalplayers%, %serverversion%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "伺服器已離線 | %totalplayers% 位獨立玩家曾加入"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "伺服器已離線 | %serverversion%"
+
+# Discord 指令訊息
+# 這是玩家執行 "/discord" 時發送給他們的訊息。建議將指令語法作為此訊息的一部分
+# 使用 {INVITE} 作為人們加入 Discord 伺服器所需邀請連結的佔位符，此連結使用 config.yml 中設定的 DiscordInviteLink
+#
+DiscordCommandFormat: "&b到我們的 Discord 來吧 {INVITE}&b。如需指令協助，請輸入 \"/discord ?\""
+
+# 無權限訊息
+NoPermissionMessage: "&c您沒有權限執行此指令。"
+
+# 未知指令訊息
+UnknownCommandMessage: "&b該指令不存在！"
+
+# 伺服器啟動/關閉訊息
+# DiscordChatChannelServerStartupMessage: 伺服器啟動時發送的訊息；留空以禁用
+# DiscordChatChannelServerShutdownMessage: 伺服器關閉時發送的訊息；留空以禁用
+#
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **伺服器已啟動**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **伺服器已關閉**"
+
+# 伺服器看門狗 (Watchdog) 訊息
+#
+# 看門狗會持續監控您伺服器上一次執行遊戲刻 (tick) 的時間
+# 如果自上一次刻以來經過的時間超過設定的秒數，可以觸發 Discord 訊息
+#
+# ServerWatchdogMessage: 發送到主要聊天頻道的訊息。
+#                        您可以使用 "<@USERID>" 來 @提及使用者，例如 "<@12345678901234567890>"
+#                        您可以使用 "<@&ROLEID>" 來 @提及身份組，例如 "<@&12345678901234567890>"；請查看 DiscordSRV 載入時主控台顯示的身份組 ID
+#                        您可以使用 "%guildowner%" 來 @提及伺服器擁有者
+#                        您可以在訊息中使用 %date% 來放入崩潰時的日期和時間
+#                        您可以使用 %timeout% 作為 ServerWatchdogTimeout 的佔位符
+#                        您可以使用 %timestamp% 佔位符以用於 Discord 的時間戳格式
+#
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%，伺服器已經超過 %timeout% 秒沒有回應了 :fire::bangbang:"
+
+# 帳號連結訊息
+# 這些是連結帳號時使用的訊息
+#
+# 可用佔位符：
+# UnknownCode/InvalidCode:      %code%:         為玩家產生的連結代碼
+#                               %mention%:      對 Discord 帳號的提及
+# DiscordAccountLinked:         %name%:         使用者 Discord 帳號所連結的 Minecraft 玩家名稱
+#                               %displayname%:  使用者 Discord 帳號所連結的 Minecraft 玩家顯示名稱
+#                               %uuid%:         使用者 Discord 帳號所連結的 Minecraft 玩家 UUID
+#                               %mention%:      對 Discord 帳號的提及
+# DiscordAccountAlreadyLinked:  %uuid%:         使用者已連結的 Minecraft 帳號的 UUID
+#                               %username%:     使用者已連結的 Minecraft 帳號的使用者名稱
+#                               %mention%:      對 Discord 帳號的提及
+# DiscordLinkedAccountRequired  %message%:      因未連結而無法發送的訊息
+# CodeGenerated:                %code%:         為玩家產生的連結代碼
+#                               %botname%:      Discord 上的機器人名稱
+# MinecraftAccountLinked:       %id%:           使用者 Minecraft 帳號所連結的 Discord 使用者 ID
+#                               %username%:     使用者 Minecraft 帳號所連結的 Discord 使用者名稱
+# LinkedCommandSuccess:         %name%:         使用者 Minecraft 帳號所連結的 Discord 使用者名稱
+# UnlinkCommandSuccess:         %name%:         使用者 Minecraft 帳號曾連結的 Discord 使用者名稱
+# MinecraftNobodyFound:         %target%:       導致找不到任何結果的輸入內容
+#
+# Discord
+UnknownCode: "我不認得這個代碼，請再試一次。"
+InvalidCode: "您確定這是您的代碼嗎？連結代碼是 4 位數字。"
+DiscordAccountLinked: "您的 Discord 帳號已連結至 %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "您已經連結到 %username% (%uuid%)"
+DiscordLinkedAccountRequired: "您嘗試在遊戲聊天中發送以下訊息，但此伺服器要求您將 Minecraft 帳號連結到 Discord 帳號。請在遊戲內輸入 `/discord link` 來進行連結。\n```%message%```"
+DiscordLinkedAccountCheckFailed: "無法檢查您的帳號是否已連結，請稍後再試"
+# Minecraft
+CodeGenerated: "您的連結代碼是 %code%。請私訊 Discord 上的機器人 (%botname%)，訊息內容僅包含此代碼，即可連結您的帳號。"
+ClickToCopyCode: "點擊以複製"
+MinecraftAccountLinked: "&b您的 UUID 已連結至 Discord 使用者 %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&b您的 Minecraft 帳號已經與一個 Discord 帳號關聯。如果您有權限，可以使用 /discord unlink 來取消連結。"
+LinkedCommandSuccess: "&b您的 Minecraft 帳號已與 %name% 關聯。"
+UnlinkCommandSuccess: "&b您的 Minecraft 帳號不再與 %name% 關聯。"
+MinecraftNoLinkedAccount: "&c您的 Minecraft 帳號尚未與任何 Discord 帳號關聯。"
+LinkingError: "&c由於內部錯誤，目前無法連結帳號。請聯繫您的伺服器管理團隊。"
+MinecraftNobodyFound: "&c找不到符合 \"%target%\" 的 Discord ID/Discord 名稱/Minecraft 名稱/Minecraft UUID。"

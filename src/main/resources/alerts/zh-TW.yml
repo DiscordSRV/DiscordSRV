@@ -1,0 +1,123 @@
+# 這是 DiscordSRV 的一項 /進階/ 功能，允許您在遊戲事件發生或指令執行時，向 Discord 發送訊息。
+# 您需要對 Bukkit 事件的運作方式及其屬性有基本的了解。
+# 如果您不確定您在做什麼，可以詢問開發人員或加入我們的支援伺服器 @ discordsrv.com/discord
+# 製作了一些您想分享的東西嗎？您可以在我們的 Discord 伺服器的 #alerts 論壇中分享 (邀請連結在上方)
+#
+# 請參考 Bukkit API javadoc 來尋找可用的事件和屬性：
+#  https://hub.spigotmc.org/javadocs/bukkit
+# 學習如何使用 SpEL (Spring 表達式語言) 的實用資源：
+#  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
+#  https://dzone.com/articles/learn-spring-expression-language-with-examples
+#
+# 您可以使用以下佔位符：
+#  {tps} - 伺服器 TPS
+#  {time} - 格式化後的時間
+#  {date} - 格式化後的日期
+#  {name} - 如果提醒是針對玩家事件，則為玩家的名稱
+#  {ping} - 如果提醒是針對玩家事件，則為玩家的延遲
+#  {username} - 如果提醒是針對玩家事件，則為玩家的使用者名稱
+#  {displayname} - 如果提醒是針對玩家事件，則為玩家的顯示名稱
+#  {usernamenoescapes} - 如果提醒是針對玩家事件，則為玩家的使用者名稱 (不跳脫 Discord 格式，用於行內代碼與代碼區塊)
+#  {displaynamenoescapes} - 如果提醒是針對玩家事件，則為玩家的顯示名稱 (不跳脫 Discord 格式，用於行內代碼與代碼區塊)
+#  {world} - 如果提醒是針對玩家事件，則為玩家所在的世界
+#  {embedavatarurl} - 如果提醒是針對玩家事件，則為玩家頭像的 URL，否則為機器人的頭像 URL
+#  {botavatarurl} - 機器人的頭像 URL
+#  {botname} - 機器人的名稱
+#  %placeholder% - 任何 PlaceholderAPI 的佔位符，只有在玩家事件的提醒中才能使用玩家相關的佔位符
+#
+# 您也可以使用 SpEL 表達式，格式為 ${expression...}，例如...
+#  - 獲取玩家的 IP 位址: ${#player.address.address.hostAddress}
+#  - 獲取玩家的遊戲模式: ${#player.gameMode.name()}
+#  - 獲取玩家已連結的 Discord 帳號 ID: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - 獲取在線玩家數量: ${#server.onlinePlayers.size()}
+#  - 獲取 DiscordSRV 與 Discord 的連線狀態: ${#jda.status.name()}
+#  - 檢查玩家是否在特定世界: ${#player.world.name == 'world_the_end'}
+#  - 檢查玩家所在的世界是否為白天: ${#player.world.time > 0 && #player.world.time < 13000}
+#  您可以使用以下表達式佔位符，如上所示：
+#   #plugins.<plugin> - 指定的插件實例，若不存在則為 null
+#   #event - 如果此提醒是事件提醒，則為觸發提醒的事件
+#   #server - Bukkit API 的伺服器實例，等同於 Bukkit#getServer
+#   #discordsrv - DiscordSRV 插件的實例
+#   #player - 如果這是玩家事件或指令，則為事件所屬的玩家
+#   #sender - 如果這是指令提醒，則為指令的發送者
+#   #command - 如果這是指令提醒，則為完整的指令 (不含前導斜線)
+#   #args - 如果這是指令提醒，則為指令的參數
+#   #allArgs - 如果這是指令提醒，則為單一字串形式的所有指令參數
+#   #channel - 此提醒的目標頻道
+#   #jda - DiscordSRV 用於與 Discord 通訊的 JDA 實例
+#
+# 語法/預設值：
+#  - Trigger: <事件名稱 或 /指令>
+#    Async: true # 可選，預設為 true，您幾乎不需要更改此項
+#    Conditions:
+#      - property == < > <= >= value 等等
+#    Channel: <DiscordSRV 頻道名稱>
+#    IgnoreCancelled: true # 僅適用於事件提醒
+#    Content: ""
+#    Webhook:
+#      Enabled: false
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{botname}"
+#    Embed:
+#      Enabled: true
+#      Color: "#00ff00" # 接受十六進位色碼 (例如 "#ffffff") 或 RGB 整數 (例如 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{username} 做了... 某件事。" # 範例文字
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # 格式為 "標題;內容;是否並排" (例如 "誰加入了?;%displayname%;true") 或 "blank" 來新增一個空白欄位
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # 設定為 true 以使用訊息發送的時間，或使用 epoch 時間戳來指定特定時間 (https://www.epochconverter.com/)
+#
+Alerts:
+  # 範例設定：當玩家成功釣到魚時，向 "fish" DiscordSRV 頻道發送訊息
+  #- Trigger: PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} 釣到了一隻 ${caught.itemStack.type.name()}!"
+
+  # 範例設定：發送 Matrix 防作弊插件的訊息
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # 不要為違規次數少於 5 的玩家發送事件
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} 未通過 ${hackType.name().toLowerCase()} 檢查 | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+  # 範例設定：發送 /gamemode 指令的訊息
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} 將遊戲模式變更為 ${#args.get(0)}"
+
+  # 範例設定：發送 /me 指令的訊息
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"
