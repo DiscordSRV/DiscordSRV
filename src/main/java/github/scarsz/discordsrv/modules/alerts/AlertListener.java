@@ -276,7 +276,8 @@ public class AlertListener implements Listener, EventListener {
 
     private void runAlertsForEvent(Object event) {
         boolean command = event instanceof PlayerCommandPreprocessEvent || event instanceof ServerCommandEvent;
-        String eventClassName = event.getClass().getName();
+
+        String eventClassName = getEventClassName(event);
         boolean active = (command && anyCommandTrigger)
                 || activeTriggers.contains(eventClassName.toLowerCase(Locale.ROOT))
                 || activeTriggers.contains(getEventName(event).toLowerCase(Locale.ROOT));
@@ -367,6 +368,11 @@ public class AlertListener implements Listener, EventListener {
         return finalTriggers;
     }
 
+    private String getEventClassName(Object event) {
+        return event.getClass().getName()
+                .replace("github.scarsz.discordsrv.dependencies.jda", "net.".concat("dv8tion.jda"));
+    }
+
     private String getEventName(Object event) {
         return event instanceof Event ? ((Event) event).getEventName() : event.getClass().getSimpleName();
     }
@@ -410,7 +416,7 @@ public class AlertListener implements Listener, EventListener {
 
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + alertIndex);
 
-        String eventClassName = event.getClass().getName();
+        String eventClassName = getEventClassName(event);
         String eventName = getEventName(event);
         for (String trigger : triggers) {
             if (trigger.startsWith("/")) {
