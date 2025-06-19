@@ -2090,69 +2090,76 @@ public class DiscordSRV extends JavaPlugin {
         avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, player);
         return avatarUrl;
     }
+    
     private static String constructAvatarUrl(String username, UUID uuid, String texture) {
-        boolean offline = uuid == null || PlayerUtil.uuidIsOffline(uuid);
-        OfflinePlayer player = null;
-        if (StringUtils.isNotBlank(username) && offline) {
-            // resolve username to player/uuid
-            //TODO resolve name to online uuid when offline player is present
-            // (can't do it by calling Bukkit.getOfflinePlayer(username).getUniqueId() because bukkit just returns the offline-mode CraftPlayer)
-            player = Bukkit.getOfflinePlayer(username);
-            uuid = player.getUniqueId();
-            offline = PlayerUtil.uuidIsOffline(uuid);
-        }
-        if (StringUtils.isBlank(username) && uuid != null) {
-            // resolve uuid to player/username
-            player = Bukkit.getOfflinePlayer(uuid);
-            username = player.getName();
-        }
-        if (StringUtils.isBlank(texture) && player != null && player.isOnline()) {
-            // grab texture placeholder from player if online
-            texture = NMSUtil.getTexture(player.getPlayer());
-        }
+    boolean offline = uuid == null || PlayerUtil.uuidIsOffline(uuid);
+    OfflinePlayer player = null;
 
-        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        String defaultUrl = "https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}";
-        String offlineUrl = "https://crafthead.net/helm/{username}/{size}#{texture}";
-
-        if (StringUtils.isBlank(avatarUrl)) {
-            avatarUrl = !offline ? defaultUrl : offlineUrl;
-        }
-
-        if (avatarUrl.contains("://crafatar.com/")) {
-            avatarUrl = !offline ? defaultUrl : offlineUrl;
-            DiscordSRV.config().setRuntimeValue("AvatarUrl", avatarUrl);
-
-            DiscordSRV.warning("Your AvatarUrl config option uses crafatar.com, which no longer allows usage with Discord. An alternative provider will be used.");
-            DiscordSRV.warning("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this warning.");
-        }
-
-        if (offline && (avatarUrl.contains("{uuid}") || avatarUrl.contains("{uuid-nodashes}")) && !offlineUuidAvatarUrlNagged) {
-            DiscordSRV.error("Your AvatarUrl config option contains {uuid} or {uuid-nodashes} but this server is using offline UUIDs.");
-            offlineUuidAvatarUrlNagged = true;
-        }
-
-        if (username.startsWith("*")) {
-            // geyser adds * to beginning of it's usernames
-            username = username.substring(1);
-        }
-        try {
-            username = URLEncoder.encode(username, "utf8");
-        } catch (UnsupportedEncodingException ignored) {}
-
-        String usedBaseUrl = avatarUrl;
-        avatarUrl = avatarUrl
-                .replace("{texture}", texture != null ? texture : "")
-                .replace("{username}", username)
-                .replace("{uuid}", uuid != null ? uuid.toString() : "")
-                .replace("{uuid-nodashes}", uuid.toString().replace("-", ""))
-                .replace("{size}", "128");
-
-        DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + usedBaseUrl);
-        DiscordSRV.debug("Avatar url is for " + (offline ? "**offline** " : "") + "uuid: " + uuid + ". The texture is: " + texture);
-
-        return avatarUrl;
+    if (StringUtils.isNotBlank(username) && offline) {
+        player = Bukkit.getOfflinePlayer(username);
+        uuid = player.getUniqueId();
+        offline = PlayerUtil.uuidIsOffline(uuid);
     }
+
+    if (StringUtils.isBlank(username) && uuid != null) {
+        player = Bukkit.getOfflinePlayer(uuid);
+        username = player.getName();
+    }
+
+    if (StringUtils.isBlank(texture) && player != null && player.isOnline()) {
+        texture = NMSUtil.getTexture(player.getPlayer());
+    }
+
+    // (PR) Detect Geyser/Floodgate Bedrock usernames (starting with ".")
+    boolean isBedrock = username != null && username.startsWith(".");
+    if (isBedrock) {
+        texture = "steve"; // whatever you want here
+        DiscordSRV.debug("Detected Bedrock username, assigning default texture: " + texture);
+    }
+
+    String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
+    String defaultUrl = "https://crafthead.net/helm/{uuid-nodashes}/{size}#{texture}";
+    String offlineUrl = "https://crafthead.net/helm/{username}/{size}#{texture}";
+
+    if (StringUtils.isBlank(avatarUrl)) {
+        avatarUrl = !offline ? defaultUrl : offlineUrl;
+    }
+
+    if (avatarUrl.contains("://crafatar.com/")) {
+        avatarUrl = !offline ? defaultUrl : offlineUrl;
+        DiscordSRV.config().setRuntimeValue("AvatarUrl", avatarUrl);
+
+        DiscordSRV.warning("Your AvatarUrl config option uses crafatar.com, which no longer allows usage with Discord. An alternative provider will be used.");
+        DiscordSRV.warning("You should set your AvatarUrl (in config.yml) to an empty string (\"\") to get rid of this warning.");
+    }
+
+    if (offline && (avatarUrl.contains("{uuid}") || avatarUrl.contains("{uuid-nodashes}")) && !offlineUuidAvatarUrlNagged) {
+        DiscordSRV.error("Your AvatarUrl config option contains {uuid} or {uuid-nodashes} but this server is using offline UUIDs.");
+        offlineUuidAvatarUrlNagged = true;
+    }
+
+    if (username.startsWith("*") || username.startsWith(".")) {
+        username = username.substring(1);
+    }
+
+    try {
+        username = URLEncoder.encode(username, "utf8");
+    } catch (UnsupportedEncodingException ignored) {}
+
+    String usedBaseUrl = avatarUrl;
+    avatarUrl = avatarUrl
+            .replace("{texture}", texture != null ? texture : "")
+            .replace("{username}", username)
+            .replace("{uuid}", uuid != null ? uuid.toString() : "")
+            .replace("{uuid-nodashes}", uuid != null ? uuid.toString().replace("-", "") : "")
+            .replace("{size}", "128");
+
+    DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + usedBaseUrl);
+    DiscordSRV.debug("Avatar url is for " + (offline ? "**offline** " : "") + "uuid: " + uuid + ". The texture is: " + texture);
+
+    return avatarUrl;
+}
+
 
     public static int getLength(Message message) {
         StringBuilder content = new StringBuilder();
