@@ -177,19 +177,29 @@ public class AlertListener implements Listener, EventListener {
         validClassNameCache.clear();
         activeTriggers.clear();
         alerts.clear();
-        Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
-        boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
         if (registered) unregister();
-        if (any) {
-            register();
-            long count = optionalAlerts.get().size();
-            DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
 
-            for (Map<?, ?> map : optionalAlerts.get()) {
-                Dynamic alert = Dynamic.from(map);
-                alerts.add(alert);
-                activeTriggers.addAll(getTriggers(alert));
+        try {
+            Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
+            boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
+            if (any) {
+                register();
+                long count = optionalAlerts.get().size();
+                DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
+
+                for (Map<?, ?> map : optionalAlerts.get()) {
+                    Dynamic alert = Dynamic.from(map);
+                    alerts.add(alert);
+                    activeTriggers.addAll(getTriggers(alert));
+                }
             }
+        }
+        catch (ClassCastException ignored) {
+            DiscordSRV.error("alerts.yml has incorrect structure! Please refer to the wiki and correct the file (https://docs.discordsrv.com/alerts/#usage-examples)");
+            validClassNameCache.clear();
+            activeTriggers.clear();
+            alerts.clear();
+            unregister();
         }
     }
 
