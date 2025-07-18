@@ -28,8 +28,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * @deprecated Kept for backwards compatibility
+ */
+@Deprecated
+@SuppressWarnings("unused")
 public class MultiverseCoreHook implements PluginHook {
 
+    /**
+     * @deprecated Use {@link DiscordSRV#getWorldAlias(String)} instead
+     */
+    @Deprecated
     public static String getWorldAlias(String world) {
         try {
             if (!PluginUtil.pluginHookIsEnabled("Multiverse-Core")) return world;
