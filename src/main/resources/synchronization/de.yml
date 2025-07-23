@@ -1,5 +1,5 @@
 # Minecraft -> Discord-Spitznamensynchronisation
-# Can be controlled per player through the use of the 'discordsrv.nicknamesync' permission (granted by default)
+# Kann pro Spieler über die Berechtigung „discordsrv.nicknamesync“ (standardmäßig gewährt) gesteuert werden
 #
 # NicknameSynchronizationEnabled: Gibt an, ob der Spitzname des Discord-Benutzers automatisch auf das Spitznamenformat gesetzt werden soll
 # NicknameSynchronizationCycleTime: Anzahl der Minuten zwischen dem wiederholten Auslösen der Synchronisation für alle Online-Spieler
@@ -25,8 +25,8 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} ist das Format, das beim Hinzufügen weiterer Gruppen- / Rollenpaare verwendet werden muss
 #                                               Um die Rollen-IDs der Discord-Gilde zu erhalten, nutze "/discord debug" und schau dir den ersten Abschnitt an
 # GroupRoleSynchronizationMinecraftIsAuthoritative: ob Änderungen an der Minecraft-Gruppe Änderungen an der Discord-Rolle überschreiben oder nicht
-# GroupRoleSynchronizationOneWay: whether to synchronise only one way, the way it is synchronised depends on the value
-#                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
+# GroupRoleSynchronizationOneWay: Ob nur in eine Richtung synchronisiert wird, hängt vom Wert von
+#                                 GroupRoleSynchronizationMinecraftIsAuthoritative ab.
 # GroupRoleSynchronizationEnableDenyPermission: Gibt an, ob die Berechtigungen discordsrv.sync.deny.<gruppe> aktiviert sind
 # GroupRoleSynchronizationPrimaryGroupOnly: Wenn true, wird nur die primäre Gruppe des Spielers für die Synchronisierung gezählt,
 #                                           Andernfalls zählt die Gruppensynchronisierung alle Gruppen, in denen sich der
