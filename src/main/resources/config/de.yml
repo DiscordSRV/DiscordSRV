@@ -1,19 +1,19 @@
 # DiscordSRV-Konfiguration
-# Brauchen Sie Hilfe? Treten Sie unserem Discord bei, https://discordsrv.com/discord
+# Brauchst du Hilfe? Tritt unserem Discord bei, https://discordsrv.com/discord
 
 # Bitte nicht verändern!
 ConfigVersion: ${version}
 
 # Bot Token, du weißt nicht, was das ist? Schau dir das Video auf der Pluginseite an!
-# Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
+# Du musst deinen Server neu starten, nachdem Du diese Option geändert hast
 BotToken: "BOTTOKEN"
 
 # Kanalverbindungen vom Spiel zu Discord
-# Syntax ist Channels: {"Kanalname im Spiel von Minecraft": "numerische Kanal-ID von Discord", "ein anderer Kanalname im Spiel von Minecraft": "eine andere numerische Kanal-ID von Discord"}
+# Syntax: {"Kanalname im Spiel von Minecraft": "numerische Kanal-ID von Discord", "ein anderer Kanalname im Spiel von Minecraft": "eine andere numerische Kanal-ID von Discord"}
 #
 # Alle Nachrichten von DiscordSRV werden an den ersten Kanal gesendet, es sei denn, für diesen Nachrichtentyp ist ein Kanal definiert:
-# Wenn Sie ein kompatibles Chat-Plugin verwenden, ist der Kanalname der Name dieses Plugins (für Chat-Nachrichten).
-#  - Wenn Sie TownyChat verwenden, wird der Standardkanal normalerweise "general" anstelle von "global" genannt.
+# Wenn du ein kompatibles Chat-Plugin verwendest, ist der Kanalname der Name dieses Plugins (für Chat-Nachrichten).
+#  - Wenn du TownyChat verwendest, wird der Standardkanal normalerweise "general" anstelle von "global" genannt.
 # für Spieler-Chat-Nachrichten (wenn kein Chat-Plugin verwendet wird): global
 # für Server-Start/Stop-Nachrichten: status
 # für Erfolgs- / Aufstiegsnachrichten: awards
@@ -26,7 +26,7 @@ BotToken: "BOTTOKEN"
 # für Account-Link: link
 #
 # Der erste Teil von Kanalpaaren ist nicht der Discord-Kanalname!
-# Führen Sie ein "/discord reload" aus, nachdem Sie diese Option zum Anwenden geändert haben
+# Führe ein "/discord reload" aus, nachdem du diese Option geändert hast
 Channels: {"global": "000000000000000000"}
 
 # Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
@@ -53,7 +53,7 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Einbetten und Webhook-Bild-/Avatar-URL-Format
-# Lassen Sie das Feld leer, um einen Standardwert zu verwenden
+# Lasse das Feld leer, um einen Standardwert zu verwenden
 # Verfügbare Platzhalter: {texture} {username} {uuid} {uuid-nodashes} {size}
 AvatarUrl: ""
 
@@ -77,28 +77,28 @@ Timezone: default
 MinecraftMentionSound: true
 
 # Plugin-Hooks
-# Sie müssen Ihren Server neu starten, nachdem Sie diese Optionen geändert haben
+# Du musst deinen Server neu starten, nachdem du diese Optionen geändert hast
 #
 # DisabledPluginHooks: Plugin-Hooks, die nicht verwendet werden (normalerweise nur der Name des Plugins).
 # VentureChatBungee: Aktiviert die BungeeCord-Funktionalität des VentureChat-Hooks (Nachrichten werden von jedem Server empfangen, mindestens 1 Spieler muss online sein).
-# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
-# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
+# EnablePresenceInformation: Aktivierte Präsenzinformationen, die für einige unserer PlaceholderAPI-Platzhalter erforderlich sind. Beachten Sie, dass hierfür die "Presence Intent" aus dem Discord-Entwicklerportal erforderlich ist
+# UseModernPaperChatEvent: Verwende das nur, wenn du ein Chat-Plugin hast, das SPEZIELL das „AsyncChatEvent” von Paper nutzt
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
 UseModernPaperChatEvent: false
 
-# Game Information
-# Sets the user status for the bot
-# Can be a single, static value, or cycle through multiple different options
-# You can preface the status with "playing", "watching", "listening to", or "competing" to set the activity type
-# You can set your own custom status by not including the prefixes
-#    %online%: number of online players
-#    PlaceholderAPI placeholders are supported
+# Spielinformationen
+# Legt den Benutzerstatus für den Bot fest
+# Kann ein einzelner, statischer Wert sein oder zwischen mehreren verschiedenen Optionen wechseln.
+# Sie können dem Status die Wörter "playing", "watching", "listening to", oder "competing" voranstellen, um die Art der Aktivität festzulegen.
+# Sie können Ihren eigenen benutzerdefinierten Status festlegen, indem Sie die Präfixe weglassen
+#    %online%: Anzahl der Online-Spieler
+#    PlaceholderAPI Platzhalter werden unterstützt
 #
-# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
-# StatusUpdateRateInMinutes: How frequently to cycle the status
+# DiscordGameStatus: Anzuzeigender Text. Kann ein einzelner Wert sein, z. B. „Minecraft“, oder mehrere Werte, z. B. „[„Minecraft“, „yourip.changeme.com“]“.
+# DiscordOnlineStatus: Anzuzeigender Aktivitätsstatus. Dies muss einer der folgenden Status sein: ONLINE, DND, IDLE oder INVISIBLE.
+# StatusUpdateRateInMinutes: Wie oft der Status geändert werden soll
 DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
@@ -107,8 +107,8 @@ StatusUpdateRateInMinutes: 2
 # Chat-Kanäle geben Spielernachrichten von Minecraft nach Discord und umgekehrt wieder. Mit einem Chat-Räume
 # unterstützendem Plugin lassen sich außerdem mehrere Kanal-Paare verbinden.
 #
-# DiscordChatChannelDiscordToMinecraft: legt fest ob Nachrichten von Discord nach Minecraft geschickt werden sollen
-# DiscordChatChannelMinecraftToDiscord: legt fest ob Nachrichten von Minecraft nach Discord geschickt werden sollen
+# DiscordChatChannelDiscordToMinecraft: legt fest, ob Nachrichten von Discord nach Minecraft geschickt werden sollen
+# DiscordChatChannelMinecraftToDiscord: legt fest, ob Nachrichten von Minecraft nach Discord geschickt werden sollen
 # DiscordChatChannelTruncateLength: maximale Länge einer Nachricht, die von Discord nach Minecraft versandt wird
 # DiscordChatChannelTranslateMentions: ob du Discord-Erwähnungen wie @Person für Nachrichten von Minecraft to Discord in Verbindung bringst
 # DiscordChatChannelAllowedMentions: Arten von Erwähnungen, die in Minecraft erlaubt sind, Nachrichten zu widersprechen; Typen, die im Standardwert fehlen, sind "role", "here" und "everyone".
@@ -120,11 +120,11 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: legt fest, ob Nachrichten von Discord nach Minecraft zusätzlich an die Konsole geschickt werden sollen
 # DiscordChatChannelRequireLinkedAccount: gibt an, ob Spieler ihren Discord und Minecraft Account erst verbinden müssen, damit sie Nachrichten von Discord nach Minecraft senden dürfen
 # DiscordChatChannelBlockBots: gibt an, ob Chat für alle Bots von Discord nach Minecraft blockiert werden soll
-# DiscordChatChannelBlockWebhooks: ob Bots für den Discord -> MC-Chat gesperrt werden sollen oder nicht
+# DiscordChatChannelBlockWebhooks: ob Webhooks für den Discord -> MC-Chat gesperrt werden sollen oder nicht
 # DiscordChatChannelBlockedIds: IDs von Discord Nutzern (oder Bots) deren Nachrichten nicht von Discord nach Minecraft gesendet werden
-# DiscordChatChannelBlockedRolesAsWhitelist: wenn die folgende Liste als Whitelist (true) oder als Blacklist (false) behandelt werden soll
-# DiscordChatChannelBlockedRolesIds: IDs von Discord rollen deren Nachrichten nicht von Discord nach Minecraft gesendet werden
-# DiscordChatChannelRolesSelectionAsWhitelist: wenn die folgende Liste als Whitelist (true) oder als Blacklist (false) behandelt werden soll
+# DiscordChatChannelBlockedRolesAsWhitelist: ob die folgende Liste als Whitelist (true) oder als Blacklist (false) behandelt werden soll
+# DiscordChatChannelBlockedRolesIds: IDs von Discordrollen, deren Nachrichten nicht von Discord nach Minecraft gesendet werden
+# DiscordChatChannelRolesSelectionAsWhitelist: ob die folgende Liste als Whitelist (true) oder als Blacklist (false) behandelt werden soll
 # DiscordChatChannelRolesSelection: Liste der Rollen, die aus allen Rollen eines Benutzers herausgefiltert werden sollen
 # DiscordChatChannelRoleAliases: Liste der Rollen-Aliase (alternative Namen für Rollen, die in Minecraft-Nachrichten verwendet werden sollen)
 #
@@ -153,11 +153,11 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # Der Konsolenkanal verbindet die Minecraft-Konsole mit einem Discord-Kanal. Somit lassen sich über diesen Kanal in
 # Discord Befehle abschicken und jegliche Ausgabe der Konsole wird wiederum nach Discord versandt.
 #
-# Sie können die Konsole Nachricht in messages.yml anpassen (einschließlich Entfernen des Zeitstempels)
+# Du kannst die Konsole Nachricht in messages.yml anpassen (einschließlich Entfernen des Zeitstempels)
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: Zeit in Sekunden zwischen dem Zusenden neuer Zeilen von der Konsole
 # DiscordConsoleChannelUsageLog:
-#    %date%:   aktuelles datum
+#    %date%:   aktuelles Datum
 #              beispiel: 2017-01-01
 #    PlaceholderAPI Platzhalter werden unterstützt
 # DiscordConsoleChannelBlacklistActsAsWhitelist: gibt an, ob die Blacklist für Befehle als Whitelist fungieren soll
@@ -274,7 +274,7 @@ ChannelUpdater:
 # Du solltest die Vorgaben am besten an deinen Server anpassen oder komplett neue erstellen.
 #
 # Die Syntax ist {"TRIGGER": "ANTWORT", "TRIGGER": "ANTWORT", ...}
-# Zum Deaktivieren zu {] ändern
+# Zum Deaktivieren zu {} ändern
 # PlaceholderAPI-Platzhalter werden unterstützt
 #
 DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deineseite.net"}
@@ -320,8 +320,8 @@ ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
 
-# HTTP proxy used for connecting to the Discord API
-# Leave this alone if you don't understand what it does
+# HTTP-Proxy, der für die Verbindung mit der Discord-API verwendet wird
+# Lasse dies unverändert, wenn du nicht verstehst, was es bewirkt.
 ProxyHost: "example.com"
 ProxyPort: 1234
 ProxyUser: "USERNAME"
