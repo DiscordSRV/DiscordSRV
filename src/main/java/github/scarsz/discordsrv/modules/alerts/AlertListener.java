@@ -248,6 +248,7 @@ public class AlertListener implements Listener, EventListener {
             DiscordSRV.warning("Some alerts are using simple class names as triggers (instead of fully-classified class names including the package name), server performance may be effected.");
             DiscordSRV.warning("Support for simple class names will be removed in a future release of DiscordSRV");
             DiscordSRV.warning("The following triggers are causing this notification: " + String.join(", ", simpleClassNames));
+            DiscordSRV.warning("Read https://docs.discordsrv.com/alerts/migration for more information");
             hackIntoAllHandlerLists();
         }
         registered = true;
