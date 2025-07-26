@@ -70,13 +70,14 @@ public class AlertListener implements Listener, EventListener {
     );
     private static final List<String> SYNC_EVENT_NAMES = Arrays.asList(
             // Needs to be sync because block data will be stale by time async task runs
-            "BlockBreakEvent"
+            "org.bukkit.event.block.BlockBreakEvent"
     );
 
     private static final List<Class<?>> BLACKLISTED_CLASSES = new ArrayList<>();
 
     private final Map<String, String> validClassNameCache = new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(1));
     private final Set<String> activeTriggers = new HashSet<>();
+    private boolean anyCommandTrigger = false;
 
     static {
         for (String className : BLACKLISTED_CLASS_NAMES) {
@@ -101,7 +102,7 @@ public class AlertListener implements Listener, EventListener {
         reloadAlerts();
     }
 
-    public void register() {
+    public void hackIntoAllHandlerLists() {
         //
         // Bukkit's API has no easy way to listen for all events
         // The best thing you can do is add a listener to all the HandlerList's
@@ -115,9 +116,13 @@ public class AlertListener implements Listener, EventListener {
             allListsField.setAccessible(true);
 
             if (Modifier.isFinal(allListsField.getModifiers())) {
-                Field modifiersField = Field.class.getDeclaredField("modifiers");
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(allListsField, allListsField.getModifiers() & ~Modifier.FINAL);
+                try {
+                    Field modifiersField = Field.class.getDeclaredField("modifiers");
+                    modifiersField.setAccessible(true);
+                    modifiersField.setInt(allListsField, allListsField.getModifiers() & ~Modifier.FINAL);
+                } catch (NoSuchFieldException ignored) {
+                    // No can do
+                }
             }
 
             // set the HandlerList.allLists field to be a proxy list that adds our listener to all initializing lists
@@ -148,7 +153,6 @@ public class AlertListener implements Listener, EventListener {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             DiscordSRV.error(e);
         }
-        registered = true;
     }
 
     private void addListener(HandlerList handlerList) {
@@ -176,21 +180,79 @@ public class AlertListener implements Listener, EventListener {
     public void reloadAlerts() {
         validClassNameCache.clear();
         activeTriggers.clear();
+        anyCommandTrigger = false;
         alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
-        boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
         if (registered) unregister();
-        if (any) {
-            register();
-            long count = optionalAlerts.get().size();
-            DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
 
-            for (Map<?, ?> map : optionalAlerts.get()) {
-                Dynamic alert = Dynamic.from(map);
-                alerts.add(alert);
-                activeTriggers.addAll(getTriggers(alert));
+        if (!optionalAlerts.isPresent() || optionalAlerts.get().isEmpty()) {
+            return;
+        }
+
+        List<String> simpleClassNames = new ArrayList<>();
+        Set<HandlerList> handlerLists = new HashSet<>();
+        long count = optionalAlerts.get().size();
+
+        for (Map<?, ?> map : optionalAlerts.get()) {
+            Dynamic alert = Dynamic.from(map);
+            alerts.add(alert);
+            Set<String> triggers = getTriggers(alert);
+
+            for (String trigger : triggers) {
+                if (trigger.startsWith("/")) {
+                    anyCommandTrigger = true;
+                    continue;
+                }
+                activeTriggers.add(trigger.toLowerCase(Locale.ROOT));
+
+                if (!trigger.contains(".")) {
+                    simpleClassNames.add(trigger);
+                    continue;
+                }
+
+                try {
+                    Class<?> eventClass = Class.forName(trigger);
+                    if (!Event.class.isAssignableFrom(eventClass)) continue;
+
+                    Method method = null;
+                    Class<?> handlerListClass = eventClass;
+                    while (method == null && handlerListClass != null) {
+                        try {
+                            method = handlerListClass.getDeclaredMethod("getHandlerList");
+                        } catch (NoSuchMethodException ignored) {}
+                        handlerListClass = handlerListClass.getSuperclass();
+                    }
+
+                    if (method == null) {
+                        DiscordSRV.error("Could not find getHandlerList method for " + eventClass.getName());
+                        continue;
+                    }
+
+                    Object handlerList = method.invoke(null);
+                    if (!(handlerList instanceof HandlerList)) {
+                        DiscordSRV.error("Could not get HandlerList for " + eventClass.getName() + ": getHandlerList does not actually return a " + HandlerList.class.getName());
+                        continue;
+                    }
+
+                    if (!handlerLists.add((HandlerList) handlerList)) continue;
+                    addListener((HandlerList) handlerList);
+                } catch (ClassNotFoundException ignored) {
+                    DiscordSRV.warning("Could not find event for alert trigger: " + trigger);
+                } catch (InvocationTargetException | IllegalAccessException e) {
+                    DiscordSRV.error("Could not get HandlerList for event " + trigger, e);
+                }
             }
         }
+
+        if (!simpleClassNames.isEmpty()) {
+            DiscordSRV.warning("Some alerts are using simple class names as triggers (instead of fully-classified class names including the package name), server performance may be effected.");
+            DiscordSRV.warning("Support for simple class names will be removed in a future release of DiscordSRV");
+            DiscordSRV.warning("The following triggers are causing this notification: " + String.join(", ", simpleClassNames));
+            DiscordSRV.warning("Read https://docs.discordsrv.com/alerts/migration for more information");
+            hackIntoAllHandlerLists();
+        }
+        registered = true;
+        DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
     }
 
     public List<Dynamic> getAlerts() {
@@ -215,21 +277,32 @@ public class AlertListener implements Listener, EventListener {
     private void runAlertsForEvent(Object event) {
         boolean command = event instanceof PlayerCommandPreprocessEvent || event instanceof ServerCommandEvent;
 
-        boolean active = false;
-        String eventName = getEventName(event);
-        for (String trigger : activeTriggers) {
-            if (command && trigger.startsWith("/")) {
-                active = true;
-                break;
-            } else if (trigger.equals(eventName.toLowerCase())) {
-                active = true;
-                break;
-            }
-        }
+        String eventClassName = getEventClassName(event);
+        boolean active = (command && anyCommandTrigger)
+                || activeTriggers.contains(eventClassName.toLowerCase(Locale.ROOT))
+                || activeTriggers.contains(getEventName(event).toLowerCase(Locale.ROOT));
         if (!active) {
-            // remove us from HandlerLists that we don't need (we can do this here, since we have the full class name)
-            if (event instanceof Event && Arrays.stream(event.getClass().getDeclaredMethods()).anyMatch(e -> e.getName().equals("getHandlers")))
-                ((Event) event).getHandlers().unregister(this);
+            if (event instanceof Event) {
+                // remove us from HandlerLists that we don't need (we can do this here, since we have the full class name)
+                // but we need to ignore events where the HandlerList may be inherited from a super class
+                Class<?> checkClass = event.getClass().getSuperclass();
+
+                boolean anySuperClassHasHandlersMethod = false;
+                while (checkClass != null) {
+                    try {
+                        checkClass.getDeclaredMethod("getHandlers");
+                        anySuperClassHasHandlersMethod = true;
+                        break;
+                    } catch (NoSuchMethodException ignored) {}
+
+                    checkClass = checkClass.getSuperclass();
+                }
+
+                if (!anySuperClassHasHandlersMethod) {
+                    HandlerList handlerList = ((Event) event).getHandlers();
+                    handlerList.unregister(this);
+                }
+            }
             return;
         }
 
@@ -246,13 +319,10 @@ public class AlertListener implements Listener, EventListener {
                 }
             }
 
-            outer:
             for (String syncName : SYNC_EVENT_NAMES) {
-                for (String trigger : triggers) {
-                    if (trigger.equalsIgnoreCase(syncName)) {
-                        async = false;
-                        break outer;
-                    }
+                if (eventClassName.equals(syncName)) {
+                    async = false;
+                    break;
                 }
             }
 
@@ -271,11 +341,10 @@ public class AlertListener implements Listener, EventListener {
         if (triggerDynamic.isList()) {
             triggers.addAll(triggerDynamic.children()
                     .map(Weak::asString)
-                    .map(String::toLowerCase)
                     .collect(Collectors.toSet())
             );
         } else if (triggerDynamic.isString()) {
-            triggers.add(triggerDynamic.asString().toLowerCase());
+            triggers.add(triggerDynamic.asString());
         }
 
         Set<String> finalTriggers = new HashSet<>();
@@ -297,6 +366,11 @@ public class AlertListener implements Listener, EventListener {
             finalTriggers.add(trigger);
         }
         return finalTriggers;
+    }
+
+    private String getEventClassName(Object event) {
+        return event.getClass().getName()
+                .replace("github.scarsz.discordsrv.dependencies.jda", "net.".concat("dv8tion.jda"));
     }
 
     private String getEventName(Object event) {
@@ -342,13 +416,14 @@ public class AlertListener implements Listener, EventListener {
 
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + alertIndex);
 
+        String eventClassName = getEventClassName(event);
+        String eventName = getEventName(event);
         for (String trigger : triggers) {
-            String eventName = getEventName(event);
             if (trigger.startsWith("/")) {
                 if (StringUtils.isBlank(command) || !command.toLowerCase().split("\\s+|$", 2)[0].equals(trigger.substring(1))) continue;
             } else {
                 // make sure the called event matches what this alert is supposed to trigger on
-                if (!eventName.equalsIgnoreCase(trigger)) continue;
+                if (!eventClassName.equals(trigger) && !eventName.equalsIgnoreCase(trigger)) continue;
             }
 
             // make sure alert should run even if event is cancelled

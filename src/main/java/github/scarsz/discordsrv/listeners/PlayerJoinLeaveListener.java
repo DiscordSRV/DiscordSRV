@@ -48,7 +48,7 @@ public class PlayerJoinLeaveListener implements Listener {
         if (GamePermissionUtil.hasPermission(player, "discordsrv.updatenotification") && DiscordSRV.updateIsAvailable) {
             MessageUtil.sendMessage(player, DiscordSRV.getPlugin().getDescription().getVersion().endsWith("-SNAPSHOT")
                     ? ChatColor.GRAY + "There is a newer development build of DiscordSRV available. Download it at https://snapshot.discordsrv.com/"
-                    : ChatColor.AQUA + "An update to DiscordSRV is available. Download it at https://www.spigotmc.org/resources/discordsrv.18494/ or https://get.discordsrv.com"
+                    : ChatColor.AQUA + "An update to DiscordSRV is available. Download it at https://modrinth.com/plugin/discordsrv/ or https://get.discordsrv.com"
             );
         }
 
