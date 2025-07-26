@@ -181,8 +181,8 @@ repositories {
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     maven("https://nexus.scarsz.me/content/groups/public/")
     // Multiverse-Core v5
     maven("https://repo.onarandombox.com/content/groups/public/")
@@ -241,9 +241,9 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     // DynamicProxy
-    runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1-20240720.141742-6")
-    compileOnly("dev.vankka:dynamicproxy:1.0.1-20240720.141742-8")
-    annotationProcessor("dev.vankka:dynamicproxy:1.0.1-20240720.141742-8")
+    runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1")
+    compileOnly("dev.vankka:dynamicproxy:1.0.1")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.1")
 
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
