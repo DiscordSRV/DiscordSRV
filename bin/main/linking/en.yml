@@ -1,0 +1,57 @@
+Require linked account to play:
+  Enabled: false
+
+  # If you don't know what these mean, don't touch them
+  #
+  # The priority that the join listener should be on
+  # In order of first to last, available values are LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # You might need to change this to a later priority for a ban plugin to kick the player before DiscordSRV denies them
+  Listener priority: LOWEST
+  # The event that the link module should listen and disallow logins on
+  # Some whitelist plugins use AsyncPlayerPreLoginEvent (good), some use PlayerLoginEvent (not as good)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # If you don't know what these mean, don't touch them
+
+  # Minecraft IGNs to always allow whether linked or subscriber or not
+  Bypass names: [Scarsz, Vankka]
+  # Whether players on the VANILLA whitelist will bypass the need to link their accounts/have a sub role
+  Whitelisted players bypass check: true
+  # Whether to let players in the VANILLA banlist be able to link their accounts
+  Check banned players: false
+  # Whether players not in the VANILLA banlist will bypass the need to link their accounts/have a sub role
+  Only check banned players: false
+
+  # Message to kick players with telling them to link their accounts
+  # Use {BOT} as a placeholder for the bot's name
+  # Use {CODE} as a placeholder for the code people need to DM the bot
+  # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
+  Not linked message: "&7You must link your &9Discord &7account to play.\n\n&7Send a DM to &b{BOT}&7 in the Discord server containing just &b{CODE}&7 to link your account.\n\n&7Discord Invite » &b{INVITE}"
+
+  # If enabled, players will not only need to have their accounts linked but will also be required
+  # to be a member of a Discord server that the bot is also in.
+  #
+  # Acceptable formats:
+  #   true/false: linked account must be in at least one Discord server that the bot is also in
+  #     ex: true
+  #   <server id>: linked account must be in the given Discord server
+  #     ex: 135634590575493120
+  #   [<server id>, <server id>, ...]: linked account must be in ALL of the given Discord servers
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # This option's value is superseded when you have subscriber roles enforced below.
+  Must be in Discord server: true
+
+  # Optionally require people to not only be linked but also to have a one of or all specified roles like a Twitch sub role
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # when false, only one of the above roles is required
+    Kick message: "&cYou must be subscribed on Twitch to be able to play."
+
+  Messages:
+    DiscordSRV still starting: "&cCurrently unavailable to check link status because the server is still connecting to Discord.\n\nTry again in a minute."
+    Not in server: "&cYou are currently not a part of our Discord server.\n\nJoin at {INVITE}!"
+    Failed to find subscriber role: "&cFailed to find any subscriber role on Discord.\n\nContact your server admins about this issue."
+    Failed for unknown reason: "&cAn error occurred while trying to verify your account.\n\nContact your server admin about this issue."
+    Kicked for unlinking: "&cYou have been kicked from the server for unlinking your accounts.\n\nPlease rejoin the server to link your accounts again."
