@@ -93,7 +93,12 @@ public class AlertListener implements Listener, EventListener {
 
     public AlertListener() {
         listener = new RegisteredListener(
-                this,
+                new Listener() {
+                    @Override
+                    public String toString() {
+                        return "DiscordSRV Alerts";
+                    }
+                },
                 (listener, event) -> runAlertsForEvent(event),
                 EventPriority.MONITOR,
                 DiscordSRV.getPlugin(),
@@ -260,7 +265,7 @@ public class AlertListener implements Listener, EventListener {
     }
 
     public void unregister() {
-        HandlerList.unregisterAll(this);
+        HandlerList.unregisterAll(listener.getListener());
         registered = false;
     }
 
@@ -271,6 +276,24 @@ public class AlertListener implements Listener, EventListener {
 
     @Subscribe
     public void onDSRVEvent(github.scarsz.discordsrv.api.events.Event event) {
+        runAlertsForEvent(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        if (!anyCommandTrigger) {
+            return;
+        }
+
+        runAlertsForEvent(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onServerCommand(ServerCommandEvent event) {
+        if (!anyCommandTrigger) {
+            return;
+        }
+
         runAlertsForEvent(event);
     }
 
