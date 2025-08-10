@@ -10,7 +10,7 @@ plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("net.kyori.indra.git") version "2.1.1"
     id("net.researchgate.release") version "3.0.2"
-    id("xyz.jpenilla.run-paper") version "2.3.0"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.discordsrv"
@@ -180,10 +180,12 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     maven("https://nexus.scarsz.me/content/groups/public/")
+    // Multiverse-Core v5
+    maven("https://repo.onarandombox.com/content/groups/public/")
 }
 
 dependencies {
@@ -215,13 +217,13 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-core:2.0-beta9")
 
     // adventure, adventure-platform, MCDiscordReserializer
-    val adventureVersion = "4.17.0"
+    val adventureVersion = "4.23.0"
     api("net.kyori:adventure-api:${adventureVersion}")
     api("net.kyori:adventure-text-minimessage:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
+    implementation("net.kyori:adventure-platform-bukkit:4.4.0")
     api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
@@ -239,9 +241,9 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     // DynamicProxy
-    runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1-20240720.141742-6")
-    compileOnly("dev.vankka:dynamicproxy:1.0.1-20240720.141742-8")
-    annotationProcessor("dev.vankka:dynamicproxy:1.0.1-20240720.141742-8")
+    runtimeOnly("dev.vankka:dynamicproxy-runtime:1.0.1")
+    compileOnly("dev.vankka:dynamicproxy:1.0.1")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.1")
 
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
@@ -283,6 +285,7 @@ dependencies {
 
     // world hooks
     compileOnly("com.onarandombox.MultiverseCore:Multiverse-Core:2.4")
+    compileOnly("org.mvplugins.multiverse.core:multiverse-core:5.0.0-SNAPSHOT")
 
     // misc hooks
     compileOnly("org.dynmap:dynmap-api:2.0")
