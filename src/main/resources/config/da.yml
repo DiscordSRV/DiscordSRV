@@ -63,6 +63,9 @@ Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
 
+# This blocks the broadcast event incase you are handling the broadcast with alerts.yml
+Experiment_BlockBroadcast: false
+
 # Andet
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
