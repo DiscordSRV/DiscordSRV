@@ -1,0 +1,32 @@
+# Dette er konfigurasjonsfilen for DiscordSRVs stemmemodul
+# Dette er konfigurasjonsfilen for DiscordSRVs stemmemodul
+# Siden dette er en eksperimentell funskjon så kan det hende at ting ikke fungerer som det skal
+# Hvis du bestemmer deg for å prøve deg fram så kan du sende en tilbakemelding til oss
+# om noen feil på vår Discord-server: https://discordsrv.com/discord
+#
+
+# Om nærhetstale skal brukes for lydkanal-funksjonen for DiscordSRV
+# Du må starte om serveren etter dette blir endret
+Voice enabled: false
+# Antall ticks mellon nettverksoppdateringer
+Tick speed: 5
+# Hovedkategorien som stemmemodulen skal lage/slette/flytte lydkanaler i
+# Ingen andre kanaler enn Lobby-kanalen (nedenfor) skal være her
+Voice category: 000000000000000000
+# Lobby-kanalen (som er i kategorien spesifisert ovenfor) som folk skal bli flyttet til
+# når de ikke er i nærheten av noen nettverk. Dette er også kanalen som folk blir med
+# for å bli koblet til nærhetstale-nettverket.
+Lobby channel: 000000000000000000
+# Demper personer i lobbyen som har "Snakk"- og "Demp andre" tillatelser i lobbyen
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # Maksdistanse mellom spillere for å bli koblet til
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # Når en spiller har blitt med i nettverket så kan de være
+  # (strength + falloff)-blokker unna før de blir koblet fra
+  Falloff: 5
+  # Om nettverkets lydkanal skal være synlig for alle t.o.m. de som ikke er koblet til
+  # Sørger for at spillere vet at folk bruker lydnettverket for tiden
+  Channels are visible: false

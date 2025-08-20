@@ -20,6 +20,7 @@
 
 package github.scarsz.discordsrv.api.events;
 
+import net.dv8tion.jda.api.entities.User;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
@@ -34,14 +35,20 @@ import java.util.List;
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class DiscordGuildMessagePreBroadcastEvent extends Event {
 
+    private final User author;
     private String channel;
     private Component message;
     private final List<? extends CommandSender> recipients;
 
-    public DiscordGuildMessagePreBroadcastEvent(String channel, Component message, List<? extends CommandSender> recipients) {
+    public DiscordGuildMessagePreBroadcastEvent(User author, String channel, Component message, List<? extends CommandSender> recipients) {
+        this.author = author;
         this.channel = channel;
         this.message = message;
         this.recipients = recipients;
+    }
+
+    public User getAuthor() {
+        return this.author;
     }
 
     public String getChannel() {

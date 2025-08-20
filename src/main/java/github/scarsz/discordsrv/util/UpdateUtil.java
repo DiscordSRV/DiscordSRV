@@ -23,7 +23,6 @@ package github.scarsz.discordsrv.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
-import java.util.regex.Pattern;
 
 public class UpdateUtil {
 
@@ -122,9 +121,9 @@ public class UpdateUtil {
 
     private static void printUpdateMessage(String explanation) {
         DiscordSRV.warning("\n\n" + explanation + " Get the latest build at your favorite distribution center.\n\n" +
-                "Spigot: https://www.spigotmc.org/resources/discordsrv.18494/\n" +
-                "Github: https://github.com/DiscordSRV/DiscordSRV/releases\n" +
-                "Direct Download: https://get.discordsrv.com\n");
+                "Modrinth: https://modrinth.com/plugin/discordsrv/\n" +
+                "Github: https://github.com/DiscordSRV/DiscordSRV/releases/\n" +
+                "Direct Download: https://get.discordsrv.com/\n");
     }
 
 }

@@ -43,11 +43,14 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     private long lastIssue = -1;
+    private static final Pattern SPECIFIC_ROLE_PATTERN = Pattern.compile("role_(\\d+)_(\\w+)");
 
     @Override
     public @Nullable String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
@@ -111,6 +114,29 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 return String.valueOf(linkedAccounts.get().stream().filter(onlineMemberIds::contains).count());
             case "linked_total":
                 return String.valueOf(accountLinkManager.getLinkedAccountCount());
+        }
+
+        Matcher rolePlaceholderMatcher = SPECIFIC_ROLE_PATTERN.matcher(identifier);
+        if (rolePlaceholderMatcher.matches()) {
+            String roleId = rolePlaceholderMatcher.group(1);
+            Role role = DiscordUtil.getRole(roleId);
+            String subPlaceholder = rolePlaceholderMatcher.group(2);
+
+            if (role == null) {
+                //DiscordSRV.debug("role placeholder " + roleId + " is invalid");
+                return "";
+            }
+
+            //DiscordSRV.debug("role placeholder is valid, getting role" + subPlaceholder + " for role ID " + roleId);
+            switch (subPlaceholder) {
+                case "name":
+                    return role.getName();
+                case "color_hex":
+                    return getHex(role.getColorRaw());
+                case "color_code":
+                    final String legacy = MessageUtil.toLegacy(Component.text(0).color(TextColor.color(role.getColorRaw())));
+                    return legacy.substring(0, legacy.length() - 1);
+            }
         }
 
         if (player == null) return "";
