@@ -216,8 +216,16 @@ public class AlertListener implements Listener, EventListener {
                 }
 
                 try {
-                    Class<?> eventClass = Class.forName(trigger);
-                    if (!Event.class.isAssignableFrom(eventClass)) continue;
+                    Class<?> eventClass = Class.forName(getEventClassName(trigger));
+                    if (!Event.class.isAssignableFrom(eventClass)) {
+                        // Not a Bukkit event ignore (DiscordSRV & JDA events don't need to be registered explicitly)
+                        continue;
+                    }
+                    if (PlayerCommandPreprocessEvent.class.isAssignableFrom(eventClass)
+                            || ServerCommandEvent.class.isAssignableFrom(eventClass)) {
+                        // Already registered, don't register again
+                        continue;
+                    }
 
                     Method method = null;
                     Class<?> handlerListClass = eventClass;
@@ -239,7 +247,11 @@ public class AlertListener implements Listener, EventListener {
                         continue;
                     }
 
-                    if (!handlerLists.add((HandlerList) handlerList)) continue;
+                    if (!handlerLists.add((HandlerList) handlerList)) {
+                        // Ignore duplicate HandlerLists
+                        continue;
+                    }
+
                     addListener((HandlerList) handlerList);
                 } catch (ClassNotFoundException ignored) {
                     DiscordSRV.warning("Could not find event for alert trigger: " + trigger);
