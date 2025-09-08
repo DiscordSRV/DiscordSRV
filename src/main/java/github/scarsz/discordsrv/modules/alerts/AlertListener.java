@@ -93,7 +93,12 @@ public class AlertListener implements Listener, EventListener {
 
     public AlertListener() {
         listener = new RegisteredListener(
-                this,
+                new Listener() {
+                    @Override
+                    public String toString() {
+                        return "DiscordSRV Alerts";
+                    }
+                },
                 (listener, event) -> runAlertsForEvent(event),
                 EventPriority.MONITOR,
                 DiscordSRV.getPlugin(),
@@ -211,8 +216,16 @@ public class AlertListener implements Listener, EventListener {
                 }
 
                 try {
-                    Class<?> eventClass = Class.forName(trigger);
-                    if (!Event.class.isAssignableFrom(eventClass)) continue;
+                    Class<?> eventClass = Class.forName(getEventClassName(trigger));
+                    if (!Event.class.isAssignableFrom(eventClass)) {
+                        // Not a Bukkit event ignore (DiscordSRV & JDA events don't need to be registered explicitly)
+                        continue;
+                    }
+                    if (PlayerCommandPreprocessEvent.class.isAssignableFrom(eventClass)
+                            || ServerCommandEvent.class.isAssignableFrom(eventClass)) {
+                        // Already registered, don't register again
+                        continue;
+                    }
 
                     Method method = null;
                     Class<?> handlerListClass = eventClass;
@@ -234,7 +247,11 @@ public class AlertListener implements Listener, EventListener {
                         continue;
                     }
 
-                    if (!handlerLists.add((HandlerList) handlerList)) continue;
+                    if (!handlerLists.add((HandlerList) handlerList)) {
+                        // Ignore duplicate HandlerLists
+                        continue;
+                    }
+
                     addListener((HandlerList) handlerList);
                 } catch (ClassNotFoundException ignored) {
                     DiscordSRV.warning("Could not find event for alert trigger: " + trigger);
@@ -260,7 +277,7 @@ public class AlertListener implements Listener, EventListener {
     }
 
     public void unregister() {
-        HandlerList.unregisterAll(this);
+        HandlerList.unregisterAll(listener.getListener());
         registered = false;
     }
 
@@ -271,6 +288,16 @@ public class AlertListener implements Listener, EventListener {
 
     @Subscribe
     public void onDSRVEvent(github.scarsz.discordsrv.api.events.Event event) {
+        runAlertsForEvent(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        runAlertsForEvent(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onServerCommand(ServerCommandEvent event) {
         runAlertsForEvent(event);
     }
 
