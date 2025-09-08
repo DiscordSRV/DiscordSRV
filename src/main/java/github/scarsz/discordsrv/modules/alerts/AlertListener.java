@@ -293,19 +293,11 @@ public class AlertListener implements Listener, EventListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        if (!anyCommandTrigger) {
-            return;
-        }
-
         runAlertsForEvent(event);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onServerCommand(ServerCommandEvent event) {
-        if (!anyCommandTrigger) {
-            return;
-        }
-
         runAlertsForEvent(event);
     }
 
