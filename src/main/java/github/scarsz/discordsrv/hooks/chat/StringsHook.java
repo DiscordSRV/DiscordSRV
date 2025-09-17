@@ -39,7 +39,14 @@ public class StringsHook implements ChatHook {
 
     @Override
     public void broadcastMessageToChannel(String channel, Component message) {
-        Channel chatChannel = StringsProvider.get().getChannelLoader().getChannel(channel);
+        Channel chatChannel;
+        try {
+            chatChannel = StringsProvider.get().getChannelLoader().getChannel(channel);
+        } catch (Exception e) {
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but Strings threw an exception.");
+            return;
+        }
+
         if (chatChannel == null) {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but the channel was not found.");
             return;
