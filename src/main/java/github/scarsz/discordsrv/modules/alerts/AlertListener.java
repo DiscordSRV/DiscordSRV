@@ -396,8 +396,9 @@ public class AlertListener implements Listener, EventListener {
     }
 
     private String getEventClassName(Object event) {
-        return event.getClass().getName()
-                .replace("github.scarsz.discordsrv.dependencies.jda", "net.".concat("dv8tion.jda"));
+        String eventClassName = event instanceof String ? (String)event : event.getClass().getName();
+        return eventClassName
+            .replace("github.scarsz.discordsrv.dependencies.jda", "net.".concat("dv8tion.jda"));
     }
 
     private String getEventName(Object event) {
