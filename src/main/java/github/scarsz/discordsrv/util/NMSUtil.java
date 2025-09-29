@@ -20,12 +20,12 @@
 
 package github.scarsz.discordsrv.util;
 
-import github.scarsz.discordsrv.Debug;
-import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
+import github.scarsz.discordsrv.Debug;
+import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.entity.Player;
-
+import org.bukkit.advancement.Advancement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
