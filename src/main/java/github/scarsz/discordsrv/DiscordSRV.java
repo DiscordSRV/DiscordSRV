@@ -699,7 +699,7 @@ public class DiscordSRV extends JavaPlugin {
                     }
 
                     // this sleep is here to prevent OkHTTP from repeatedly trying to query DNS servers with no
-                    // delay of it's own when internet connectivity is lost. that's extremely bad because it'll be
+                    // delay of its own when internet connectivity is lost. that's extremely bad because it'll be
                     // spitting errors into the console and consuming 100% cpu
                     try {
                         Thread.sleep(500);
@@ -1497,7 +1497,7 @@ public class DiscordSRV extends JavaPlugin {
                         Field configField = null;
                         Class<?> targetClass = logger.getClass();
 
-                        // get a field named config or privateConfig from the logger class or any of it's super classes
+                        // get a field named config or privateConfig from the logger class or any of its super classes
                         while (targetClass != null) {
                             try {
                                 configField = targetClass.getDeclaredField("config");
@@ -2154,7 +2154,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         if (username.startsWith("*")) {
-            // geyser adds * to beginning of it's usernames
+            // geyser adds * to beginning of its usernames
             username = username.substring(1);
         }
         try {
@@ -2251,7 +2251,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     /**
-     * @return Whether DiscordSRV should disable it's update checker. Doing so is dangerous and can lead to
+     * @return Whether DiscordSRV should disable its update checker. Doing so is dangerous and can lead to
      * security vulnerabilities. You shouldn't use this.
      */
     public static boolean isUpdateCheckDisabled() {
