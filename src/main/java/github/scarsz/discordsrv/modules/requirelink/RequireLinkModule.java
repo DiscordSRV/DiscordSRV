@@ -44,6 +44,9 @@ import java.util.function.BiConsumer;
 
 public class RequireLinkModule implements Listener {
 
+    private static final String KICK_REASON_CONFIG_ERROR = AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name();
+    private static final String KICK_REASON_NOT_ALLOWED = AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name();
+
     public RequireLinkModule() {
         Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
     }
@@ -96,7 +99,7 @@ public class RequireLinkModule implements Listener {
 
             if (!DiscordSRV.isReady) {
                 DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " connecting before DiscordSRV is ready, denying login");
-                disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), MessageUtil.translateLegacy(getDiscordSRVStillStartingKickMessage()));
+                disallow.accept(KICK_REASON_CONFIG_ERROR, MessageUtil.translateLegacy(getDiscordSRVStillStartingKickMessage()));
                 return;
             }
 
@@ -109,7 +112,7 @@ public class RequireLinkModule implements Listener {
 
                 DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is NOT linked to a Discord account, denying login");
                 disallow.accept(
-                        AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
+                        KICK_REASON_NOT_ALLOWED,
                         MessageUtil.translateLegacy(DiscordSRV.config().getString("Require linked account to play.Not linked message"))
                                 .replace("{BOT}", botName)
                                 .replace("{CODE}", code)
@@ -125,7 +128,7 @@ public class RequireLinkModule implements Listener {
                 if (mustBePresent && !isPresent) {
                     DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + "'s linked Discord account is NOT present, denying login");
                     disallow.accept(
-                            AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
+                            KICK_REASON_NOT_ALLOWED,
                             MessageUtil.translateLegacy(DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
                                     .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"))
                     );
@@ -148,7 +151,7 @@ public class RequireLinkModule implements Listener {
                             if (!inServer) {
                                 DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + "'s linked Discord account is NOT present, denying login");
                                 disallow.accept(
-                                        AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
+                                        KICK_REASON_NOT_ALLOWED,
                                         MessageUtil.translateLegacy(DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
                                                 .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"))
                                 );
@@ -191,18 +194,18 @@ public class RequireLinkModule implements Listener {
 
                 if (failedRoleIds == subRoleIds.size()) {
                     DiscordSRV.error("Tried to authenticate " + playerName + " but no valid subscriber role IDs are found and thats a requirement; login will be denied until this is fixed.");
-                    disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), MessageUtil.translateLegacy(getFailedToFindRoleKickMessage()));
+                    disallow.accept(KICK_REASON_CONFIG_ERROR, MessageUtil.translateLegacy(getFailedToFindRoleKickMessage()));
                     return;
                 }
 
                 if (getAllSubRolesRequired() ? matches < subRoleIds.size() : matches == 0) {
                     DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " does NOT match subscriber role requirements, denying login");
-                    disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(), MessageUtil.translateLegacy(getSubscriberRoleKickMessage()));
+                    disallow.accept(KICK_REASON_NOT_ALLOWED, MessageUtil.translateLegacy(getSubscriberRoleKickMessage()));
                 }
             }
         } catch (Exception exception) {
             DiscordSRV.error("Failed to check player: " + playerName, exception);
-            disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), MessageUtil.translateLegacy(getUnknownFailureKickMessage()));
+            disallow.accept(KICK_REASON_CONFIG_ERROR, MessageUtil.translateLegacy(getUnknownFailureKickMessage()));
         }
     }
 
