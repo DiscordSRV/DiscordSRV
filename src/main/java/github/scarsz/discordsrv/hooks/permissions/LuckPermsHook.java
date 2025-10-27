@@ -28,10 +28,7 @@ import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import github.scarsz.discordsrv.util.SchedulerUtil;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -42,6 +39,7 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 public class LuckPermsHook implements PluginHook, net.luckperms.api.context.ContextCalculator<Player> {
@@ -135,32 +133,39 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         User user = DiscordUtil.getJda().getUserById(userId);
         if (user == null) return;
 
-        for (Guild guild : DiscordUtil.getJda().getGuilds()) {
-            if (guild.getMember(user) == null) continue;
+        // List of guilds the user is in that the bot is also
+        List<Member> userMembers = DiscordUtil.getJda().getGuilds().stream()
+                .map((guild) -> guild.getMember(user))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        // List of channels from the config to check for roles
+        List<@NotNull Guild> roleGuilds = DiscordSRV.getPlugin().getAllChannels().stream()
+                .map(GuildChannel::getGuild)
+                .collect(Collectors.toList());
 
+        for (Member member : userMembers) {
+            final @NotNull Guild guild = member.getGuild();
+            // Add context for server id
             consumer.accept(CONTEXT_SERVER_ID, guild.getId());
-        }
 
-        Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
-        if (mainGuild == null) {
-            return;
-        }
+            // Checks if channels config property contains the guild
+            if (roleGuilds.contains(guild)) {
+                for (Role role : member.getRoles()) {
+                    if (StringUtils.isBlank(role.getName())) {
+                        continue;
+                    }
 
-        Member member = mainGuild.getMemberById(userId);
-        if (member == null) {
-            return;
-        }
+                    // Add context for each role
+                    consumer.accept(CONTEXT_ROLE, role.getName());
+                    consumer.accept(CONTEXT_ROLE_ID, role.getId());
+                }
 
-        consumer.accept(CONTEXT_BOOSTING, Boolean.toString(member.getTimeBoosted() != null));
-
-        for (Role role : member.getRoles()) {
-            if (StringUtils.isBlank(role.getName())) {
-                continue;
+                // Main Guild will be in DiscordSRV#getAllChannels, so we can assume it will trigger the if statement
+                if (guild == DiscordSRV.getPlugin().getMainGuild()) {
+                    consumer.accept(CONTEXT_BOOSTING, Boolean.toString(member.getTimeBoosted() != null));
+                }
             }
-            consumer.accept(CONTEXT_ROLE, role.getName());
-            consumer.accept(CONTEXT_ROLE_ID, role.getId());
         }
-
     }
 
     @Override
