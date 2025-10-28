@@ -4,8 +4,8 @@
 # DiscordToMinecraftChatMessageFormatNoRole: genutztes Format beim Versenden von Nachrichten von Discord nach Minecraft,
 #                                            wenn der Sender keine Rolle hat
 #
-# Sie können pro Kanal ein anderes Format angeben. Angenommen, Sie haben einen Kanal mit dem Namen "mychannel".
-# Wenn Sie eine andere als die global definierte Formatierung wünschen, können Sie folgende Eigenschaften hinzufügen:
+# Du kannst pro Kanal ein anderes Format angeben. Angenommen, du hast einen Kanal mit dem Namen "mychannel".
+# Wenn du eine andere als die global definierte Formatierung wünschst, kannst du folgende Eigenschaften hinzufügen:
 #
 # DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
 # DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
@@ -24,12 +24,12 @@
 #                    z.B: O
 # %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders
 #                    z.B. &4
-# %name%:           Der effektive Name der Person auf Discord (Spitzname, falls vorhanden, Benutzername sonst)
+# %name%:           Der effektive Name der Person auf Discord (Spitzname, falls vorhanden, sonst Benutzername)
 #                    z.B. NotchIsMe
 # %username%:       Name des Senders in Discord
 #                    z.B. Notch
-# %userid%:         person's ID on Discord
-#                    example: 1081004946872352958
+# %userid%:         ID der Person auf Discord
+#                    z.B. 1081004946872352958
 # %channelname%:    Name des Kanals, aus dem die Nachricht kommt
 #                    z.B. server-chat
 # %reply%:          Die Nachricht, die angezeigt wird, wenn die Nachricht eine Antwort auf eine andere Nachricht ist.
@@ -41,12 +41,12 @@
 # DiscordToMinecraftMessageReplyFormat: Das Format für die angezeigte Nachricht, um anzuzeigen, dass es sich bei der Nachricht um eine Antwort handelt
 #
 # Verfügbare Platzhalter:
-# %name%:           Der effektive Name des Benutzers, auf den auf Discord geantwortet wird (Spitzname, falls vorhanden, Benutzername andernfalls).
+# %name%:           Der effektive Name des Benutzers, auf den auf Discord geantwortet wird (Spitzname, falls vorhanden, sonst Benutzername).
 #                    z.B. NotchIsMe
-# %username%:       Der Benutzername des Benutzers, auf den auf Discord geantwortet wird
+# %username%:       Der Benutzername des Benutzers, auf den in Discord geantwortet wird
 #                    z.B. Notch
-# %userid%:         the ID of the user that is being replied to on Discord
-#                    example: 1081004946872352958
+# %userid%:         Die ID des Benutzers, auf den in Discord geantwortet wird
+#                    z.B. 1081004946872352958
 # %message%:        Der Inhalt der Nachricht, auf die geantwortet wird
 #
 # HINWEIS: Der Platzhalter %reply% muss im Format vorhanden sein, wenn das DiscordToMinecraftMessageReplyFormat in Ihrer Nachricht angezeigt werden soll.
@@ -54,7 +54,7 @@
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " (antworten auf %name%)"
+DiscordToMinecraftMessageReplyFormat: " (antwortet auf %name%)"
 
 # Minecraft -> Discord Nachrichten
 #
@@ -95,7 +95,7 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 # Verfügbare Platzhalter:
 # %channelcolor%:    die Farbe des Chat-Raums, in den eine Nachricht gesendet wird
 #                     z.B. &4 für den Admin Chat-Raum in den meisten Fällen
-# %channelname%:     der eigentliche Name des Chat-Raums aus Sicht des Chat plugins
+# %channelname%:     der eigentliche Name des Chat-Raums aus Sicht des Chat-Plugins
 #                     z.B. admin
 # %channelnickname%: der Spielern angezeigte Name / Nickname des Chat-Raums
 #                     z.B. Admin
@@ -184,7 +184,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Informationen einbetten:
 # Color:      akzeptiert einen hexadezimalen Farbcode (z.B. "#ffffff") oder eine RGB-Ganzzahl (z.B. 0)
 # Fields:     Format ist "titel;wert;inline" (z.B. "Wer ist beigetreten?;%displayname%;true") oder "leer", um ein leeres Feld hinzuzufügen
-# Timestamp:  Setzen Sie diesen Wert auf true, um die Zeit zu verwenden, zu der die Nachricht gesendet wurde, oder verwenden Sie einen Epochenzeitstempel für eine bestimmte Zeit (https://www.epochconverter.com/)
+# Timestamp:  Setze diesen Wert auf true, um die Zeit zu verwenden, zu der die Nachricht gesendet wurde, oder verwende einen Epochenzeitstempel für eine bestimmte Zeit (https://www.epochconverter.com/)
 #
 # Verfügbare Platzhalter für PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         Nickname des Nutzers
@@ -385,7 +385,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offlin
 DiscordCommandFormat: "&bBesuch uns im Discord unter {INVITE}&b. Für eine Befehlsliste nutze \"/discord ?\""
 
 # Kein Berechtigungsnachrichtenformat
-NoPermissionMessage: "&cDu hast keine Berechtigung diesen Befehl auszuführen."
+NoPermissionMessage: "&cDu hast keine Berechtigung, um diesen Befehl auszuführen."
 
 # Unbekannte Befehlsnachricht
 UnknownCommandMessage: "&bDieser Befehl existiert nicht!"
