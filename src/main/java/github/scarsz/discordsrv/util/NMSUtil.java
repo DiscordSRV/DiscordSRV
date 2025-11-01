@@ -75,8 +75,12 @@ public class NMSUtil {
                 }
             }
 
-            class_Advancement = fixBukkitClass("org.bukkit.craftbukkit.advancement.CraftAdvancement");
-            method_Advancement_getHandle = class_Advancement.getMethod("getHandle");
+            try {
+                class_Advancement = fixBukkitClass("org.bukkit.craftbukkit.advancement.CraftAdvancement");
+                method_Advancement_getHandle = class_Advancement.getMethod("getHandle");
+            } catch (ClassNotFoundException ex) {
+                // Unsupported on the server
+            }
 
             class_CraftPlayer = fixBukkitClass("org.bukkit.craftbukkit.entity.CraftPlayer");
             method_CraftPlayer_getHandle = class_CraftPlayer.getMethod("getHandle");
@@ -87,7 +91,12 @@ public class NMSUtil {
                 class_GameProfile = getClass("net.minecraft.util.com.mojang.authlib.GameProfile");
                 class_GameProfileProperty = getClass("net.minecraft.util.com.mojang.authlib.properties.Property");
             }
-            method_GameProfile_getProperties = class_GameProfile.getMethod("getProperties");
+
+            method_GameProfile_getProperties = getMethod(class_GameProfile, "getProperties");
+            if (method_GameProfile_getProperties == null) {
+                method_GameProfile_getProperties = getMethod(class_GameProfile, "properties");
+            }
+
             field_GameProfileProperty_value = class_GameProfileProperty.getDeclaredField("value");
             field_GameProfileProperty_value.setAccessible(true);
             field_PropertyMap_properties = method_GameProfile_getProperties.getReturnType().getDeclaredField("properties");
@@ -103,6 +112,14 @@ public class NMSUtil {
         Class<?> result = null;
         try {
             result = NMSUtil.class.getClassLoader().loadClass(className);
+        } catch (Exception ignored) {}
+        return result;
+    }
+
+    public static Method getMethod(Class<?> methodClass, String methodName) {
+        Method result = null;
+        try {
+            result = methodClass.getMethod(methodName);
         } catch (Exception ignored) {}
         return result;
     }
@@ -193,8 +210,8 @@ public class NMSUtil {
         return null;
     }
 
-    public static Object getHandle(Advancement advancement) {
-        if (failed) return null;
+    public static Object getHandle(Object advancement) {
+        if (failed || method_Advancement_getHandle == null) return null;
 
         try {
             return method_Advancement_getHandle.invoke(advancement);

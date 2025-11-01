@@ -37,7 +37,7 @@ import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.vanish.VanishHook;
-import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
+import github.scarsz.discordsrv.hooks.world.WorldHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
@@ -699,7 +699,7 @@ public class DiscordSRV extends JavaPlugin {
                     }
 
                     // this sleep is here to prevent OkHTTP from repeatedly trying to query DNS servers with no
-                    // delay of it's own when internet connectivity is lost. that's extremely bad because it'll be
+                    // delay of its own when internet connectivity is lost. that's extremely bad because it'll be
                     // spitting errors into the console and consuming 100% cpu
                     try {
                         Thread.sleep(500);
@@ -1130,7 +1130,10 @@ public class DiscordSRV extends JavaPlugin {
                 // dynmap
                 "github.scarsz.discordsrv.hooks.DynmapHook",
                 // luckperms
-                "github.scarsz.discordsrv.hooks.permissions.LuckPermsHook"
+                "github.scarsz.discordsrv.hooks.permissions.LuckPermsHook",
+                // world hooks
+                "github.scarsz.discordsrv.hooks.world.MultiverseCoreV4Hook",
+                "github.scarsz.discordsrv.hooks.world.MultiverseCoreV5Hook"
         }) {
             try {
                 Class<?> hookClass = Class.forName(hookClassName);
@@ -1380,6 +1383,7 @@ public class DiscordSRV extends JavaPlugin {
         alertListener = new AlertListener();
         jda.addEventListener(alertListener);
         api.subscribe(alertListener);
+        getServer().getPluginManager().registerEvents(alertListener, this);
 
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) {
@@ -1493,7 +1497,7 @@ public class DiscordSRV extends JavaPlugin {
                         Field configField = null;
                         Class<?> targetClass = logger.getClass();
 
-                        // get a field named config or privateConfig from the logger class or any of it's super classes
+                        // get a field named config or privateConfig from the logger class or any of its super classes
                         while (targetClass != null) {
                             try {
                                 configField = targetClass.getDeclaredField("config");
@@ -1659,6 +1663,23 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
 
+    /**
+     * Gets the alias for the given world
+     *
+     * @param world The name of the world to get the alias for
+     * @return The world's alias or the provided string if no alias or supported WorldHook was found
+     */
+    public String getWorldAlias(String world) {
+        WorldHook worldHook = pluginHooks.stream()
+                .filter(hook -> hook instanceof WorldHook)
+                .map(hook -> (WorldHook) hook)
+                .findAny()
+                .orElse(null);
+
+        if (worldHook == null) return world;
+        return worldHook.getWorldAlias(world);
+    }
+
     @Deprecated
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
         this.processChatMessage(player, message, channel, cancelled, null);
@@ -1786,7 +1807,7 @@ public class DiscordSRV extends JavaPlugin {
                     .replace("%primarygroup%", userPrimaryGroup)
                     .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
                     .replace("%world%", player.getWorld().getName())
-                    .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+                    .replace("%worldalias%", MessageUtil.strip(getWorldAlias(player.getWorld().getName())));
             // Replace the PAPI placeholders in the message pattern
             discordMessagePattern = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessagePattern, player);
 
@@ -1882,7 +1903,7 @@ public class DiscordSRV extends JavaPlugin {
         if (chatHook == null || channel == null) {
             if (channel != null && !channel.equalsIgnoreCase("global")) return; // don't send messages for non-global channels with no plugin hooks
             DiscordGuildMessagePreBroadcastEvent preBroadcastEvent = api.callEvent(new DiscordGuildMessagePreBroadcastEvent
-                    (channel, message, PlayerUtil.getOnlinePlayers()));
+                    (author, channel, message, PlayerUtil.getOnlinePlayers()));
             message = preBroadcastEvent.getMessage();
             channel = preBroadcastEvent.getChannel();
             MessageUtil.sendMessage(preBroadcastEvent.getRecipients(), message);
@@ -2133,7 +2154,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         if (username.startsWith("*")) {
-            // geyser adds * to beginning of it's usernames
+            // geyser adds * to beginning of its usernames
             username = username.substring(1);
         }
         try {
@@ -2230,7 +2251,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     /**
-     * @return Whether DiscordSRV should disable it's update checker. Doing so is dangerous and can lead to
+     * @return Whether DiscordSRV should disable its update checker. Doing so is dangerous and can lead to
      * security vulnerabilities. You shouldn't use this.
      */
     public static boolean isUpdateCheckDisabled() {

@@ -26,7 +26,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.*;
 import github.scarsz.discordsrv.hooks.DynmapHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
-import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.proxy.CommandSenderDynamicProxy;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
@@ -454,7 +453,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
                         .replace("%primarygroup%", userPrimaryGroup)
                         .replace("%world%", player.getWorld().getName())
-                        .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+                        .replace("%worldalias%", MessageUtil.strip(DiscordSRV.getPlugin().getWorldAlias(player.getWorld().getName())));
 
                 // use PlaceholderAPI if available
                 playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);

@@ -207,11 +207,10 @@ public class DebugUtil {
             while (!done) {
                 String line = br.readLine();
                 if (line == null) done = true;
-                if (line != null
-                        && line.toLowerCase().contains("discordsrv")
-                        && !line.toLowerCase().contains("[discordsrv] chat:")) {
-                    output.add(DiscordUtil.aggressiveStrip(line));
-                }
+                else if (
+                    line.toLowerCase().contains("discordsrv") && !line.toLowerCase().contains("[discordsrv] chat:")
+                    || line.toLowerCase().contains(" /discord")
+                ) output.add(DiscordUtil.aggressiveStrip(line));
             }
         } catch (IOException e) {
             DiscordSRV.error(e);
@@ -614,7 +613,7 @@ public class DebugUtil {
 
     /**
      * Upload the given file map to the current reporting service
-     * @param files A Map representing a structure of file name & it's contents
+     * @param files A Map representing a structure of file name & its contents
      * @param requester Person who requested the debug report
      * @return A user-friendly message of how the report went
      */

@@ -475,7 +475,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         } catch (Throwable t) {
             name = permission.getClass().getName();
         }
-        DiscordSRV.error(problem + ". Caused by a error in Vault or it's permissions provider: " + name, throwable);
+        DiscordSRV.error(problem + ". Caused by a error in Vault or its permissions provider: " + name, throwable);
     }
 
     public void resyncEveryone(SyncCause cause) {
