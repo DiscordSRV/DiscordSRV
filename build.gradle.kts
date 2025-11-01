@@ -285,6 +285,7 @@ dependencies {
 
     // world hooks
     compileOnly("com.onarandombox.MultiverseCore:Multiverse-Core:2.4")
+    compileOnly("org.mvplugins.multiverse.core:multiverse-core:5.0.0-SNAPSHOT")
 
     // misc hooks
     compileOnly("org.dynmap:dynmap-api:2.0")
