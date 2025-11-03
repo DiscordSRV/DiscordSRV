@@ -613,7 +613,7 @@ public class DebugUtil {
 
     /**
      * Upload the given file map to the current reporting service
-     * @param files A Map representing a structure of file name & it's contents
+     * @param files A Map representing a structure of file name & its contents
      * @param requester Person who requested the debug report
      * @return A user-friendly message of how the report went
      */

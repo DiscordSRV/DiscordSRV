@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * <br>
  * <p>To register your class to receive events:</p>
  * <ol>
- *     <li>Have a class with methods marked {@link Subscribe} that take the event to listen for as it's <i>only</i> parameter</li>
+ *     <li>Have a class with methods marked {@link Subscribe} that take the event to listen for as its <i>only</i> parameter</li>
  *     <li>Pass an instance of that class to {@link #subscribe(Object)}</li>
  * </ol>
  * <p>{@link ListenerPriority} can optionally be set, defaulting to ListenerPriority.NORMAL</p>
@@ -360,7 +360,7 @@ public class ApiManager extends ListenerAdapter {
     }
 
     /**
-     * Attempt to find the owning {@link Plugin} of the offending class and print the provided throwable to it's logger
+     * Attempt to find the owning {@link Plugin} of the offending class and print the provided throwable to its logger
      * @param offendingClass the offending plugin class
      * @param throwable throwable to print
      * @return whether the plugin was successfully determined
