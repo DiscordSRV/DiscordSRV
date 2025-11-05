@@ -33,6 +33,8 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Button;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -603,13 +605,62 @@ public class AlertListener implements Listener, EventListener {
                     return;
                 }
 
+                // Build buttons (link buttons only) into action rows if configured
+                List<ActionRow> actionRows = new ArrayList<>();
+                Dynamic buttonsDynamic = alert.get("Buttons");
+                if (buttonsDynamic != null && buttonsDynamic.isList()) {
+                    List<Button> builtButtons = new ArrayList<>();
+                    Iterator<Dynamic> it = buttonsDynamic.children().iterator();
+                    while (it.hasNext()) {
+                        Dynamic btn = it.next();
+                        try {
+                            String label = btn.dget("Text").asString();
+                            String url = btn.dget("Url").asString();
+
+                            label = translator.apply(label, false);
+                            url = translator.apply(url, true);
+
+                            if (StringUtils.isBlank(label) || StringUtils.isBlank(url)) continue;
+
+                            Button button = Button.link(url, label);
+                            builtButtons.add(button);
+                        } catch (Throwable t) {
+                            DiscordSRV.debug(Debug.ALERTS, "Skipping invalid button in alert index " + alertIndex + ": " + t.getMessage());
+                        }
+                    }
+                    // Discord allows 5 rows max, 5 buttons per row; cap at 25
+                    int limit = Math.min(25, builtButtons.size());
+                    for (int i = 0; i < limit; i += 5) {
+                        List<Button> slice = builtButtons.subList(i, Math.min(i + 5, limit));
+                        if (!slice.isEmpty()) actionRows.add(ActionRow.of(slice));
+                        if (actionRows.size() >= 5) break;
+                    }
+                }
+
                 if (messageFormat.isUseWebhooks()) {
-                    WebhookUtil.deliverMessage(textChannel,
-                            translator.apply(messageFormat.getWebhookName(), false),
-                            translator.apply(messageFormat.getWebhookAvatarUrl(), false),
-                            message.getContentRaw(), message.getEmbeds().stream().findFirst().orElse(null));
+                    if (!actionRows.isEmpty()) {
+                        WebhookUtil.deliverMessage(textChannel,
+                                translator.apply(messageFormat.getWebhookName(), false),
+                                translator.apply(messageFormat.getWebhookAvatarUrl(), false),
+                                message.getContentRaw(), message.getEmbeds().stream().findFirst().orElse(null), null, actionRows);
+                    } else {
+                        WebhookUtil.deliverMessage(textChannel,
+                                translator.apply(messageFormat.getWebhookName(), false),
+                                translator.apply(messageFormat.getWebhookAvatarUrl(), false),
+                                message.getContentRaw(), message.getEmbeds().stream().findFirst().orElse(null));
+                    }
                 } else {
-                    DiscordUtil.queueMessage(textChannel, message);
+                    if (!actionRows.isEmpty()) {
+                        try {
+                            textChannel.sendMessage(message).setActionRows(actionRows).queue();
+                        } catch (Exception e) {
+                            DiscordSRV.error("Failed to send alert with buttons: " + e.getMessage());
+                            // fallback without buttons
+                            DiscordUtil.queueMessage(textChannel, message);
+                        }
+                    } else {
+                        DiscordUtil.queueMessage(textChannel, message);
+                    }
                 }
             }
         }
