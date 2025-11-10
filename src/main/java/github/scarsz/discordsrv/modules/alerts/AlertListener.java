@@ -66,7 +66,18 @@ import java.util.stream.Collectors;
 
 public class AlertListener implements Listener, EventListener {
 
-    private final Map<String, String> buttonCommandMap = new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(10));
+    private static class ButtonAction {
+        final String runAs; // "console" or "player"
+        final String playerName; // when runAs=player, may be null
+        final List<String> commands;
+        ButtonAction(String runAs, String playerName, List<String> commands) {
+            this.runAs = runAs;
+            this.playerName = playerName;
+            this.commands = commands;
+        }
+    }
+
+    private final Map<String, ButtonAction> buttonCommandMap = new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(10));
     private final java.util.Set<PendingDisable> pendingDisables = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
     private static class PendingDisable {
@@ -160,31 +171,13 @@ public class AlertListener implements Listener, EventListener {
             }
 
             // set the HandlerList.allLists field to be a proxy list that adds our listener to all initializing lists
-            allListsField.set(null, new ArrayList<HandlerList>() {
-                {
-                    // add any already existing handler lists to our new proxy list
-                    synchronized (this) {
-                        this.addAll(HandlerList.getHandlerLists());
-                    }
-                }
-
-                @Override
-                public boolean addAll(Collection<? extends HandlerList> c) {
-                    boolean changed = false;
-                    for (HandlerList handlerList : c) {
-                        if (add(handlerList)) changed = true;
-                    }
-                    return changed;
-                }
-
-                @Override
-                public boolean add(HandlerList list) {
-                    boolean added = super.add(list);
+            List<HandlerList> existing = HandlerList.getHandlerLists();
+            synchronized (existing) {
+                for (HandlerList list : existing) {
                     addListener(list);
-                    return added;
                 }
-            });
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+            }
+        } catch (Throwable e) {
             DiscordSRV.error(e);
         }
     }
@@ -316,8 +309,8 @@ public class AlertListener implements Listener, EventListener {
         if (event instanceof ButtonClickEvent) {
             ButtonClickEvent btnEvent = (ButtonClickEvent) event;
             String id = btnEvent.getComponentId();
-            String stored = buttonCommandMap.get(id);
-            if (stored != null) {
+            ButtonAction action = buttonCommandMap.get(id);
+            if (action != null) {
                 try {
                     // Acknowledge the click to avoid "This interaction failed"
                     btnEvent.reply("Command queued.").setEphemeral(true).queue();
@@ -353,50 +346,29 @@ public class AlertListener implements Listener, EventListener {
                 // Remove mapping to prevent any reuse
                 buttonCommandMap.remove(id);
 
-                // Parse context and command
-                String runContext = "console";
-                String cmd = stored;
-                try {
-                    if (stored.startsWith("console:")) {
-                        runContext = "console";
-                        cmd = stored.substring("console:".length());
-                    } else if (stored.startsWith("player:")) {
-                        runContext = "player";
-                        int first = stored.indexOf(':');
-                        int second = stored.indexOf(':', first + 1);
-                        String playerName = second > first ? stored.substring(first + 1, second) : null;
-                        cmd = second > 0 ? stored.substring(second + 1) : "";
-
-                        final String finalCmd = cmd;
-                        final String finalPlayerName = playerName;
-                        SchedulerUtil.runTask(DiscordSRV.getPlugin(), () -> {
-                            try {
-                                Player p = finalPlayerName != null ? Bukkit.getPlayerExact(finalPlayerName) : null;
-                                if (p != null && p.isOnline()) {
-                                    boolean ok = Bukkit.dispatchCommand(p, finalCmd);
-                                    if (!ok) DiscordSRV.warning("Player command from button failed to dispatch: " + finalCmd);
-                                } else {
-                                    boolean ok = Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCmd);
-                                    if (!ok) DiscordSRV.warning("Fallback console command from button failed to dispatch: " + finalCmd);
-                                }
-                            } catch (Throwable t) {
-                                DiscordSRV.error("Error running player button command: " + t.getMessage());
-                            }
-                        });
-                        return; // handled
-                    }
-                } catch (Throwable t) {
-                    DiscordSRV.debug(Debug.ALERTS, "Failed to parse button command context, defaulting to console: " + t.getMessage());
-                }
-
-                final String finalCmd2 = cmd;
-                // Execute the command as console on the main thread
+                // Execute commands according to action context on the main thread
                 SchedulerUtil.runTask(DiscordSRV.getPlugin(), () -> {
                     try {
-                        boolean ok = Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCmd2);
-                        if (!ok) DiscordSRV.warning("Command from button failed to dispatch: " + finalCmd2);
+                        if ("player".equalsIgnoreCase(action.runAs)) {
+                            Player p = action.playerName != null ? Bukkit.getPlayerExact(action.playerName) : null;
+                            for (String c : action.commands) {
+                                boolean ok;
+                                if (p != null && p.isOnline()) {
+                                    ok = Bukkit.dispatchCommand(p, c);
+                                    if (!ok) DiscordSRV.warning("Player command from button failed to dispatch: " + c);
+                                } else {
+                                    ok = Bukkit.dispatchCommand(Bukkit.getConsoleSender(), c);
+                                    if (!ok) DiscordSRV.warning("Fallback console command from button failed to dispatch: " + c);
+                                }
+                            }
+                        } else {
+                            for (String c : action.commands) {
+                                boolean ok = Bukkit.dispatchCommand(Bukkit.getConsoleSender(), c);
+                                if (!ok) DiscordSRV.warning("Command from button failed to dispatch: " + c);
+                            }
+                        }
                     } catch (Throwable t) {
-                        DiscordSRV.error("Error running button command: " + t.getMessage());
+                        DiscordSRV.error("Error running button commands: " + t.getMessage());
                     }
                 });
                 return; // handled
@@ -761,7 +733,6 @@ public class AlertListener implements Listener, EventListener {
                             String label = translator.apply(btn.dget("Text").asString(), false);
                             String url = btn.get("Url").isPresent() ? translator.apply(btn.dget("Url").asString(), true) : null;
                             String styleStr = btn.get("Style").isPresent() ? btn.dget("Style").asString() : null;
-                            String buttonCommand = btn.get("Command").isPresent() ? translator.apply(btn.dget("Command").asString(), false) : null;
                             String runAs = btn.get("RunAs").isPresent() ? btn.dget("RunAs").asString() : "console";
 
                             if (StringUtils.isBlank(label)) continue;
@@ -773,10 +744,24 @@ public class AlertListener implements Listener, EventListener {
                                 continue;
                             }
 
-                            // Command/custom-id button
-                            if (StringUtils.isBlank(buttonCommand)) {
-                                // No url and no command -> invalid, skip
-                                DiscordSRV.debug(Debug.ALERTS, "Skipping button with no Url/Command in alert index " + alertIndex);
+                            // Gather commands: support either a single Command (string) or Commands (list)
+                            List<String> commandsList = new ArrayList<>();
+                            if (btn.get("Commands").isPresent() && btn.dget("Commands").isList()) {
+                                Iterator<Dynamic> cit = btn.dget("Commands").children().iterator();
+                                while (cit.hasNext()) {
+                                    Dynamic cd = cit.next();
+                                    String cmd = translator.apply(cd.convert().intoString(), false);
+                                    if (StringUtils.isNotBlank(cmd)) commandsList.add(cmd);
+                                }
+                            }
+                            if (commandsList.isEmpty() && btn.get("Command").isPresent()) {
+                                String single = translator.apply(btn.dget("Command").asString(), false);
+                                if (StringUtils.isNotBlank(single)) commandsList.add(single);
+                            }
+
+                            // Command/custom-id button must have at least one command
+                            if (commandsList.isEmpty()) {
+                                DiscordSRV.debug(Debug.ALERTS, "Skipping button with no Url/Command(s) in alert index " + alertIndex);
                                 continue;
                             }
 
@@ -794,10 +779,10 @@ public class AlertListener implements Listener, EventListener {
                                 }
                             }
 
-                            // Create a custom id and store mapping to command (+context for runAs)
+                            // Create a custom id and store mapping to ButtonAction (+context for runAs)
                             String customId = UUID.randomUUID().toString();
-                            String contextPrefix = ("player".equalsIgnoreCase(runAs) && finalPlayer != null) ? "player:" + finalPlayer.getName() + ":" : "console:";
-                            buttonCommandMap.put(customId, contextPrefix + buttonCommand);
+                            String playerName = ("player".equalsIgnoreCase(runAs) && finalPlayer != null) ? finalPlayer.getName() : null;
+                            buttonCommandMap.put(customId, new ButtonAction(runAs, playerName, commandsList));
 
                             Button button = Button.of(style, customId, label);
                             builtButtons.add(button);
