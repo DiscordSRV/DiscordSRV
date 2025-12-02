@@ -99,7 +99,7 @@ UseModernPaperChatEvent: false
 # DiscordGameStatus: Texto a ser exibido. Pode ser um único valor, por exemplo, "Minecraft", ou vários valores, por exemplo, ["Minecraft", "seup.mudeme.com"]
 # DiscordOnlineStatus: Status da atividade a ser exibido. Deve ser um dos seguintes: ONLINE, DND, IDLE ou INVISIBLE
 # StatusUpdateRateInMinutes: Com que frequência o status deve ser atualizado
-DiscordGameStatus: ["jogando Minecraft"]
+DiscordGameStatus: ["playing Minecraft"]
 DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
