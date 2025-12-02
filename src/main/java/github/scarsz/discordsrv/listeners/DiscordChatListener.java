@@ -36,6 +36,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -224,7 +228,7 @@ public class DiscordChatListener extends ListenerAdapter {
         String formatMessage = MessageFormatResolver.getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
         message = message != null ? message : "<blank message>";
-        boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
+        boolean isLegacy = MessageUtil.isLegacy(message);
 
         Component reserialized = MessageUtil.reserializeToMinecraftBasedOnConfig(message);
         message = shouldStripColors ? PlainTextComponentSerializer.plainText().serialize(reserialized) : MessageUtil.toPlain(reserialized, isLegacy);
@@ -244,11 +248,6 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        formatMessage = replacePlaceholders(formatMessage, event, selectedRoles);
-
-        // translate color codes
-        formatMessage = MessageUtil.translateLegacy(formatMessage);
-
         if (emojiBehavior.equalsIgnoreCase("show")) {
             // emojis already exist as unicode
         } else if (hideEmoji) {
@@ -257,21 +256,9 @@ public class DiscordChatListener extends ListenerAdapter {
             // parse emojis from unicode back to :code:
             message = EmojiParser.parseToAliases(message);
         }
-
-        // apply placeholder API values
-        OfflinePlayer authorPlayer = null;
-        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
-        if (authorLinkedUuid != null) authorPlayer = Bukkit.getOfflinePlayer(authorLinkedUuid);
-
-        formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
-        if (!MessageUtil.isLegacy(formatMessage)) {
-            // A hack that'll hold over until rewrite
-            formatMessage = formatMessage.replace("%toprolecolor%", "<white>%toprolecolor%");
-        }
-
-        Component component = MessageUtil.toComponent(formatMessage);
         String finalMessage = message;
-        component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
+
+        Component component = applyFormattingAndConvertToComponent(formatMessage, finalMessage, event, selectedRoles, topRole, emojiBehavior, hideEmoji);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
         if (postEvent.isCancelled()) {
@@ -283,32 +270,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 .filter(pluginHook -> pluginHook instanceof DynmapHook)
                 .map(pluginHook -> (DynmapHook) pluginHook)
                 .findAny().ifPresent(dynmapHook -> {
-                    String chatFormat = replacePlaceholders(LangUtil.Message.DYNMAP_CHAT_FORMAT.toString(), event, selectedRoles)
-                            .replace("%message%", finalMessage);
-                    String nameFormat = replacePlaceholders(LangUtil.Message.DYNMAP_NAME_FORMAT.toString(), event, selectedRoles)
-                            .replace("%message%", finalMessage);
-
-                    chatFormat = MessageUtil.translateLegacy(chatFormat);
-                    nameFormat = MessageUtil.translateLegacy(nameFormat);
-
-                    if (emojiBehavior.equalsIgnoreCase("show")) {
-                        // emojis already exist as unicode
-                    } else if (hideEmoji) {
-                        chatFormat = EmojiParser.removeAllEmojis(chatFormat);
-                        nameFormat = EmojiParser.removeAllEmojis(nameFormat);
-                    } else {
-                        chatFormat = EmojiParser.parseToAliases(chatFormat);
-                        nameFormat = EmojiParser.parseToAliases(nameFormat);
-                    }
-
-                    chatFormat = PlaceholderUtil.replacePlaceholders(chatFormat);
-                    nameFormat = PlaceholderUtil.replacePlaceholders(nameFormat);
-
-                    // apply regex filters
-                    for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
-                        chatFormat = entry.getKey().matcher(chatFormat).replaceAll(entry.getValue());
-                        nameFormat = entry.getKey().matcher(nameFormat).replaceAll(entry.getValue());
-                    }
+                    String chatFormat = applyFormattingAndKeepLegacy(LangUtil.Message.DYNMAP_CHAT_FORMAT.toString(), finalMessage, event, selectedRoles, emojiBehavior, hideEmoji);
+                    String nameFormat = applyFormattingAndKeepLegacy(LangUtil.Message.DYNMAP_NAME_FORMAT.toString(), finalMessage, event, selectedRoles, emojiBehavior, hideEmoji);
 
                     nameFormat = MessageUtil.strip(nameFormat);
                     dynmapHook.broadcastMessageToDynmap(nameFormat, chatFormat);
@@ -333,24 +296,9 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // get the correct format message
         String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
-        String placedMessage = MessageFormatResolver.getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
+        String format = MessageFormatResolver.getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
-        placedMessage = MessageUtil.translateLegacy(
-                replacePlaceholders(placedMessage, event, selectedRoles));
-
-        OfflinePlayer authorPlayer = null;
-        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
-        if (authorLinkedUuid != null) authorPlayer = Bukkit.getOfflinePlayer(authorLinkedUuid);
-
-        placedMessage = PlaceholderUtil.replacePlaceholders(placedMessage, authorPlayer);
-
-        placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
-        if (!MessageUtil.isLegacy(placedMessage)) {
-            // A hack that'll hold over until rewrite
-            placedMessage = placedMessage.replace("%toprolecolor%", "<white>%toprolecolor%");
-        }
-        Component component = MessageUtil.toComponent(placedMessage);
-        component = replaceRoleColorAndMessage(component, url, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
+        Component component = applyFormattingAndConvertToComponent(format, url, event, selectedRoles, topRole, "show", false);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
         if (postEvent.isCancelled()) {
@@ -361,20 +309,6 @@ public class DiscordChatListener extends ListenerAdapter {
         return false;
     }
 
-    private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
-    private static final Pattern MESSAGE_MATTER = Pattern.compile("%message%");
-    private Component replaceRoleColorAndMessage(Component component, String message, int color) {
-        return component
-                .replaceText(TextReplacementConfig.builder()
-                        .match(TOP_ROLE_COLOR_PATTERN)
-                        .replacement(builder -> builder.content(builder.content().replaceFirst("%toprolecolor%", "")).color(TextColor.color(color)))
-                        .build()
-                ).replaceText(TextReplacementConfig.builder()
-                        .match(MESSAGE_MATTER)
-                        .replacement(builder -> MessageUtil.toComponent(message))
-                        .build());
-    }
-
     private String getTopRoleAlias(Role role) {
         if (role == null) return "";
         String name = role.getName();
@@ -383,10 +317,93 @@ public class DiscordChatListener extends ListenerAdapter {
         );
     }
 
+    private String applyFormattingAndKeepLegacy(
+            String format,
+            String message,
+            GuildMessageReceivedEvent event,
+            List<Role> selectedRoles,
+            String emojiBehavior,
+            boolean hideEmoji
+    ) {
+        format = applyFormatting(format, event, selectedRoles, emojiBehavior, hideEmoji);
+        return format.replace("%message%", message);
+    }
+
+    private static final Pattern MESSAGE_MATTER = Pattern.compile("%message%");
+    private Component applyFormattingAndConvertToComponent(
+            String format,
+            String message,
+            GuildMessageReceivedEvent event,
+            List<Role> selectedRoles,
+            Role topRole,
+            String emojiBehavior,
+            boolean hideEmoji
+    ) {
+        boolean originalFormatIsLegacy = MessageUtil.isLegacy(format);
+        format = applyFormatting(format, event, selectedRoles, emojiBehavior, hideEmoji);
+
+        TextColor topRoleColor = TextColor.color(topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
+        Component messageComponent = MessageUtil.toComponent(message);
+
+        Component component;
+        if (originalFormatIsLegacy) {
+            format = format.replace("%toprolecolor%", LegacyComponentSerializer.SECTION_CHAR + topRoleColor.asHexString());
+            component = MessageUtil.toComponent(format, true)
+                    .replaceText(
+                            TextReplacementConfig.builder()
+                                    .match(MESSAGE_MATTER)
+                                    .replacement(builder -> MessageUtil.toComponent(message))
+                                    .build()
+                    );
+        } else {
+            // MiniMessage will throw unless these are stripped
+            format = MessageUtil.stripLegacySectionOnly(format);
+
+            format = format
+                    .replace("%toprolecolor%", "<toprolecolor>")
+                    .replace("%message%", "<message>");
+            component = MiniMessage.miniMessage().deserialize(
+                    format,
+                    TagResolver.builder()
+                            .tag("toprolecolor", Tag.styling(topRoleColor))
+                            .tag("message", Tag.inserting(messageComponent))
+                            .build()
+            );
+        }
+
+        return component;
+    }
+
+    private String applyFormatting(String format, GuildMessageReceivedEvent event, List<Role> selectedRoles, String emojiBehavior, boolean hideEmoji) {
+        format = replacePlaceholders(format, event, selectedRoles);
+
+        if (emojiBehavior.equalsIgnoreCase("show")) {
+            // emojis already exist as unicode
+        } else if (hideEmoji) {
+            format = EmojiParser.removeAllEmojis(format);
+        } else {
+            format = EmojiParser.parseToAliases(format);
+        }
+
+        // apply regex filters
+        for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
+            format = entry.getKey().matcher(format).replaceAll(entry.getValue());
+        }
+
+        // translate legacy color codes, if any
+        format = MessageUtil.translateLegacy(format);
+        return format;
+    }
+
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles) {
         Function<String, String> escape = MessageUtil.isLegacy(input)
                 ? str -> str
                 : str -> str.replaceAll("([<>])", "\\\\$1");
+
+        OfflinePlayer authorPlayer = null;
+        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
+        if (authorLinkedUuid != null) authorPlayer = Bukkit.getOfflinePlayer(authorLinkedUuid);
+        input = PlaceholderUtil.replacePlaceholders(input, authorPlayer);
 
         return input.replace("%channelname%", event.getChannel().getName())
                 .replace("%name%", escape.apply(MessageUtil.strip(event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName())))
@@ -432,7 +449,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         int expiration = DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000;
         String playerListMessage;
-        if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
+        if (PlayerUtil.getOnlinePlayers(true).isEmpty()) {
             playerListMessage = PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString());
         } else {
             playerListMessage = LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());

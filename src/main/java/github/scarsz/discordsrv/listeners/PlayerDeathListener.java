@@ -45,7 +45,7 @@ public class PlayerDeathListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
 
