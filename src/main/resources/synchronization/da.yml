@@ -34,7 +34,7 @@ NicknameSynchronizationFormat: "%displayname%"
 # GroupRoleSynchronizationCycleTime: antal minutter mellem gentagne gange udløsning af synkronisering for alle onlinespillere
 # GroupRoleSynchronizationCycleCompletely: om synkroniseringer, der kører på en timer, skal synkronisere hvert medlem i bots Discord-servere
 #
-GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationGroupsAndRolesToSync: {"default": "1449955737567625316", "vip": "1449955784820789259"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationOneWay: false
 GroupRoleSynchronizationEnableDenyPermission: false
@@ -53,3 +53,4 @@ GroupRoleSynchronizationCycleCompletely: false
 BanSynchronizationDiscordToMinecraft: false
 BanSynchronizationDiscordToMinecraftReason: "&cDu er indtil videre blevet banned fra serveren, fordi du blev banned på vores Discord server."
 BanSynchronizationMinecraftToDiscord: false
+
