@@ -1,0 +1,125 @@
+name: DiscordSRV
+version: ${version}
+description: The most powerful, configurable, open-source Discord bridge plugin out there.
+author: Scarsz
+authors: [Androkai, Vankka]
+website: https://github.com/DiscordSRV/DiscordSRV
+api-version: 1.13
+folia-supported: true
+
+main: github.scarsz.discordsrv.DiscordSRV
+database: false
+loadbefore: [
+  StaffPlus # Log4j conflicts with older versions
+]
+softdepend: [
+  # Chat plugins
+  Chatty, FancyChat, Herochat, Legendchat, LunaChat, nChat, TownyChat, VentureChat,
+  # Vanish plugins
+  Essentials, PhantomAdmin, SuperVanish,
+  # Misc. plugins
+  Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap, Skript
+]
+
+commands:
+  discord:
+    aliases: [discordsrv]
+    description: DiscordSRV commands
+    usage: |
+           /discord - Show the invite link of the Discord server
+           /discord help/? - Show command list
+           /discord link - Link Minecraft account with Discord account
+           /discord unlink - Remove link between Minecraft and Discord account
+           /discord linked - Show information about linking status
+           /discord broadcast - Broadcast a message to Discord
+           /discord debug - Send debug information to Gist
+           /discord reload - Reload the plugin
+           /discord resync - Resynchronizes all groups & roles
+           /discord language - Changes the language of DiscordSRV to whatever is specified
+           /discord debugger - A toggleable timings-like command to dump debug information to bin.scarsz.me
+    permission: discordsrv.discord
+
+permissions:
+  discordsrv.player:
+    description: parent permission of player-related functions of DiscordSRV
+    default: true
+    children:
+      discordsrv.chat: true
+      discordsrv.help: true
+      discordsrv.link: true
+      discordsrv.linked: true
+      discordsrv.discord: true
+      discordsrv.nicknamesync: true
+  discordsrv.admin:
+    description: parent permission of admin-related functions of DiscordSRV
+    default: op
+    children:
+      discordsrv.player: true
+      discordsrv.updatenotification: true
+      discordsrv.bcast: true
+      discordsrv.reload: true
+      discordsrv.debug: true
+      discordsrv.link.others: true
+      discordsrv.linked.others: true
+      discordsrv.unlink: true
+      discordsrv.unlink.others: true
+      discordsrv.resync: true
+      discordsrv.groupsyncwithcommands: true
+      discordsrv.language: true
+  discordsrv.discord:
+    description: allows access to the discord command
+    default: true
+  discordsrv.chat:
+    description: whether the user is able to have their chat forwarded to Discord
+    default: true
+  discordsrv.silentjoin:
+    description: whether to have join messages for players with this permission to be silenced
+    default: false
+  discordsrv.silentquit:
+    description: whether to have quit messages for players with this permission to be silenced
+    default: false
+  discordsrv.help:
+    description: whether the player is able to display command help for DiscordSRV
+    default: true
+  discordsrv.nicknamesync:
+    description: whether the player should have their nickname synced with Discord, if doing so is enabled in synchronization.yml
+    default: true
+  discordsrv.updatenotification:
+    description: whether the player should be told if there's an update to DiscordSRV when joining
+    default: op
+  discordsrv.bcast:
+    description: whether the player is able to broadcast messages to the main text channel of DiscordSRV
+    default: op
+  discordsrv.reload:
+    description: whether the player is able to reload DiscordSRV's configuration
+    default: op
+  discordsrv.debug:
+    description: whether the player is able to run a debug report
+    default: op
+  discordsrv.link:
+    description: whether the player is able to link their Minecraft account to their Discord account
+    default: true
+  discordsrv.link.others:
+    description: whether the player is able to link other peoples Minecraft accounts to Discord accounts
+    default: op
+  discordsrv.unlink:
+    description: whether the player is able to unlink their Minecraft account from their Discord account
+    default: op
+  discordsrv.unlink.others:
+    description: whether the player is able to unlink other people's accounts
+    default: op
+  discordsrv.linked:
+    description: whether the player is able to check what Discord account their Minecraft account is linked to
+    default: true
+  discordsrv.linked.others:
+    description: whether the player is able to check what Discord account other Minecraft accounts are linked to
+    default: op
+  discordsrv.groupsyncwithcommands:
+    description: whether the player can run a permission plugin command to force group sync to occur
+    default: op
+  discordsrv.resync:
+    description: whether the player can run /discord resync to force a resync of all groups/roles
+    default: op
+  discordsrv.language:
+    description: whether the player can run /discord language to change the plugin's language
+    default: op

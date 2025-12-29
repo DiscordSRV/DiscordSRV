@@ -1,0 +1,57 @@
+Require linked account to play:
+  Enabled: false
+
+  # Jeśli nie wiesz, co to znaczy, nie dotykaj tego
+  #
+  # Priorytet, na którym powinien być włączony dołączony słuchacz
+  # Dostępne wartości to w kolejności od pierwszego do ostatniego: LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # Być może będziesz musiał zmienić to na późniejszy priorytet, aby wtyczka banowa wyrzuciła gracza, zanim DiscordSRV ich zaprzeczy
+  Listener priority: LOWEST
+  # Zdarzenie, w którym moduł łącza powinien nasłuchiwać i blokować logowanie
+  # Niektóre wtyczki białej listy używają AsyncPlayerPreLoginEvent (dobrze), niektóre używają PlayerLoginEvent (nie tak dobrze)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # Jeśli nie wiesz, co to znaczy, nie dotykaj tego
+
+  # IGN Minecrafta, aby zawsze zezwalać na połączenie lub subskrypcję albo nie
+  Bypass names: [Scarsz, Vankka]
+  # Czy gracze na białej liście VANILLA omijają potrzebę łączenia swoich kont/mają rolę podrzędną
+  Whitelisted players bypass check: true
+  # Czy pozwolić graczom na liście banów VANILLA łączyć swoje konta
+  Check banned players: false
+  # Czy gracze spoza listy banów VANILLA, ominie potrzebę łączenia ich kont/otrzyma rolę podrzędną
+  Only check banned players: false
+
+  # Kicknięcie gracza z wysłaniem mu wiadomości, żeby połączył swoje konta.
+  # Użyj {BOT} jako symbolu zastępczego dla nazwy bota
+  # Użyj {CODE} jako symbolu zastępczego dla kodu, którego ludzie potrzebują do wysyłania prywatnych wiadomości do bota
+  # Użyj {INVITE} jako symbolu zastępczego dla linku z zaproszeniem, którym muszą dołączyć na serwer discord, używając DiscordInviteLink skonfigurowany w config.yml
+  Not linked message: "&7Musisz połączyć swoje konto &9Discord&7a, aby zagrać.\n\n&7Napisz prywatną wiadomość do &b{BOT}&7, który jest na serwerze discord: &b{CODE}&7, aby połączyć swoje konta.\n\n&7Zaproszenie na Discord » &b{INVITE}"
+
+  # Jeśli ta opcja jest włączona, gracze będą musieli nie tylko mieć połączone konta, ale także będą musieli
+  # być członkiem serwera Discord, na którym znajduje się również bot.
+  #
+  # Akceptowalne formaty:
+  #   true/false: połączone konto musi znajdować się na co najmniej jednym serwerze Discord, na którym znajduje się również bot
+  #     ex: true
+  #   <server id>: połączone konto musi znajdować się na danym serwerze Discord
+  #     ex: 135634590575493120
+  #   [<server id>, <server id>, ...]: połączone konto musi znajdować się na WSZYSTKICH podanych serwerach Discord
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # Wartość tej opcji jest zastępowana, jeśli masz role subskrybentów wymuszone poniżej.
+  Must be in Discord server: true
+
+  # Opcjonalnie wymagaj, aby ludzie nie tylko byli połączeni, ale także mieli jedną lub wszystkie określone role, takie jak rola podrzędna Twitch
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # jeśli false, tylko tylko jedna rola jest wymagana
+    Kick message: "&cMusisz być subksrybentem na Twitch, aby tutaj zagrać."
+
+  Messages:
+    DiscordSRV still starting: "&cObecnie nie można sprawdzić statusu łącza, ponieważ serwer nadal łączy się z Discordem.\n\nSpróbuj ponownie za minutę."
+    Not in server: "&cObecnie nie jesteś częścią naszego serwera Discord.\n\nDołącz przez {INVITE}!"
+    Failed to find subscriber role: "&cNie udało się znaleźć żadnej roli subskrybenta na Discordzie.\n\nSkontaktuj się z administratorami serwera w tej sprawie."
+    Failed for unknown reason: "&cWystąpił błąd podczas próby weryfikacji konta.\n\nSkontaktuj się z administratorami serwera w tej sprawie."
+    Kicked for unlinking: "&cZostałeś wyrzucony z serwera za rozłączenie kont.\n\nDołącz ponownie do serwera, aby ponownie połączyć swoje konta."

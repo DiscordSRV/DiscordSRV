@@ -1,0 +1,31 @@
+# これは、DiscordSRVオーディオモジュールの構成ファイルです。
+# これは実験的な機能です。物事が正しく動作しない場合があります。
+# このモジュールを試してみたい場合は、フィードバックをお送りください。
+# https://discordsrv.com/discord
+#
+
+# 音声モジュールを有効にするかどうか
+# このオプションを変更した後、サーバーを再起動する必要があります
+Voice enabled: false
+# ネットワーク更新間のティック数
+Tick speed: 5
+# オーディオモジュールがオーディオチャネルを作成/削除/移動するメインカテゴリ
+# このカテゴリにロビーチャネル（下）以外のチャネルを配置しないでください。
+Voice category: 000000000000000000
+# Destination Lobby Channel（音声カテゴリ内）
+# ネットワーク範囲内にない場合。これは人々が行うチャンネルでもあります
+# 近接音声ネットワークに参加して接続します。
+Lobby channel: 000000000000000000
+# ロビーで他のユーザーに話したりミュートしたりする権限を持つロビーのユーザーをミュートします
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # 接続しているプレイヤー間の最大距離
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # プレイヤーはネットワークに参加および参加できます
+  # 除去前の「強度」+「フォールオフ」
+  Falloff: 5
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false

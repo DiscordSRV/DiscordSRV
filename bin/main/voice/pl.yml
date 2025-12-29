@@ -1,0 +1,31 @@
+# To jest plik konfiguracyjny modułu głosowego DiscordSRV.
+# To jest funkcja eksperymentalna. Rzeczy mogą nie działać poprawnie.
+# Jeśli bawisz się tym modułem, prześlij nam opinię na temat dowolnego
+# numerów na naszym Discordzie. https://discordsrv.com/discord
+#
+
+# Czy włączyć moduł głosowy
+# Po zmianie tej opcji musisz ponownie uruchomić serwer
+Voice enabled: false
+# Ilość tyknięć między aktualizacjami sieci
+Tick speed: 5
+# Główna kategoria, w której moduł głosowy utworzy / usunie / przeniesie kanały głosowe
+# Żadne kanały inne niż kanał lobby (poniżej) nie powinny znajdować się w tej kategorii
+Voice category: 000000000000000000
+# Kanał lobby (wewnątrz kategorii głosu), do którego ludzie będą przenoszeni
+# gdy nie znajdują się w zasięgu żadnej sieci. To jest również kanał, z którego ludzie będą korzystać
+# dołącz, aby połączyć się z zbliżeniową siecią głosową.
+Lobby channel: 000000000000000000
+# Wycisza użytkowników w lobby, którzy mają uprawnienia do mówienia i wyciszania innych w lobby
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # Maksymalna odległość między graczami w celu połączenia
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # Gdy gracz dołączył do sieci, może nim być
+  # siła + spadek blokuje, zanim zostanie odłączony
+  Falloff: 5
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false
