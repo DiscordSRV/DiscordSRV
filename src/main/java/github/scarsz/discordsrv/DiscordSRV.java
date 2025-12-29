@@ -298,6 +298,34 @@ public class DiscordSRV extends JavaPlugin {
                         ? jda.getGuilds().get(0)
                         : null;
     }
+    /**
+    Gets all text channels from the config, including the console channel
+     **/
+    public Set<@NotNull TextChannel> getAllChannels() {
+        if (jda == null) return null;
+
+        final Set<@NotNull TextChannel> allChannels = Collections.emptySet();
+
+        final TextChannel mainChannel = getMainTextChannel();
+        final TextChannel consoleChannel = getConsoleChannel();
+
+        if (mainChannel != null) {
+            allChannels.add(mainChannel);
+
+            // Console channel is always null if main channel is null
+            if (consoleChannel != null) {
+                allChannels.add(consoleChannel);
+            }
+        }
+
+        for (String channelId : channels.values()) {
+            final TextChannel channel = DiscordUtil.getTextChannelById(channelId);
+
+            allChannels.add(channel);
+        }
+
+        return allChannels;
+    }
     public TextChannel getConsoleChannel() {
         if (jda == null) return null;
 
