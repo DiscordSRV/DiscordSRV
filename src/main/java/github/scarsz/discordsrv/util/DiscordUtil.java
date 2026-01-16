@@ -504,7 +504,7 @@ public class DiscordUtil {
      * @param channel The channel to set the topic of
      * @param topic The new topic to be set
      */
-    public static void setTextChannelTopic(TextChannel channel, String topic) {
+    public static void setTextChannelTopic(TextChannel channel, String topic) throws PermissionException {
         if (channel == null) {
             DiscordSRV.debug("Attempted to set status of null channel");
             return;
@@ -514,10 +514,7 @@ public class DiscordUtil {
             channel.getManager().setTopic(topic).queue();
         } catch (Exception e) {
             if (e instanceof PermissionException) {
-                PermissionException pe = (PermissionException) e;
-                if (pe.getPermission() != Permission.UNKNOWN) {
-                    DiscordSRV.warning("Could not set topic of channel " + channel + " because the bot does not have the \"" + pe.getPermission().getName() + "\" permission");
-                }
+                throw e;
             } else {
                 DiscordSRV.warning("Could not set topic of channel " + channel + " because \"" + e.getMessage() + "\"");
             }
