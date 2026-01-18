@@ -1,0 +1,33 @@
+# Este é o arquivo de configuração para o módulo de voz do DiscordSRV.
+# É um recurso experimental. As coisas podem não funcionar corretamente.
+# Se você experimentar este módulo, por favor, envie-nos feedback sobre quaisquer
+# problemas em nosso Discord. https://discordsrv.com/discord
+#
+
+# Se deve habilitar o recurso de chat de voz por proximidade do DiscordSRV
+# Você deve reiniciar seu servidor após alterar esta opção
+Voice enabled: false
+# Quantidade de ticks entre as atualizações de rede
+Tick speed: 5
+# A categoria principal em que o módulo de voz criará/excluirá/moverá canais de voz
+# Nenhum canal além do canal do lobby (abaixo) deve estar nesta categoria
+Voice category: 000000000000000000
+# O canal do lobby (dentro da categoria de voz) para onde as pessoas serão movidas
+# quando não estiverem no alcance de nenhuma rede. Este também é o canal que as pessoas
+# entrarão para serem conectadas à rede de voz por proximidade.
+Lobby channel: 000000000000000000
+# Silencia usuários no lobby que têm as permissões de Falar e Silenciar Outros no lobby
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # Distância máxima entre jogadores para estarem conectados
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # Uma vez que um jogador entrou em uma rede, ele pode estar
+  # força + blocos de queda de distância antes de ser desconectado
+  Falloff: 5
+  # Se os canais da rede de voz são visíveis para todos, mesmo para aqueles não conectados
+  # Ajuda a informar os jogadores se as pessoas estão realmente usando a rede de voz no momento
+  Channels are visible: false
+
+
