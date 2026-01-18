@@ -186,6 +186,8 @@ repositories {
     maven("https://nexus.scarsz.me/content/groups/public/")
     // Multiverse-Core v5
     maven("https://repo.onarandombox.com/content/groups/public/")
+    // Strings
+    maven("https://repo.pedestriamc.com/release")
 }
 
 dependencies {
@@ -276,6 +278,7 @@ dependencies {
     compileOnly("com.palmergames.bukkit:TownyChat:0.45")
     compileOnly("mineverse.aust1n46:venturechat:2.20.1")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
+    compileOnly("com.pedestriamc.strings:strings-api:1.7.0")
 
     // vanish hooks
     compileOnly("de.myzelyam:SuperVanish:6.2.0")
