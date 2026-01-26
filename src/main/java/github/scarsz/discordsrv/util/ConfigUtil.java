@@ -25,6 +25,8 @@ import github.scarsz.configuralize.ParseException;
 import github.scarsz.configuralize.Provider;
 import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.DiscordSRV;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -36,6 +38,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ConfigUtil {
+    private static final String PRERELEASE = "SNAPSHOT";
 
     public static void migrate() {
         String configVersionRaw = DiscordSRV.config().getString("ConfigVersion");
@@ -46,12 +49,17 @@ public class ConfigUtil {
         if (configVersionRaw.equals(pluginVersionRaw)) return;
 
         Version configVersion = configVersionRaw.split("\\.").length == 3
-                ? Version.valueOf(configVersionRaw.replace("-SNAPSHOT", ""))
-                : Version.valueOf("1." + configVersionRaw.replace("-SNAPSHOT", ""));
-        Version pluginVersion = Version.valueOf(pluginVersionRaw.replace("-SNAPSHOT", ""));
+                ? Version.valueOf(configVersionRaw)
+                : Version.valueOf("1." + configVersionRaw);
+        Version pluginVersion = Version.valueOf(pluginVersionRaw);
 
-        if (configVersion.equals(pluginVersion)) return; // no migration necessary
-        if (configVersion.greaterThan(pluginVersion)) {
+        if (PRERELEASE.equals(configVersion.getPreReleaseVersion())
+                ? configVersion.equals(pluginVersion) && configVersion.getBuildMetadata().equals(pluginVersion.getBuildMetadata())
+                : configVersion.equals(pluginVersion)) {
+            return; // no migration necessary
+        }
+
+        if (!PRERELEASE.equals(configVersion.getPreReleaseVersion()) && configVersion.greaterThan(pluginVersion)) {
             DiscordSRV.warning("You're attempting to use a higher config version than the plugin. Things probably won't work correctly.");
             return;
         }
