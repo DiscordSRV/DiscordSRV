@@ -6,15 +6,16 @@ plugins {
     idea
     `java-library`
     `maven-publish`
-    id("io.github.goooler.shadow") version "8.1.7"
-    id("org.cadixdev.licenser") version "0.6.1"
+    id("com.gradleup.shadow") version "8.3.10"
+    id("net.kyori.indra.licenser.spotless") version "3.1.3"
     id("net.kyori.indra.git") version "2.1.1"
-    id("net.researchgate.release") version "3.0.2"
+    id("net.researchgate.release") version "3.1.0"
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.discordsrv"
 val minecraftVersion = project.properties["minecraftVersion"]!!.toString()
+val paperApiVersion = project.properties["paperVersion"]!!.toString()
 val targetJavaVersion = 1.8
 
 java {
@@ -25,9 +26,9 @@ java {
     disableAutoTargetJvm() // required because paper-api uses Java 21 (w/ gradle metadata)
 }
 
-license {
-    include("**/*.java")
-    header(project.file("LICENSE.head"))
+indraSpotlessLicenser {
+    licenseHeaderFile(project.file("LICENSE.head"))
+    newLine(true)
 }
 
 release {
@@ -84,7 +85,7 @@ tasks {
     }
 
     jar {
-        finalizedBy("updateLicenses", "shadowJar")
+        finalizedBy("spotlessApply", "shadowJar")
         archiveFileName.set(project.name + "-" + archiveVersion.get() + "-original.jar")
 
         manifest.attributes(mapOf<String, String>(
@@ -190,7 +191,7 @@ repositories {
 
 dependencies {
     // Paper API
-    compileOnly("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
+    compileOnly("io.papermc.paper:paper-api:${paperApiVersion}") {
         exclude("commons-lang") // Exclude lang in favor of our own lang3
     }
 
@@ -230,8 +231,8 @@ dependencies {
     compileOnlyApi("org.jetbrains:annotations:23.0.0")
 
     // Lombok
-    compileOnly("org.projectlombok:lombok:1.18.30")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
 
     // Apache Commons, guava
     implementation("commons-io:commons-io:2.11.0")
@@ -297,9 +298,10 @@ dependencies {
     compileOnly("ch.njol:skript:2.5")
 
     // JUnit
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
-    testImplementation("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.14.3")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.14.3")
+    testImplementation("io.papermc.paper:paper-api:${paperApiVersion}")
 }
 
 tasks {

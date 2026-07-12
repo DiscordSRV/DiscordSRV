@@ -54,6 +54,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Embed & webhook image/avatar url format
 # Vaikeväärtuse kasutamiseks jätke tühjaks
+# MUST be a properly formatted https:// or http:// URL
 # Saadaolevad kohahoidjad: {texture} {username} {uuid} {uuid-nodashes} {size}
 AvatarUrl: ""
 

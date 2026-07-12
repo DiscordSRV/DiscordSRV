@@ -32,10 +32,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,12 +56,21 @@ public class PlayerAdvancementDoneListener implements Listener {
     private static final Object GAMERULE;
 
     static {
-        String gamerule = "announceAdvancements";
+        String gamerule;
         Object gameruleValue = null;
         try {
-            Class<?> gameRuleClass = Class.forName("org.bukkit.GameRule");
-            gameruleValue = gameRuleClass.getMethod("getByName", String.class).invoke(null, gamerule);
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {}
+            gamerule = "show_advancement_messages";
+            Class<?> gameRulesClass = Class.forName("org.bukkit.GameRules");
+            Method getRuleMethod = gameRulesClass.getDeclaredMethod("getRule", String.class);
+            getRuleMethod.setAccessible(true);
+            gameruleValue = getRuleMethod.invoke(null, gamerule);
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
+            gamerule = "announceAdvancements";
+            try {
+                Class<?> gameRuleClass = Class.forName("org.bukkit.GameRule");
+                gameruleValue = gameRuleClass.getMethod("getByName", String.class).invoke(null, gamerule);
+            } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored2) {}
+        }
 
         GAMERULE_CLASS_AVAILABLE = gameruleValue != null;
         GAMERULE = GAMERULE_CLASS_AVAILABLE ? gameruleValue : gamerule;
