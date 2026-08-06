@@ -60,7 +60,7 @@ public class ChattyV3ChatHook implements ChatHook {
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", "")
                 .replace("%channelname%", chat.getId())
-                .replace("%channelnickname%", chat.getId())
+                .replace("%channelnickname%", chat.getDisplayName())
                 .replace("%message%", legacy);
 
         Collection<? extends Player> recipients = chat.calculateRecipients(null);
