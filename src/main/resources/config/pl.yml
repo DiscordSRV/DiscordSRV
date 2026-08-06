@@ -54,6 +54,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Osadzanie i formatowanie adresu URL obrazu/awataru w webhooku
 # Pozostaw puste, aby użyć wartości domyślnej
+# MUST be a properly formatted https:// or http:// URL
 # Dostępne symbole zastępcze: {texture} {username} {uuid} {uuid-nodashes} {size}
 AvatarUrl: ""
 

@@ -505,23 +505,31 @@ public class DiscordUtil {
      * @param topic The new topic to be set
      */
     public static void setTextChannelTopic(TextChannel channel, String topic) {
+        setTextChannelTopic(channel, topic, throwable -> {
+            if (throwable instanceof PermissionException) {
+                PermissionException permissionException = (PermissionException) throwable;
+                if (permissionException.getPermission() != Permission.UNKNOWN) {
+                    DiscordSRV.warning("Could not set topic of channel #" + channel + " because the bot does not have the \"" + permissionException.getPermission().getName() + "\" permission");
+                }
+            } else {
+                DiscordSRV.warning("Could not set topic of channel #" + channel + " because \"" + throwable.getMessage() + "\"");
+            }
+        });
+    }
+
+    /**
+     * Set the topic message of the given channel
+     * @param channel The channel to set the topic of
+     * @param topic The new topic to be set
+     * @param failure A failure callback that will be called if the Request encounters an exception
+     */
+    public static void setTextChannelTopic(TextChannel channel, String topic, Consumer<? super Throwable> failure) {
         if (channel == null) {
             DiscordSRV.debug("Attempted to set status of null channel");
             return;
         }
 
-        try {
-            channel.getManager().setTopic(topic).queue();
-        } catch (Exception e) {
-            if (e instanceof PermissionException) {
-                PermissionException pe = (PermissionException) e;
-                if (pe.getPermission() != Permission.UNKNOWN) {
-                    DiscordSRV.warning("Could not set topic of channel " + channel + " because the bot does not have the \"" + pe.getPermission().getName() + "\" permission");
-                }
-            } else {
-                DiscordSRV.warning("Could not set topic of channel " + channel + " because \"" + e.getMessage() + "\"");
-            }
-        }
+        channel.getManager().setTopic(topic).queue(null, failure);
     }
 
     /**

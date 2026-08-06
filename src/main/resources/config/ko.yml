@@ -55,6 +55,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 
 # 임베드 및 웹훅 이미지/아바타 URL 형식
 # 기본값을 사용하려면 비워 두세요.
+# MUST be a properly formatted https:// or http:// URL
 # 사용 가능한 자리 표시자: {texture} {username} {uuid} {uuid-nodashes} {size}
 AvatarUrl: ""
 
