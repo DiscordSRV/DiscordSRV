@@ -54,6 +54,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Вбудовування та формат URL-адреси зображення / аватара веб-перехоплювача
 # Залиште поле порожнім, щоб використовувати значення за умовчанням
+# MUST be a properly formatted https:// or http:// URL
 # Доступні заповнювачі: {texture} {username} {uuid} {uuid-nodashes} {size}
 AvatarUrl: ""
 

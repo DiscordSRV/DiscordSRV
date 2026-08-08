@@ -54,6 +54,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Formato de URL de avatar/imagen para insertar y webhook
 # Dejar en blanco para usar un valor predeterminado
+# MUST be a properly formatted https:// or http:// URL
 # Marcadores de posición disponibles: {texture} {username} {uuid} {uuid-nodashes} {size}
 AvatarUrl: ""
 

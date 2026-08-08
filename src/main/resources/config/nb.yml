@@ -54,6 +54,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Format for bilde eller avatarlenke for embed og webhook
 # La stå tom for standardverdier
+# MUST be a properly formatted https:// or http:// URL
 # Tilgjengelige placeholders: {texture} {username} {uuid} {uuid-nodashes} {size}
 AvatarUrl: ""
 

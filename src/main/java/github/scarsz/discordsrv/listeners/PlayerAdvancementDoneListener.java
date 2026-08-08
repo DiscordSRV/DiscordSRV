@@ -86,6 +86,14 @@ public class PlayerAdvancementDoneListener implements Listener {
         // return if advancement or player objects are knackered because this can apparently happen for some reason
         if (event.getAdvancement() == null || player == null) return;
 
+        // return if message is null as plugins can set this to prevent the advancement being sent in chat
+        try {
+            Method messageGetter = event.getClass().getMethod("message");
+            if (messageGetter.invoke(event) == null) return;
+        } catch (ReflectiveOperationException e) {
+            // send advancement in chat as normal upon reflection failure
+        }
+
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
 

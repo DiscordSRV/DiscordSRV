@@ -199,7 +199,7 @@ public class NMSUtil {
         try {
             Object profile = getGameProfileOrResolvableProfile(player);
             if (profile == null) return null;
-            if (class_ResolvableProfile.isInstance(profile)) {
+            if (class_ResolvableProfile != null && class_ResolvableProfile.isInstance(profile)) {
                 profile = method_ResolvableProfile_partialProfile.invoke(profile);
             }
             Object propertyMap = method_GameProfile_getProperties.invoke(profile);
