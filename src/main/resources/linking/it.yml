@@ -1,0 +1,56 @@
+Require linked account to play:
+  Enabled: false
+
+  # Se non sai cosa significa, non modificarlo
+  #
+  # La priorità che il listener di join deve avere
+  # Ordine disponibile: LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # Potresti dover cambiare questa priorità in futuro se un plugin di ban deve kickare il giocatore prima che DiscordSRV neghi l'accesso
+  Listener priority: LOWEST
+  # L'evento che il modulo link dovrebbe ascoltare per negare il login
+  # Alcuni plugin whitelist usano AsyncPlayerPreLoginEvent (ok), altri PlayerLoginEvent (meno consigliato)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # Se non sai cosa significa, non modificare
+
+  # Nomi Minecraft in-game sempre permessi, anche se linkati o no
+  Bypass names: [Scarsz, Vankka]
+  # Se i giocatori nella whitelist VANILLA bypassano il requisito di link
+  Whitelisted players bypass check: true
+  # Se i giocatori nella banlist VANILLA possono linkare il loro account
+  Check banned players: false
+  # Se i giocatori NON bannati bypassano il requisito di link
+  Only check banned players: false
+
+  # Messaggio che spiega ai giocatori kickati come linkare l'account
+  # {BOT} = nome del bot
+  # {CODE} = codice da inviare al bot
+  # {INVITE} = link di invito Discord (usa DiscordInviteLink in config.yml)
+  Not linked message: "&7Devi collegare il tuo account &9Discord &7per giocare.\n\n&7Invia un messaggio privato a &b{BOT}&7 nel server Discord contenente SOLO &b{CODE}&7 per collegare il tuo account.\n\n&7Invito Discord » &b{INVITE}"
+
+  # Se attivo, i giocatori non devono solo avere l'account linkato, ma anche essere membri del server Discord dove è presente il bot
+  #
+  # Formati accettati:
+  #   true/false: l'account linkato deve essere in almeno un server Discord dove il bot è presente
+  #     ex: true
+  #   <server id>: l'account linkato deve essere in quel server specifico
+  #     ex: 135634590575493120
+  #   [<server id>, <server id>, ...]: l'account linkato DEVE ESSERE in tutti i server specificati
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # Questa opzione viene ignorata se si applicano i ruoli abbonati
+  Must be in Discord server: true
+
+  # Opzionale: richiedere che i giocatori siano anche membri di un ruolo specifico (come un ruolo da abbonato Twitch)
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # false = basta uno dei ruoli sopra
+    Kick message: "&cDevi essere abbonato a Twitch per giocare."
+
+  Messages:
+    DiscordSRV still starting: "&cAl momento non è possibile verificare lo stato del link perché il server sta ancora connettendo a Discord.\n\nRiprova tra un minuto."
+    Not in server: "&cAl momento non sei parte del nostro server Discord.\n\nUnisciti qui {INVITE}"
+    Failed to find subscriber role: "&cImpossibile trovare un ruolo abbonato su Discord.\n\nContatta gli admin del server per questo errore."
+    Failed for unknown reason: "&cSi è verificato un errore durante la verifica del tuo account.\n\nContatta gli admin del server per questo errore."
+    Kicked for unlinking: "&cSei stato kickato dal server per aver scollegato il tuo account.\n\nRientra e collega nuovamente il tuo account."

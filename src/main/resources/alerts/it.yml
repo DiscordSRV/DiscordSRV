@@ -1,0 +1,116 @@
+# Configurazione avanzata DiscordSRV in italiano
+# Invia messaggi su Discord quando accade un evento in-game o un comando
+# Leggere attentamente prima di modificare se non si è sicuri
+
+Alerts:
+  # Esempio di alert: invia un messaggio al canale Discord "fish" quando un giocatore pesca con successo
+  #- Trigger: org.bukkit.event.player.PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} ha pescato un ${caught.itemStack.type.name()}!"
+
+  # Esempio di alert: invia messaggi Matrix anti-cheat
+  #- Trigger: me.rerere.matrix.api.events.PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # Non inviare alert per giocatori con meno di 5 violazioni
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} ha fallito il controllo ${hackType.name().toLowerCase()} | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+  # Esempio di alert: invia messaggi /gamemode
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} ha cambiato il suo gamemode in ${#args.get(0)}"
+
+  # Esempio di alert: invia messaggi /me
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"
+
+# Esempi di placeholders disponibili:
+# {tps} - TPS del server
+# {time} - ora formattata
+# {date} - data formattata
+# {name} - nome del giocatore (per eventi giocatore)
+# {ping} - ping del giocatore (per eventi giocatore)
+# {username} - nome del giocatore
+# {displayname} - display name del giocatore
+# {usernamenoescapes} - nome senza escape per codice inline
+# {displaynamenoescapes} - display name senza escape per codice inline
+# {world} - mondo in cui si trova il giocatore
+# {embedavatarurl} - URL dell'avatar del giocatore (o bot se non evento giocatore)
+# {botavatarurl} - URL avatar del bot
+# {botname} - nome del bot
+# %placeholder% - qualsiasi PlaceholderAPI placeholder (solo giocatore se evento giocatore)
+
+# Esempi di espressioni SpEL:
+# ${#player.address.address.hostAddress} - IP del giocatore
+# ${#player.gameMode.name()} - gamemode del giocatore
+# ${discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)} - Discord ID collegato
+# ${#server.onlinePlayers.size()} - numero di giocatori online
+# ${#jda.status.name()} - stato connessione DiscordSRV
+# ${#player.world.name == 'world_the_end'} - controllo mondo specifico
+# ${#player.world.time > 0 && #player.world.time < 13000} - controllo giorno/notte nel mondo
+
+# Oggetti disponibili nelle espressioni:
+# #plugins.<plugin> - istanza del plugin
+# #event - evento che ha triggerato l'alert
+# #server - istanza server Bukkit
+# #discordsrv - istanza plugin DiscordSRV
+# #player - giocatore dell'evento o comando
+# #sender - chi esegue il comando
+# #command - comando completo
+# #args - argomenti del comando
+# #allArgs - argomenti come stringa
+# #channel - canale Discord destinazione alert
+# #jda - istanza JDA di DiscordSRV
+
+# Sintassi alert:
+# Trigger: <nome evento o /comando>
+# Async: true # default true, non modificare quasi mai
+# Conditions: - property == <valore> ecc.
+# Channel: <nome canale Discord>
+# IgnoreCancelled: true # solo per eventi
+# Content: ""
+# Webhook:
+#   Enabled: false
+#   AvatarUrl: "{botavatarurl}"
+#   Name: "{botname}"
+# Embed:
+#   Enabled: true
+#   Color: "#00ff00" # es. "#ffffff" o integer RGB
+#   Author:
+#     ImageUrl: "{embedavatarurl}"
+#     Name: "{username} ha fatto qualcosa"
+#     Url: ""
+#   ThumbnailUrl: ""
+#   Title:
+#     Text: ""
+#     Url: ""
+#   Description: ""
+#   Fields: [] # formato "title;value;inline" oppure "blank"
+#   ImageUrl: ""
+#   Footer:
+#     Text: ""
+#     IconUrl: ""
+#   Timestamp: false # true per usare tempo invio o epoch specifico

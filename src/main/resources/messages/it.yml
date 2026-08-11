@@ -1,0 +1,158 @@
+# Discord -> Minecraft-besked
+#
+# DiscordToMinecraftChatMessageFormat: formato utilizzato quando vengono inviate messaggi da Discord a Minecraft
+# DiscordToMinecraftChatMessageFormatNoRole: formato utilizzato quando vengono inviate messaggi da Discord a Minecraft e la persona non ha alcun ruolo
+#
+# Puoi specificare un formato diverso per ogni canale. Ad esempio, se hai un canale chiamato "minkanal".
+# Se vuoi che abbia un formato diverso rispetto a quello globale, puoi aggiungere le seguenti proprietà:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord da MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord da MyChannel&r] %name% » %message%"
+#
+# Segnaposto disponibili:
+# %allroles%:       tutti i ruoli della persona combinati con DiscordToMinecraftAllRolesSeparator
+#                   esempio: Proprietario | Sviluppatore | Capo
+# %message%:        contenuto del messaggio
+#                   esempio: Ciao!
+# %toprole%:        ruolo più alto della persona
+#                   esempio: Proprietario
+# %toprolealias%:   alias del ruolo definito in DiscordChatChannelRoleAliases, altrimenti il nome del ruolo
+#                   esempio: Dev
+# %toproleinitial%: prima lettera del ruolo più alto della persona
+#                   esempio: P
+# %toprolecolor%:   colore approssimativo del ruolo più alto della persona
+#                   esempio: &4
+# %name%:           nome visualizzato della persona su Discord (nickname se presente, altrimenti username)
+#                   esempio: NotchIsMe
+# %username%:       username della persona su Discord
+#                   esempio: hak
+# %userid%:         ID della persona su Discord
+#                   esempio: 1081004946872352958
+# %channelname%:    nome del canale da cui proviene il messaggio
+#                   esempio: server-chat
+# %reply%:          messaggio mostrato se il messaggio è una risposta ad un altro messaggio.
+#                   Il formato della risposta può essere configurato con DiscordToMinecraftMessageReplyFormat,
+#                   sarà vuoto se il messaggio non è una risposta.
+
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (risponde a %name%)"
+
+# Minecraft -> Discord-besked
+#
+# MinecraftChatToDiscordMessageFormat: formato utilizzato quando vengono inviati messaggi da Minecraft a Discord
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: usato al posto di MinecraftChatToDiscordMessageFormat
+#                                                    quando non viene trovato un gruppo primario per il giocatore
+#
+# Segnaposto disponibili:
+# %username%:             username del giocatore
+#                          esempio: jeb_
+# %displayname%:          nome visualizzato (nickname)
+#                          esempio: BigBossManJeb
+# %usernamenoescapes%:    username senza escape Discord (per codice inline o blocchi di codice)
+#                          esempio: jeb_
+# %displaynamenoescapes%: nome visualizzato senza escape Discord (per codice inline o blocchi di codice)
+#                          esempio: BigBossManJeb
+# %message%:              contenuto del messaggio
+#                          esempio: Ciao!
+# %primarygroup%:         nome del gruppo primario dell'utente
+# %world%:                nome del mondo in cui si trova il giocatore
+#                          esempio: mondo
+# %worldalias%:           alias del mondo tramite Multiverse-Core
+#                          esempio: Mainland
+# %date%:                 data e ora corrente
+#                          esempio: Sun Jan 1 15:30:45 PDT 2017
+# I segnaposto PlaceholderAPI sono supportati
+
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+
+# Chat kanal plugin besked
+# Questo è un messaggio speciale utilizzato solo quando un plugin di chat channel supportato è collegato
+# Modifica il modo in cui il messaggio appare in gioco, includendo informazioni relative al canale
+#
+# Segnaposto disponibili:
+# %channelcolor%:    colore associato al canale
+#                     esempio: messaggi dal canale rosso
+# %channelname%:     nome interno del canale
+#                     esempio: staff
+# %channelnickname%: nome visualizzato del canale
+#                     esempio: Personale
+# %message%:         messaggio dopo essere stato formattato tramite DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole
+#                     esempio: jeb_ > Ciao dal server!
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap-meddelelser
+#
+# DynmapNameFormat: formato del nome utente per Dynmap
+# DynmapChatFormat: formato del messaggio per Dynmap
+#
+# Segnaposto disponibili:
+# Stessi di Discord -> Minecraft
+
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
+
+# Discord konsol kanal besked
+# Formato usato quando viene inviata una linea dalla console al canale console
+#
+# Segnaposto disponibili:
+# {level}:    livello di log
+#               esempio: INFO, WARN, ERROR
+# {name}:     nome del logger
+#               esempio: Server
+# {datetime}: data e ora corrente
+#               esempio: Sun Jan 1 15:30:45 PDT 2017
+# PlaceholderAPI è supportato
+
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
+
+# Discord chatkanal !c kommando fejlmeddelelse
+# Usato quando c'è un errore di permessi per eseguire il comando
+# Non è un errore di esecuzione del comando stesso
+# Verrà inviato come PM all’utente
+#
+# Segnaposto disponibili:
+# %user%: nome dell’utente che ha provato il comando
+# %error%: motivo dell’errore
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, hai provato a usare un comando. Purtroppo si è verificato un errore: %error%"
+
+# Discord chatkanal af spillerliste kommando
+# Messaggi usati quando qualcuno esegue il comando lista giocatori in un canale
+#
+# Segnaposto disponibili:
+# %username%:     username del giocatore
+# %displayname%:  nome visualizzato
+# %primarygroup%: gruppo primario
+# %world%:        mondo del giocatore
+# %worldalias%:   alias del mondo
+# I segnaposto PlaceholderAPI sono supportati
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Giocatori online (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Nessun giocatore online**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
+
+# Minecraft -> Discord-meddelelser
+#
+# Segnaposto disponibili per PlayerJoin / PlayerFirstJoin / PlayerLeave / PlayerDeath / PlayerAchievement:
+# %displayname%:          nome visualizzato
+# %username%:             username
+# %displaynamenoescapes%: nome visualizzato senza escape Discord
+# %usernamenoescapes%:    username senza escape Discord
+# %date%:                 data e ora corrente
+# %embedavatarurl%:       avatar dell’utente
+# %botavatarurl%:         avatar del bot
+# %botname%:              nome del bot
+# PlaceholderAPI segnaposto supportati
+#
+# Segnaposto aggiuntivi per PlayerJoin: %message%: messaggio di join come visto in gioco
+# Segnaposto aggiuntivi per PlayerFirstJoin: %message%: messaggio di join come visto in gioco
+# Segnaposto aggiuntivi per PlayerLeave: %message%: messaggio di leave come visto in gioco
+# Segnaposto aggiuntivi per PlayerDeath: %deathmessage%: messaggio di morte / %world%: mondo
+# Segnaposto aggiuntivi per PlayerAchievement: %achievement%: titolo traguardo / %world%: mondo
