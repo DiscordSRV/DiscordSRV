@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * <p>Made by Scarsz</p>
- * <p>German translations by Androkai &amp; GerdSattler</p>
+ * <p>German translations by Androkai &amp; GerdSattler, Tungdil83</p>
  * <p>Japanese translations by Ucchy</p>
  * <p>French translations by BrinDeNuage</p>
  * <p>Korean translations by Alex4386 (with MintNetwork)</p>
@@ -92,7 +92,7 @@ public class LangUtil {
                     "2. Lösche die Datei SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "3. Lade dir die Datei SpecialSource v1.7.4 von hier herunter: https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Kopiere die jar Datei in den zuvor ausgewählten Ordner {specialsourcefolder}\n" +
-                    "5. Bennen die kopierte jar Datei in SpecialSource-1.7-SNAPSHOT.jar um\n" +
+                    "5. Benenne die kopierte jar Datei in SpecialSource-1.7-SNAPSHOT.jar um\n" +
                     "6. Starte deinen Server neu\n" +
                     "\n" +
                     "\n");

@@ -1,7 +1,7 @@
 Require linked account to play:
   Enabled: false
 
-  # Wenn Sie nicht wissen, was diese bedeuten, berühren Sie sie nicht
+  # Wenn du nicht weißt, was dies bedeutet, ändere es nicht
   #
   # Die Priorität, die der Join-Listener haben soll
   # In der Reihenfolge von Anfang bis Ende sind die verfügbaren Werte LOWEST, LOW, NORMAL, HIGH, HIGHEST
@@ -11,7 +11,7 @@ Require linked account to play:
   # Einige Whitelist-Plugins verwenden AsyncPlayerPreLoginEvent (gut), andere PlayerLoginEvent (nicht so gut).
   Listener event: AsyncPlayerPreLoginEvent
   #
-  # Wenn Sie nicht wissen, was diese bedeuten, berühren Sie sie nicht
+  # Wenn du nicht weißt, was dies bedeutet, ändere es nicht
 
   # Minecraft-IGNs, um immer zuzulassen, ob verknüpft oder Abonnent oder nicht
   Bypass names: [Scarsz, Vankka]
@@ -23,9 +23,9 @@ Require linked account to play:
   Only check banned players: false
 
   # Nachricht an die Spieler, die aufgefordert werden, ihre Konten zu verknüpfen
-  # Verwenden Sie {BOT} als Platzhalter für den Namen des Bots
-  # Verwenden Sie {CODE} als Platzhalter für den Code, den Benutzer zum DM des Bots benötigen
-  # Verwenden Sie {INVITE} als Platzhalter für den Einladungslink, den Benutzer benötigen, um dem Discord-Server beizutreten. Verwenden Sie den in config.yml konfigurierten DiscordInviteLink
+  # Verwende {BOT} als Platzhalter für den Namen des Bots
+  # Verwende {CODE} als Platzhalter für den Code, den Benutzer zum DM des Bots benötigen
+  # Verwende {INVITE} als Platzhalter für den Einladungslink, den Benutzer benötigen, um dem Discord-Server beizutreten. Verwende den in config.yml konfigurierten DiscordInviteLink
   Not linked message: "&7Sie müssen Ihr &9Discord&7-Konto verknüpfen, um spielen zu können.\n\n&7Senden Sie eine DM an &b{BOT}&7 auf dem Discord-Server, die nur &b{CODE}&7 enthält, um Ihr Konto zu verknüpfen.\n\n&7Discord Server » &b{INVITE}"
 
   # Wenn diese Option aktiviert ist, müssen die Spieler nicht nur ihre Konten verknüpft haben, sondern auch

@@ -25,6 +25,6 @@ Network:
   # Sobald sich ein Spieler einem Netzwerk anschließt, muss er eine Entfernung von
   # "Stärke + Abnahme" vom nächsten Knoten haben, bevor die Verbindung getrennt wird
   Falloff: 5
-  # Whether voice network channels are visible to everyone, even those not connected
-  # Helps let players know if people are actually using the voice network at the moment
+  # Ob Sprachnetzwerkkanäle für alle, auch für diejenigen, die nicht verbunden sind sichtbar sind?
+  # Hilft den Spielern zu erkennen, ob andere Spieler gerade das Voice-Netzwerk nutzen
   Channels are visible: false
