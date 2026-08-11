@@ -37,6 +37,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -375,6 +376,20 @@ public class MessageUtil {
      */
     public static String strip(String text) {
         return stripLegacy(text);
+    }
+
+    /**
+     * Parses the given String as MiniMessage and serializes it to plain text, removing all
+     * MiniMessage tags (eg. {@code <gradient:red:blue>Owner</gradient>} -&gt; {@code Owner}).
+     * Unlike {@link #stripMiniTokens(String)} this uses the actual MiniMessage parser, so
+     * nested, malformed, or escaped tags are handled the same way the renderer would.
+     *
+     * @param text the input that may contain MiniMessage tags
+     * @return the same text with all MiniMessage formatting flattened to plain characters
+     */
+    public static String stripMiniMessage(String text) {
+        if (text == null || text.isEmpty()) return text;
+        return PlainTextComponentSerializer.plainText().serialize(MiniMessage.miniMessage().deserialize(text));
     }
 
     /**

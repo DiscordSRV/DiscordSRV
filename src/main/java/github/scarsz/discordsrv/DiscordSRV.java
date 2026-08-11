@@ -1809,6 +1809,12 @@ public class DiscordSRV extends JavaPlugin {
             // Replace the PAPI placeholders in the message pattern
             discordMessagePattern = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessagePattern, player);
 
+            // Flatten MiniMessage tags from the substituted pattern. LuckPerms prefixes and PAPI
+            // expansions commonly return MiniMessage (eg. <gradient:red:blue>Owner</gradient>); since
+            // the format pattern itself is never reserialized to Discord markdown, those tags would
+            // otherwise appear in chat as literal text. See DiscordSRV/DiscordSRV#1868.
+            discordMessagePattern = MessageUtil.stripMiniMessage(discordMessagePattern);
+
             /*
             // Reserialize the message pattern, in the case the placeholders added more color codes.
             // DiscordSRV is not ready for this yet. Leaving this here for when that faithful day comes upon us.
