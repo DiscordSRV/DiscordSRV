@@ -1,0 +1,57 @@
+Require linked account to play:
+  Enabled: false
+
+  # Si no sabes lo que esto significa, no las toques.
+  #
+  # La prioridad en la que debe estar el oyente de unión
+  # En orden de primero a último, los valores disponibles son BAJO, BAJO, NORMAL, ALTO, ALTO
+  # Es posible que deba cambiar esto a una prioridad posterior para que un complemento de prohibición expulse al jugador antes de que DiscordSRV lo niegue
+  Listener priority: LOWEST
+  # El evento de que el módulo de enlace debe escuchar y no permitir inicios de sesión en
+  # Algunos complementos de la lista blanca usan AsyncPlayerPreLoginEvent (bueno), algunos usan PlayerLoginEvent (no tan bueno)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # Si no sabes lo que esto significa, no las toques.
+
+  # IGN de Minecraft para permitir siempre si está vinculado o suscriptor o no
+  Bypass names: [Scarsz, Vankka]
+  # Si los jugadores en la lista blanca de VANILLA eludirán o no la necesidad de vincular sus cuentas / tener un rol secundario
+  Whitelisted players bypass check: true
+  # Si permitir o no que los jugadores de la lista de prohibición de VANILLA puedan vincular sus cuentas
+  Check banned players: false
+  # Si los jugadores que no están en la lista de prohibición de VANILLA evitarán la necesidad de vincular sus cuentas / tener un rol secundario
+  Only check banned players: false
+
+  # Mensaje para patear a los jugadores diciéndoles que vinculen sus cuentas
+  # Utilice {BOT} como marcador de posición para el nombre del bot
+  # Utilice {CODE} como marcador de posición para el código que las personas necesitan para DM el bot
+  # Utilice {INVITE} como marcador de posición para el enlace de invitación que las personas necesitan para unirse al servidor Discord, usa DiscordInviteLink configurado en config.yml
+  Not linked message: "&7Debes vincular tu cuenta de &9Discord&7 para jugar.\n\n&7Envíe un DM a &b{BOT}&7 en el servidor Discord que contenga solo &b{CODE}&7 para vincular su cuenta.\n\n&7Invitación de discordia » &b{INVITE}"
+
+  # Si está habilitado, los jugadores no solo necesitarán vincular sus cuentas, sino que también serán necesarios
+  # para ser miembro de un servidor Discord en el que también está el bot.
+  #
+  # Formatos aceptables:
+  #   true/false: la cuenta vinculada debe estar en al menos un servidor Discord en el que también esté el bot
+  #     ex: true
+  #   <id del servidor>: la cuenta vinculada debe estar en el servidor Discord dado
+  #     ex: 135634590575493120
+  #   [<id del servidor>, <id del servidor>, ...]: la cuenta vinculada debe estar en TODOS los servidores Discord dados
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # El valor de esta opción se reemplaza cuando tiene roles de suscriptor impuestos a continuación.
+  Must be in Discord server: true
+
+  # Opcionalmente, se requiere que las personas no solo estén vinculadas, sino que también tengan uno o todos los roles especificados, como un sub rol de Twitch
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # cuando es falso, solo se requiere uno de los roles anteriores
+    Kick message: "&cDebes estar suscrito en Twitch para poder jugar."
+
+  Messages:
+    DiscordSRV still starting: "&cActualmente no está disponible para verificar el estado del enlace porque el servidor todavía se está conectando a Discord.\n\nInténtalo de nuevo en un minuto."
+    Not in server: "&cActualmente no eres parte de nuestro servidor Discord.\n\n¡Únete a {INVITE}!"
+    Failed to find subscriber role: "&cNo se pudo encontrar ningún rol de suscriptor en Discord.\n\nPóngase en contacto con los administradores de su servidor sobre este problema."
+    Failed for unknown reason: "&cSe produjo un error al intentar verificar su cuenta.\n\nPóngase en contacto con el administrador del servidor sobre este problema."
+    Kicked for unlinking: "&cHas sido expulsado del servidor por desvincular tus cuentas.\n\nVuelva a unirse al servidor para vincular sus cuentas nuevamente."

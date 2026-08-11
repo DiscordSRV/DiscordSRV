@@ -1,0 +1,358 @@
+# DiscordSRV Konfiguration
+# Brug for hjælp? Deltag i vores Discord, https://discordsrv.com/discord
+
+# Rør ikke ved
+ConfigVersion: ${version}
+
+# Bot token; Ved du ikke hvad dette er? Se videoen på plugin siden for instruktioner
+# Du skal genstarte din server efter ændring af denne mulighed
+BotToken: "BOTTOKEN"
+
+# Kanal links fra spillet til Discord
+# syntaxen er Channels: {"spillets in-game kanal navn fra Minecraft": "nummeret kanal id fra Discord", "en anden in-game kanal navn fra Minecraft": "et andet nummerisk kanal id fra Discord"}
+#
+# All DiscordSRV's beskeder vil gå til den første kanal medmindre der er en kanal for den type besked defineret:
+# når du bruger et kompatibel chat plugin, vil kanal navnet være navnet på det chat plugin du bruger
+#  - Hvis du bruger TownyChat, så hedder standard kanalen 'general' istedet for 'global'
+# til spiller beskeder (når du ikke bruger et chat plugin): global
+# til server start/stop beskeder: status
+# til achievement/advancement beskeder: awards
+# til death beskeder: deaths
+# til join beskeder: join
+# til leave beskeder: leave
+# til dynmap beskeder: dynmap
+# til watchdog beskeder: watchdog
+# til /discord broadcast: broadcasts (medmindre specificeret i kommandoen)
+# til bruger tilkobling: link
+#
+# Den første del af at danne kanal par er ikke Discord kanal navnet!
+# Kør "/discord reload" efter du har ændret denne
+Channels: {"global": "000000000000000000"}
+
+# Konsol kanalens numeriske ID (IKKE NAVN), efterlad blank for at slå fra
+DiscordConsoleChannelId: "000000000000000000"
+
+# Invitations link vist til spillere når der bruges /discord og beskeden vist til utilkoblede brugere når tilkobling er påbudt
+DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
+
+# Eksperimenterende
+# Disse funktioner er ikke fuldt optimeret; brug på eget ansvar
+
+# JDBC (MySQL/MariaDB)
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
+Experiment_JdbcTablePrefix: "discordsrv"
+Experiment_JdbcUsername: "username"
+Experiment_JdbcPassword: "password"
+
+# Webhook Levering
+Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageFormat: "%message%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
+
+# Embed & webhook billede/avatar url format
+# Lad stå tomt for at bruge en standardværdi
+# Tilgængelige pladsholdere: {texture} {username} {uuid} {uuid-nodashes} {size}
+AvatarUrl: ""
+
+# Reserializer
+# Konverterer formatering (fed, kursiv, understregning, gennemstregning) mellem Minecraft og Discord
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+
+# This blocks the broadcast event incase you are handling the broadcast with alerts.yml
+Experiment_BlockBroadcast: false
+
+# Andet
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
+ForceTLSv12: true
+NoopHostnameVerifier: false
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
+DateFormat: yyyy-MM-dd
+# https://docs.discordsrv.com/config/#Timezone
+Timezone: default
+# MinecraftMentionSound: Om en lyd skal sendes til afspilleren i Minecraft, når de nævnes fra Discord
+MinecraftMentionSound: true
+
+# Plugin hooks
+# Du skal genstarte din server efter at have ændret disse indstillinger
+#
+# DisabledPluginHooks: plugin hooks, der ikke vil blive brugt (normalt kun navnet på plugin).
+# VentureChatBungee: aktiverer VentureChat-hook BungeeCord-funktionaliteten (beskeder modtages fra hver server, kræver mindst 1 spiller for at være online)
+# EnablePresenceInformation: aktiveret tilstedeværelsesoplysninger, som er påkrævet for nogle af vores PlaceholderAPI-placeholders. Husk, at dette kræver "Presence Intent" fra Discord-udviklerportalen
+# UseModernPaperChatEvent: brug kun dette, hvis du har et chat-plugin, der SPECIFIKT bruger Paper's "AsyncChatEvent"
+DisabledPluginHooks: []
+VentureChatBungee: false
+EnablePresenceInformation: false
+UseModernPaperChatEvent: false
+
+# Spiloplysninger
+# Sets the user status for the bot
+# Kan være en enkelt, statisk værdi eller gå gennem flere forskellige muligheder
+# Du kan indlede status med "playing", "watching", "listening to", eller "competing" for at indstille aktivitetstypen
+# You can set your own custom status by not including the prefixes
+#    %online%: number of online players
+#    PlaceholderAPI placeholders are supported
+#
+# DiscordGameStatus: Tekst, der skal vises. Kan være en enkelt værdi f.eks. "Minecraft", eller flere værdier, f.eks. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Aktivitetsstatus skal vises. Dette skal være en af følgende: ONLINE, DND, IDLE, eller INVISIBLE
+# StatusUpdateRateInMinutes: Hvor ofte skal status skiftes
+DiscordGameStatus: ["playing Minecraft"]
+DiscordOnlineStatus: ONLINE
+StatusUpdateRateInMinutes: 2
+
+# Chatkanaloplysninger
+# Chatkanalen er den tekstkanal, som alle beskeder i spillet vil blive sendt til og alle beskeder sendt
+# til denne kanal på Discord vil blive sendt i spillet
+#
+# DiscordChatChannelDiscordToMinecraft: om der skal sendes beskeder i chatkanalen til serverchatten
+# DiscordChatChannelMinecraftToDiscord: om der skal sendes beskeder i serverchatten til chatkanalen
+# DiscordChatChannelTruncateLength: den maksimale længde af beskeder fra Discord, der skal sendes til Minecraft
+# DiscordChatChannelTranslateMentions: om man skal oversætte omtaler som @Person for Minecraft til Discord-meddelelser
+# DiscordChatChannelAllowedMentions: typer af omtaler tilladt i Minecraft for at discord-beskeder; typer, der mangler fra standardværdien, er "rolle", "her" og "alle"
+# DiscordChatChannelEmojiBehavior: hvordan emojis skal sendes til Minecraft. Kan være "show", "name", eller "hide"
+
+# DiscordChatChannelEmoteBehavior: hvordan følelser skal sendes til Minecraft. Kan være "name" eller "hide"
+# DiscordChatChannelPrefixRequiredToProcessMessage: det eller de tegn, der kræves for at præfikse en besked, for at den kan sendes fra Minecraft til Discord (eksempel "!")
+# DiscordChatChannelPrefixActsAsBlacklist: Om præfikset skal fungere som en sortliste
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: liste over roller, der er tilladt at bruge farve-/formatkoder i Discord til Minecraft-chat
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: om der skal udskrives behandlede discord-meddelelser til konsollen
+# DiscordChatChannelRequireLinkedAccount: om man skal kræve, at spillere skal have deres Discord-konto knyttet til deres Minecraft for at få deres Discord-beskeder sendt til Minecraft
+# DiscordChatChannelBlockBots: om bots skal blokeres fra Discord -> MC chat
+# DiscordChatChannelBlockWebhooks: om webhooks skal blokeres fra Discord -> MC chat
+# DiscordChatChannelBlockedIds: id'er for discord-brugere (eller bots), der ikke skal have deres beskeder behandlet og sendt til MC
+# DiscordChatChannelBlockedRolesAsWhitelist: hvis følgende liste skal behandles som en hvidliste (true) eller en sortliste (false)
+# DiscordChatChannelBlockedRolesIds: id'er for discord-roller, som ikke skal have deres beskeder behandlet og sendt til MC
+# DiscordChatChannelRolesSelectionAsWhitelist: hvis følgende liste skal behandles som en hvidliste (true) eller en sortliste (false)
+# DiscordChatChannelRolesSelection: liste over roller, der skal filtreres fra alle en brugers roller
+# DiscordChatChannelRoleAliases: liste over rollealiasser (alternative navne på roller til brug i Minecraft-beskeder)
+#
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelTruncateLength: 256
+DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
+DiscordChatChannelEmojiBehavior: "name"
+DiscordChatChannelEmoteBehavior: "name"
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Ikke vis mig!", "Andet rolle"]
+DiscordChatChannelRoleAliases: {"Udvikler": "Udv"}
+
+# Konsolkanaloplysninger
+# Konsolkanalen er tekstkanalen, der modtager beskeder, som derefter køres som serverkommandoer
+# af konsollen samt at få serverens konsol streamet til linje for linje
+#
+# Du kan tilpasse beskeden, herunder fjerne tidsstempler i messages.yml
+#
+# DiscordConsoleChannelLogRefreshRateInSeconds: rate i sekunder mellem afsendelse af linjer fra konsollen
+# DiscordConsoleChannelUsageLog:
+#    %date%:  nuværende dato
+#              eksempel: 2017-01-01
+#    PlaceholderAPI-pladsholdere understøttes
+# DiscordConsoleChannelBlacklistActsAsWhitelist: om den sortlistede kommandoliste fungerer som en hvidliste i stedet for en sortliste
+# DiscordConsoleChannelBlacklistedCommands: sætninger pakket ind i anførselstegn, som brugere ikke skal kunne sende som kommandoer til konsollen
+# DiscordConsoleChannelFilters: Regex-filtre, der skal anvendes på konsollinjer, der sendes til Discord, hvis resultatet er tomt, vil beskeden slet ikke blive sendt
+# DiscordConsoleChannelLevels: niveauer, der skal sendes til konsolkanalen via appender
+# DiscordConsoleChannelUseCodeBlocks: hvis konsollen skal pakkes ind i kodeblokke og farves
+# DiscordConsoleChannelBlockBots: om bots skal have lov til at sende kommandoer i konsolkanalen
+#
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
+DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelUseCodeBlocks: true
+DiscordConsoleChannelBlockBots: true
+
+# Chat kanal der kan udføre kommandoer ligesom konsol
+# Disse muligheder styrer muligheden for at sige "!c kick Notch", eller hvad præfikset nu er for at køre en kommando,
+# som konsol, fra en registreret chatkanal.
+#
+# DiscordChatChannelConsoleCommandEnabled: om der skal tillades konsolkommandoer fra en chatkanal.
+# DiscordChatChannelConsoleCommandNotifyErrors: om man skal sende en bruger, der forsøger at køre en kommando uden tilladelse, at de ikke har tilladelse
+# DiscordChatChannelConsoleCommandPrefix: præfiks til brug for konsolkommandoer. f.eks. "!c tps"
+# DiscordChatChannelConsoleCommandRolesAllowed: de brugerroller, der har tilladelse til at udføre serverkommandoer fra chatkanalen
+# DiscordChatChannelConsoleCommandWhitelist: liste over kommandoer, der kan køres med DiscordChatChannelConsoleCommandPrefix
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: liste over roller, der omgår hvidlisten
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: skal kommandoens hvidliste fungere som en sortliste i stedet
+# DiscordChatChannelConsoleCommandExpiration: tid i sekunder, indtil et sendt kommandooutput automatisk fjernes af botten. sat til 0 for at deaktivere udløb.
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: om meddelelsen fra den person, der oprindeligt udstedte kommandoen, skal slettes
+#
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandNotifyErrors: true
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelConsoleCommandRolesAllowed: ["Ejer", "Udvikler"]
+DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Ejer", "Udvikler"]
+DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+
+# Chat kanal af spillerliste kommando
+# Konfiguration til playerlist-kommandoen
+#
+# DiscordChatChannelListCommandEnabled: om kommandoen er aktiveret
+# DiscordChatChannelListCommandMessage: kommandoen folk kan skrive for at få spillerlisten
+# DiscordChatChannelListCommandExpiration: tid i sekunder, indtil en sendt afspillerlistebesked automatisk fjernes af botten. sat til 0 for at deaktivere udløb.
+# DiscordChatChannelListCommandExpirationDeleteRequest: om meddelelsen fra den person, der oprindeligt anmodede om spillerlisten skal slettes
+#
+DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandMessage: "playerlist"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
+
+# Chat kanal blacklisted sætninger og regulært udtryk
+#
+# DiscordChatChannelGameFilters: regex-filtre, der skal anvendes på chatbeskeder, der sendes til Discord, hvis resultatet er tomt, vil beskeden slet ikke blive sendt
+# DiscordChatChannelDiscordFilters: regex-filtre, der skal anvendes på chatbeskeder, der sendes til Minecraft, hvis resultatet er tomt, vil beskeden slet ikke blive sendt
+#
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+
+# Indstillinger for opdatering af kanalemne
+#
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: om kanalemnerne overhovedet skal ændres ved serverlukning
+# ChannelTopicUpdaterRateInMinutes: antal minutter mellem automatisk opdatering af kanalemnerne med frisk information
+#
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInMinutes: 10
+
+# Kanalopdatering
+# Denne funktion ændrer navnet på specificerede kanaler for at overholde pladsholdere i spillet
+# Muligheder:
+#   ChannelId: ID'et for den kanal, der skal ændres (påkrævet)
+#   Format: Formatet for kanalen (påkrævet). Tilgængelige pladsholdere:
+#     %playercount%:   nuværende spillerantal
+#     %playermax%:     maksimalt antal spillere
+#     %date%:          nuværende dato og klokkeslæt
+#     %totalplayers%:  det samlede antal spillere, der nogensinde har sluttet sig til hovedverdenen
+#     %uptimemins%:    antal minutter siden DiscordSRV startede
+#     %uptimehours%:   antal timer siden DiscordSRV startede
+#     %motd%:          serverens motd
+#     %serverversion%: serverversion såsom Spigot-1.9
+#     %freememory%:    frigør hukommelse til JVM i MB
+#     %usedmemory%:    brugt hukommelse til JVM i MB
+#     %totalmemory%:   JVM'ens samlede hukommelse i MB
+#     %maxmemory%:     maks. hukommelse for JVM i MB
+#     %freememorygb%:  fri hukommelse til JVM i GB
+#     %usedmemorygb%:  brugt hukommelse til JVM i GB
+#     %totalmemorygb%: JVM'ens samlede hukommelse i GB
+#     %maxmemorygb%:   maks. hukommelse for JVM i GB
+#     %tps%:           gennemsnitlig TPS for serveren
+#     PlaceholderAPI-pladsholdere understøttes også
+#   ShutdownFormat: Formatet kanalen skal have, når serveren er lukket ned. Tilgængelige pladsholdere:
+#     %time% eller %date%: nuværende dato og klokkeslæt
+#     %serverversion%:     serverversion
+#     %totalplayers%:      det samlede antal spillere, der nogensinde har sluttet sig til hovedverdenen
+#     %timestamp%:         nuværende unix-tidsstempel
+#   UpdateInterval: Tid i minutter til at vente mellem opdatering af kanalens navn (minimum er 10 på grund af hastighedsgrænser)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% spillere offline"
+    ShutdownFormat: "Server er offline"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "TPS: %tps%"
+    ShutdownFormat: "Server er offline"
+    UpdateInterval: 10
+
+# Discordbot-svar på kommandoudtryk
+# Disse er triggere (kommandoer på en måde), der vil udløse et "canned respons" til at blive sendt som et svar til dem
+# Du bør sandsynligvis ændre disse fra deres standardindstillinger eller tilføje dine egne
+#
+# Syntaks er {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
+# Hvis du ikke ønsker nogen standardsvar, skal du indstille dette til kun {}
+# PlaceholderAPI-pladsholdere understøttes for værdierne
+#
+DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+
+# Minecraft til Discord-kontotilknytning
+# Dette er mulighederne for, hvordan det fungerer at linke en Minecraft-konto til en Discord-konto
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: kommandoer til at køre, når en konto er linket, se nedenfor for mulige placeholders
+# MinecraftDiscordAccountUnlinkedConsoleCommands: kommandoer, der skal køres, når en konto er fjernet, se nedenfor for mulige placeholders
+# %minecraftplayername%: spillerens Minecraft-brugernavn
+#                         eksempel: Notch
+# %minecraftuuid%:       spillerens uuid
+#                         eksempel: du ved, hvordan en uuid ser ud
+# %discordid%:           linket discord-kontos id
+#                         eksempel: 12345678901234567890
+# %discordname%:         linket discord-kontos brugernavn
+#                         eksempel: Notch
+#
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: navnet eller id'et på en discord-rolle, som en discord-bruger skal føjes til, når de linker deres konto
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: gør det muligt at sende en ny kode til botten for at fjerne linket og linket igen med den nye kode
+# MinecraftDiscordAccountLinkedUsePM: link konti ved hjælp af PM'er
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Tid (i sekunder), før meddelelsen slettes, når den er linket i en tekstkanal. Indstil til 0, hvis du ikke ønsker at slette beskeden.
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
+
+# Server Watchdog
+#
+# Watchdog overvåger konstant den sidste gang, din server udførte et spilkryds
+# Hvis tiden siden sidste tick går over det indstillede interval i sekunder, kan Discord-beskeder udløses
+#
+# ServerWatchdogEnabled: om vagthunden overhovedet er aktiveret
+# ServerWatchdogTimeout: tid i sekunder, der skal gå, før vagthunden griber ind (Spigots nedbrudsdetektion bruger 60 til dette)
+#                        minimum for denne værdi er 10
+# ServerWatchdogMessageCount: antallet af gange ServerWatchdogMessage sendes. nyttigt, hvis du *virkelig* vil sikre dig, at du ved, at der er noget galt
+#
+ServerWatchdogEnabled: true
+ServerWatchdogTimeout: 30
+ServerWatchdogMessageCount: 3
+
+# HTTP proxy used for connecting to the Discord API
+# Leave this alone if you don't understand what it does
+ProxyHost: "example.com"
+ProxyPort: 1234
+ProxyUser: "USERNAME"
+ProxyPassword: "PASSWORD"
+
+# Debug information
+# Aktiver ikke disse medmindre du prøver at finde årsagen til fejlen
+#
+# Tilgængelige Debug kategorier:
+# MINECRAFT_TO_DISCORD  - Beskeder der kommer fra Minecraft
+# DISCORD_TO_MINECRAFT  - Beskeder der kommer fra Discord
+# GROUP_SYNC            - Gruppe synkronisering
+# PRESENCE              - Bottens status
+# VOICE                 - Stemme modulet (se voice.yml)
+# REQUIRE_LINK          - Linket der bruges til at tilslutte modulet (se linking.yml)
+# NICKNAME_SYNC         - Øgenavns synkronisering
+# ALERTS                - Alerts (se alerts.yml)
+# WATCHDOG              - Watchdog
+# BAN_SYNCHRONIZATION   - Ban synkronisering
+# LP_CONTEXTS           - LuckPerm's contexts
+# ACCOUNT_LINKING       - discord/minecraft bruger tilkobling
+#
+# UNCATEGORIZED         - Alt ikke i en af de førnævnte kategorier
+# ALL                   - Alle ovenstående kategorier (inklusiv UNCATEGORIZED)
+#
+# JDA                   - JDA's debug beskeder
+# JDA_REST_ACTIONS      - For at debugge JDA's rest actions
+# CALLSTACKS            - Viser stack trace for DiscordSRV debug kald
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []

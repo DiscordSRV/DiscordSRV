@@ -1,0 +1,57 @@
+Require linked account to play:
+  Enabled: false
+
+  # Als je niet weet wat deze betekenen, raak ze dan niet aan
+  #
+  # De prioriteit waarop de join-listener moet staan
+  # In volgorde van voorlaatste zijn de beschikbare waarden LAAGSTE, LAAG, NORMAAL, HOOG, HOOGST
+  # Mogelijk moet u dit wijzigen naar een latere prioriteit voor een ban-plug-in om de speler te schoppen voordat DiscordSRV ze weigert
+  Listener priority: LOWEST
+  # De gebeurtenis dat de linkmodule moet luisteren en aanmeldingen niet moet toestaan
+  # Sommige plug-ins op de witte lijst gebruiken AsyncPlayerPreLoginEvent (goed), sommige gebruiken PlayerLoginEvent (niet zo goed)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # Als je niet weet wat deze betekenen, raak ze dan niet aan
+
+  # Minecraft IGN's om altijd toe te staan of ze nu gelinkt of abonnee zijn of niet
+  Bypass names: [Scarsz, Vankka]
+  # Of spelers op de VANILLA-whitelist de noodzaak om hun accounts te koppelen zullen omzeilen / een subrol hebben
+  Whitelisted players bypass check: true
+  # Of spelers in de VANILLA banlist al dan niet hun accounts moeten kunnen koppelen
+  Check banned players: false
+  # Of spelers die niet op de VANILLA banlist staan of niet, de noodzaak om hun accounts te linken / een subrol zullen hebben omzeilen
+  Only check banned players: false
+
+  # Bericht om spelers te schoppen door hen te vertellen hun accounts te linken
+  # Gebruik {BOT} als tijdelijke aanduiding voor de naam van de bot
+  # Gebruik {CODE} als tijdelijke aanduiding voor de code die mensen nodig hebben om de bot te DM
+  # Gebruik {INVITE} als tijdelijke aanduiding voor de uitnodigingslink die mensen nodig hebben om lid te worden van de Discord-server, gebruikt DiscordInviteLink geconfigureerd in config.yml
+  Not linked message: "&7Je moet je &9Discord&7-account koppelen om te spelen.\n\n&7Stuur een DM naar &b{BOT}&7 in de Discord-server met slechts &b{CODE}&7 om je account te linken.\n\n&7Discord Invite » &b{INVITE}"
+
+  # Indien ingeschakeld, moeten spelers niet alleen hun accounts hebben gekoppeld, maar ook vereist zijn
+  # om lid te zijn van een Discord-server waar de bot zich ook in bevindt.
+  #
+  # Acceptabele formaten:
+  #   true/false: het gekoppelde account moet zich op ten minste één Discord-server bevinden waarin de bot zich ook bevindt
+  #     ex: true
+  #   <server id>: het gekoppelde account moet zich in de opgegeven Discord-server bevinden
+  #     ex: 135634590575493120
+  #   [<server id>, <server id>, ...]: het gekoppelde account moet op ALLE gegeven Discord-servers staan
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # De waarde van deze optie is achterhaald wanneer u hieronder abonneerollen hebt afgedwongen.
+  Must be in Discord server: true
+
+  # Optioneel vereisen mensen dat ze niet alleen zijn gekoppeld, maar ook een of alle gespecificeerde rollen hebben, zoals een Twitch-subrol
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # indien false, is slechts één van de bovenstaande rollen vereist
+    Kick message: "&cJe moet geabonneerd zijn op Twitch om te kunnen spelen."
+
+  Messages:
+    DiscordSRV still starting: "&cMomenteel niet beschikbaar om de linkstatus te controleren omdat de server nog steeds verbinding maakt met Discord.\n\nProbeer het zo meteen opnieuw."
+    Not in server: "&cU maakt momenteel geen deel uit van onze Discord-server.\n\nDoe mee op {INVITE}!"
+    Failed to find subscriber role: "&cKan geen rol van abonnee vinden op Discord.\n\nNeem contact op met uw serverbeheerders over dit probleem."
+    Failed for unknown reason: "&cEr is een fout opgetreden bij het verifiëren van uw account.\n\nNeem contact op met uw serverbeheerder over dit probleem."
+    Kicked for unlinking: "&cJe bent van de server getrapt omdat je je accounts hebt ontkoppeld.\n\nSluit u opnieuw aan bij de server om uw accounts opnieuw te koppelen."

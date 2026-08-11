@@ -1,0 +1,31 @@
+# Dette er konfigurationsfilen for DiscordSRV's stemmemodul.
+# Det er en eksperimentel funktion. Tingene fungerer muligvis ikke korrekt.
+# Hvis du leger med dette modul, så send os venligst feedback om evt
+# problemer på vores Discord. https://discordsrv.com/discord
+#
+
+# Om du vil aktivere nærhedsstemme chatfunktionen i DiscordSRV
+# Du skal genstarte din server efter at have ændret denne indstilling
+Voice enabled: false
+# Mængde af ticks mellem netværksopdateringer
+Tick speed: 5
+# Hovedkategorien, som stemmemodulet vil oprette/slette/flytte stemmekanaler ind i
+# Ingen andre kanaler end lobby kanalen (nedenfor) må være i denne kategori
+Voice category: 000000000000000000
+# Lobbykanalen (inde i stemmekategorien), som folk vil blive flyttet til
+# når de ikke er inden for rækkevidde af nogen netværk. Dette er også den kanal, folk vil
+# join for at blive forbundet til nærhedsstemmenetværket.
+Lobby channel: 000000000000000000
+# Muter lyden fra for brugere i lobbyen, der har tilladelserne Tal og Mute andre
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # Maksimal afstand mellem spillere for at blive forbundet
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # Når en spiller har tilsluttet sig et netværk, kan de få
+  # styrke + falloff blokke væk, før de afbrydes så de ikke dør pga. en serverfejl
+  Falloff: 5
+  # Om talenetværkskanaler er synlige for alle, også dem, der ikke er tilsluttet
+  # Hjælper med at lade spillere vide, om folk rent faktisk bruger stemmenetværket i øjeblikket
+  Channels are visible: false

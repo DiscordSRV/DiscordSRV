@@ -1,0 +1,56 @@
+Require linked account to play:
+  Enabled: false
+
+  # 이것이 무엇을 의미하는지 모른다면 수정하지 마세요.
+  #
+  # 참가 리스너 우선 순위
+  # 사용 가능한 값은 처음부터 LOWEST, LOW, NORMAL, HIGH, HIGHEST 입니다.
+  # DiscordSRV가 거부하기 전에 차단 플러그인이 플레이어를 추방하면 아래 값을 변경해야 할 수도 있습니다.
+  Listener priority: LOWEST
+  # 링크 모듈이 로그인을 감지하고 차단해야하는 이벤트
+  # 어떤 화이트리스트 플러그인은 AsyncPlayerPreLoginEvent(좋음)를 사용하고, 어떤 플러그인은 PlayerLoginEvent(별로 좋지 않음)를 사용합니다.
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # 이것이 무엇을 의미하는지 모른다면 수정하지 마세요.
+
+  # 계정 연결 또는 구독자 여부와 관계없이 항상 허용되는 마인크래프트 IGN 목록을 설정합니다.
+  Bypass names: [Scarsz, Vankka]
+  # 바닐라 화이트리스트를 계정 연결 여부나 구독자 역할 여부 검사를 건너뛸 지 설정합니다.
+  Whitelisted players bypass check: true
+  # 바닐라 차단 목록의 플레이어가 계정을 연결할 수 있도록 허용할지 설정합니다.
+  Check banned players: false
+  # 바닐라 차단 목록에 추가되어 있지 않은 플레이어의 계정 연결 여부나 구독자 역할 여부 검사를 건너뛸지 설정합니다.
+  Only check banned players: false
+
+  # 플레이어를 추방하면서 계정을 연결하도록 안내하는 메시지를 설정합니다.
+  # {BOT}은 봇의 이름을 표시하는 변수입니다.
+  # {CODE}는 사람들이 봇에게 DM으로 전송해야할 인증 코드를 표시하는 변수입니다.
+  # {INVITE} 사람들이 접속해야할 디스코드 서버의 초대 코드를 표시하는 변수입니다. config.yml 파일의 DiscordInviteLink 설정값을 따릅니다.
+  Not linked message: "&7플레이하려면 &9디스코드 &7계정을 연결해야 합니다.\n\n&b{BOT}&7에게 인증 코드 &b{CODE}&7 를 개인 메시지로 전송하세요.\n\n&7디스코드 초대 코드 » &b{INVITE}"
+
+  # 만약 이 설정을 활성화하면 플레이어들은 필수적으로 계정을 연결해야할 뿐 아니라 봇이 참가하고 있는 서버에 참가해야 합니다.
+  #
+  # 사용할 수 있는 설정값:
+  #   true/false: 연결된 계정이 봇이 있는 서버에 한곳 이상 참가해야 하도록 설정합니다.
+  #     예시: true
+  #   <서버 ID>: 지정된 디스코드 서버에 참가해야 하도록 설정합니다.
+  #     예시: 135634590575493120
+  #   [<서버 ID>, <서버 ID>, ...]: 목록에 있는 모든 디스코드 서버에 참가해야 하도록 설정합니다.
+  #     예시: [135634590575493120, 690411863766466590]
+  #
+  # 구독자 역할을 사용하도록 설정했을 때 아래 설정은 무조건 활성화해야합니다.
+  Must be in Discord server: true
+
+  # 계정을 연결하는것 뿐 아니라 트위치 하위 역할과 같이 지정된 역할 중 하나 또는 모두를 가져야 하도록 설정 할 수 있습니다.
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # false로 설정하면, 위 설정값을 한가지로 설정해야 합니다.
+    Kick message: "&c플레이하려면 트위치 방송을 구독하고 있어야 합니다."
+
+  Messages:
+    DiscordSRV still starting: "&c아직 서버가 디스코드와 완전히 연결되지 않아 연결 상태를 확인할 수 없습니다.\n\n잠시 후 다시 시도하세요."
+    Not in server: "&c당신은 아직 디스코드 서버에 참가하지 않은 것 같습니다.\n\n{INVITE}를 통해 참가하세요!"
+    Failed to find subscriber role: "&c디스코드에서 구독자 역할을 찾지 못했습니다.\n\n서버 관리자에게 연락해 지금 겪고 있는 문제를 설명해주세요."
+    Failed for unknown reason: "&c계정 확인 중 오류가 발생했습니다.\n\n서버 관리자에게 연락해 지금 겪고 있는 문제를 설명해주세요."
+    Kicked for unlinking: "&c계정 연결을 해제하여 서버에서 추방되었습니다.\n\n계정을 다시 연결하려면 서버에 다시 접속하세요."
