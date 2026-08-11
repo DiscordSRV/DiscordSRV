@@ -75,7 +75,7 @@ public class CommandLinked {
             String target = args[0];
             String joinedTarget = String.join(" ", args);
 
-            if (args.length == 1 && target.length() == 32 || target.length() == 36) {
+            if (args.length == 1 && (target.length() == 32 || target.length() == 36)) {
                 // target is UUID
                 notifyInterpret(sender, "UUID");
                 OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(target));

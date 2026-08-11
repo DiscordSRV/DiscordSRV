@@ -287,7 +287,7 @@ public class WebhookUtil {
                     username = username
                             .replaceAll("(?i)(cly)d(e)", "$1*$2")
                             .replaceAll("(?i)(d)i(scord)", "$1*$2");
-                    if (!username.equals(webName) && loggedBannedWords) {
+                    if (!username.equals(webName) && !loggedBannedWords) {
                         DiscordSRV.info("Some webhook usernames are being altered to remove blocked words (eg. Clyde and Discord)");
                         loggedBannedWords = true;
                     }
