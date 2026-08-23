@@ -53,14 +53,15 @@ public class CommandLanguage {
         Language currentLanguage = DiscordSRV.config().getLanguage();
         String currentLanguageName = StringUtils.capitalize(currentLanguage.getName().toLowerCase());
 
+        String languageArg = Arrays.stream(args)
+                .filter(arg -> !arg.equalsIgnoreCase("-confirm"))
+                .collect(Collectors.joining(" "));
+
         Language targetLanguage = null;
-        outer:
-        for (String arg : args) {
-            for (Language language : Language.values()) {
-                if (language.getCode().equalsIgnoreCase(arg) || language.getName().equalsIgnoreCase(arg)) {
-                    targetLanguage = language;
-                    break outer;
-                }
+        for (Language language : Language.values()) {
+            if (language.getCode().equalsIgnoreCase(languageArg) || language.getName().equalsIgnoreCase(languageArg)) {
+                targetLanguage = language;
+                break;
             }
         }
         if (targetLanguage == null) {
