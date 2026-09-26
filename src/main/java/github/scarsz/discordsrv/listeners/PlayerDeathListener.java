@@ -37,6 +37,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import java.util.List;
 import java.util.function.BiFunction;
 
 public class PlayerDeathListener implements Listener {
@@ -127,12 +128,14 @@ public class PlayerDeathListener implements Listener {
         channelName = postEvent.getChannel();
         discordMessage = postEvent.getDiscordMessage();
 
-        TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        if (postEvent.isUsingWebhooks()) {
-            WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
-                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
-        } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage, true);
+        List<TextChannel> textChannels = DiscordSRV.getPlugin().getDestinationTextChannelsForGameChannelName(channelName);
+        for (TextChannel textChannel : textChannels) {
+            if (postEvent.isUsingWebhooks()) {
+                WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
+                        discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+            } else {
+                DiscordUtil.queueMessage(textChannel, discordMessage, true);
+            }
         }
     }
 

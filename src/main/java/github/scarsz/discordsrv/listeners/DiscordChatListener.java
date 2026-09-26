@@ -28,9 +28,12 @@ import github.scarsz.discordsrv.hooks.DynmapHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.objects.proxy.CommandSenderDynamicProxy;
 import github.scarsz.discordsrv.util.*;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageSticker;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
@@ -282,6 +285,10 @@ public class DiscordChatListener extends ListenerAdapter {
                 postEvent.getMinecraftMessage(),
                 event.getAuthor()
         );
+
+        if (DiscordSRV.config().getBooleanElse("DiscordCrossGuildRelay", true)) {
+            relayMessageToOtherGuilds(event, DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), finalMessage);
+        }
     }
 
     private boolean handleMessageAddons(GuildMessageReceivedEvent event, DiscordGuildMessagePreProcessEvent preEvent, List<Role> selectedRoles, Role topRole, String url) {
@@ -306,6 +313,9 @@ public class DiscordChatListener extends ListenerAdapter {
             return true;
         }
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), component, event.getAuthor());
+        if (DiscordSRV.config().getBooleanElse("DiscordCrossGuildRelay", true)) {
+            relayMessageToOtherGuilds(event, destinationGameChannelNameForTextChannel, url);
+        }
         return false;
     }
 
@@ -618,6 +628,32 @@ public class DiscordChatListener extends ListenerAdapter {
 
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), false));
         return true;
+    }
+
+    private void relayMessageToOtherGuilds(GuildMessageReceivedEvent event, String gameChannel, String message) {
+        if (gameChannel == null || StringUtils.isBlank(message)) return;
+        List<TextChannel> channels = DiscordSRV.getPlugin().getDestinationTextChannelsForGameChannelName(gameChannel);
+        if (channels.size() <= 1) return;
+
+        String senderName = event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName();
+        String guildName = event.getGuild().getName();
+        boolean useWebhooks = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
+
+        for (TextChannel targetChannel : channels) {
+            if (targetChannel.getId().equals(event.getChannel().getId())) continue;
+
+            if (useWebhooks && DiscordUtil.checkPermission(targetChannel, Permission.MANAGE_WEBHOOKS)) {
+                String webhookUsername = senderName + " [" + guildName + "]";
+                String avatarUrl = event.getAuthor().getEffectiveAvatarUrl();
+                WebhookUtil.deliverMessage(targetChannel, webhookUsername, avatarUrl, message, (MessageEmbed) null);
+            } else {
+                String format = DiscordSRV.config().getStringElse("DiscordCrossGuildRelayFormat", "[%guild%] %name%: %message%");
+                String text = format.replace("%guild%", guildName)
+                        .replace("%name%", senderName)
+                        .replace("%message%", message);
+                DiscordUtil.sendMessage(targetChannel, text);
+            }
+        }
     }
 
 }

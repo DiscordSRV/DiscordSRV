@@ -43,6 +43,7 @@ import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -165,12 +166,14 @@ public class PlayerAdvancementDoneListener implements Listener {
         channelName = postEvent.getChannel();
         discordMessage = postEvent.getDiscordMessage();
 
-        TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        if (postEvent.isUsingWebhooks()) {
-            WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
-                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
-        } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage, true);
+        List<TextChannel> textChannels = DiscordSRV.getPlugin().getDestinationTextChannelsForGameChannelName(channelName);
+        for (TextChannel textChannel : textChannels) {
+            if (postEvent.isUsingWebhooks()) {
+                WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
+                        discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+            } else {
+                DiscordUtil.queueMessage(textChannel, discordMessage, true);
+            }
         }
     }
 

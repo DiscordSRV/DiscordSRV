@@ -172,30 +172,22 @@ public class VentureChatHook implements ChatHook {
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
+        List<TextChannel> destinationChannels = channel == null
+                ? DiscordSRV.getPlugin().getOptionalTextChannels("global")
+                : DiscordSRV.getPlugin().getDestinationTextChannelsForGameChannelName(channel);
+
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
-            if (channel == null) {
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getOptionalTextChannel("global"), discordMessage);
-            } else {
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel), discordMessage);
+            for (TextChannel destinationChannel : destinationChannels) {
+                DiscordUtil.sendMessage(destinationChannel, discordMessage);
             }
         } else {
-            if (channel == null) channel = DiscordSRV.getPlugin().getOptionalChannel("global");
-
-            TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel);
-            if (destinationChannel == null) {
+            if (destinationChannels.isEmpty()) {
                 DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to find Discord channel to forward message from game channel " + channel);
-                return;
-            }
-
-            if (!DiscordUtil.checkPermission(destinationChannel.getGuild(), Permission.MANAGE_WEBHOOKS)) {
-                DiscordSRV.error("Couldn't deliver chat message as webhook because the bot lacks the \"Manage Webhooks\" permission.");
                 return;
             }
 
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message);
             if (!reserializer) message = MessageUtil.strip(message);
-
-            if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, DiscordSRV.getPlugin().getMainGuild());
 
             String webhookUsername = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
                     .replaceAll("(?:%displayname%)|(?:%username%)", username);
@@ -204,12 +196,24 @@ public class VentureChatHook implements ChatHook {
 
             UUID uuid = chatPlayer != null ? chatPlayer.getUUID() : null;
             OfflinePlayer offlinePlayer = uuid != null ? Bukkit.getOfflinePlayer(uuid) : null;
-            if (offlinePlayer != null) {
-                String name = chatPlayer.getNickname() != null ? chatPlayer.getNickname() : chatPlayer.getName();
-                WebhookUtil.deliverMessage(destinationChannel, offlinePlayer, name, message, (Collection<? extends MessageEmbed>) null);
-            } else {
-                //noinspection ConstantConditions
-                WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, uuid), message, (Collection<? extends MessageEmbed>) null);
+
+            for (TextChannel destinationChannel : destinationChannels) {
+                if (!DiscordUtil.checkPermission(destinationChannel.getGuild(), Permission.MANAGE_WEBHOOKS)) {
+                    DiscordSRV.error("Couldn't deliver chat message as webhook because the bot lacks the \"Manage Webhooks\" permission.");
+                    DiscordUtil.sendMessage(destinationChannel, discordMessage);
+                    continue;
+                }
+
+                String channelMessage = message;
+                if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) channelMessage = DiscordUtil.convertMentionsFromNames(channelMessage, destinationChannel.getGuild());
+
+                if (offlinePlayer != null) {
+                    String name = chatPlayer.getNickname() != null ? chatPlayer.getNickname() : chatPlayer.getName();
+                    WebhookUtil.deliverMessage(destinationChannel, offlinePlayer, name, channelMessage, (Collection<? extends MessageEmbed>) null);
+                } else {
+                    //noinspection ConstantConditions
+                    WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, uuid), channelMessage, (Collection<? extends MessageEmbed>) null);
+                }
             }
         }
     }
