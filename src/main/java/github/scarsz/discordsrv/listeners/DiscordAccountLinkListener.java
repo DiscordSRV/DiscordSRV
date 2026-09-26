@@ -40,6 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -69,8 +70,8 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         if (event.getAuthor().isBot()) return;
 
         // if message is not in the link channel, don't process it
-        TextChannel linkChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("link");
-        if (!event.getChannel().equals(linkChannel)) return;
+        List<TextChannel> linkChannels = DiscordSRV.getPlugin().getDestinationTextChannelsForGameChannelName("link");
+        if (!linkChannels.contains(event.getChannel())) return;
 
         Message receivedMessage = event.getMessage();
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(receivedMessage.getContentRaw(), event.getAuthor().getId());

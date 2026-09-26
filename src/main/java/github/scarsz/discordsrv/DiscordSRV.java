@@ -174,6 +174,7 @@ public class DiscordSRV extends JavaPlugin {
 
     // Config
     @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private final Map<String, List<String>> multiChannels = new LinkedHashMap<>(); // <in-game channel name, list of discord channels>
     @Getter private final Map<String, String> roleAliases = new LinkedHashMap<>(); // key always lowercase
     @Getter private final Map<Pattern, String> consoleRegexes = new LinkedHashMap<>();
     @Getter private final Map<Pattern, String> gameRegexes = new LinkedHashMap<>();
@@ -239,8 +240,31 @@ public class DiscordSRV extends JavaPlugin {
     public void reloadChannels() {
         synchronized (channels) {
             channels.clear();
-            config().dget("Channels").children().forEach(dynamic ->
-                    this.channels.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
+            multiChannels.clear();
+            config().dget("Channels").children().forEach(dynamic -> {
+                String gameChannel = dynamic.key().convert().intoString();
+                List<String> channelIds = new ArrayList<>();
+                if (dynamic.isList()) {
+                    for (Object obj : dynamic.asList()) {
+                        if (obj != null) {
+                            String str = String.valueOf(obj).trim();
+                            if (!str.isEmpty()) channelIds.add(str);
+                        }
+                    }
+                } else {
+                    String raw = dynamic.convert().intoString();
+                    if (StringUtils.isNotBlank(raw)) {
+                        for (String part : raw.split(",")) {
+                            String trimmed = part.trim();
+                            if (!trimmed.isEmpty()) channelIds.add(trimmed);
+                        }
+                    }
+                }
+                this.multiChannels.put(gameChannel, channelIds);
+                if (!channelIds.isEmpty()) {
+                    this.channels.put(gameChannel, channelIds.get(0));
+                }
+            });
         }
     }
     public void reloadRoleAliases() {
@@ -308,26 +332,37 @@ public class DiscordSRV extends JavaPlugin {
                 ? DiscordUtil.getTextChannelById(consoleChannel)
                 : null;
     }
+    public List<TextChannel> getDestinationTextChannelsForGameChannelName(String gameChannelName) {
+        if (jda == null || StringUtils.isBlank(gameChannelName)) return Collections.emptyList();
+
+        List<String> channelIds = multiChannels.entrySet().stream()
+                .filter(e -> e.getKey().equals(gameChannelName))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElseGet(() -> multiChannels.entrySet().stream()
+                        .filter(e -> e.getKey().equalsIgnoreCase(gameChannelName))
+                        .map(Map.Entry::getValue)
+                        .findFirst()
+                        .orElse(Collections.emptyList()));
+
+        List<TextChannel> list = new ArrayList<>();
+        for (String id : channelIds) {
+            TextChannel channel = jda.getTextChannelById(id);
+            if (channel != null) {
+                list.add(channel);
+            }
+        }
+        return list;
+    }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
-        Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
-        String value = entry != null ? entry.getValue() : null;
-        if (!StringUtils.isBlank(value)) {
-            return jda.getTextChannelById(value); // found case-sensitive channel
-        }
-
-        // no case-sensitive channel found, try case in-sensitive
-        entry = channels.entrySet().stream().filter(e -> e.getKey().equalsIgnoreCase(gameChannelName)).findFirst().orElse(null);
-        value = entry != null ? entry.getValue() : null;
-        if (!StringUtils.isBlank(value)) {
-            return jda.getTextChannelById(value); // found case-insensitive channel
-        }
-
-        return null; // no channel found, case-insensitive or not
+        List<TextChannel> channels = getDestinationTextChannelsForGameChannelName(gameChannelName);
+        return channels.isEmpty() ? null : channels.get(0);
     }
     public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
         if (source == null) return null;
-        return channels.entrySet().stream()
-                .filter(entry -> source.getId().equals(entry.getValue()))
+        String id = source.getId();
+        return multiChannels.entrySet().stream()
+                .filter(entry -> entry.getValue().contains(id))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
     }
@@ -1849,23 +1884,24 @@ public class DiscordSRV extends JavaPlugin {
 
         // If the channel is null, replace it with the global channel
         if (channel == null) channel = getOptionalChannel("global");
-        TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
+        List<TextChannel> destinationChannels = getDestinationTextChannelsForGameChannelName(channel);
 
-        if (!webhookMessageDelivery) {
-            DiscordUtil.sendMessage(destinationChannel, processedMessage);
-        } else {
+        if (destinationChannels.isEmpty()) {
+            debug(Debug.MINECRAFT_TO_DISCORD, "Failed to find Discord channel to forward message from game channel " + channel);
+            return;
+        }
 
-            if (destinationChannel == null) {
-                debug(Debug.MINECRAFT_TO_DISCORD, "Failed to find Discord channel to forward message from game channel " + channel);
-                return;
+        for (TextChannel destinationChannel : destinationChannels) {
+            if (!webhookMessageDelivery) {
+                DiscordUtil.sendMessage(destinationChannel, processedMessage);
+            } else {
+                if (!DiscordUtil.checkPermission(destinationChannel, Permission.MANAGE_WEBHOOKS)) {
+                    DiscordSRV.error("Couldn't deliver chat message as webhook in " + destinationChannel.getGuild().getName() + " #" + destinationChannel.getName() + " because the bot lacks the \"Manage Webhooks\" permission. Falling back to bot delivery.");
+                    DiscordUtil.sendMessage(destinationChannel, processedMessage);
+                } else {
+                    WebhookUtil.deliverMessage(destinationChannel, player, processedMessage);
+                }
             }
-
-            if (!DiscordUtil.checkPermission(destinationChannel, Permission.MANAGE_WEBHOOKS)) {
-                DiscordSRV.error("Couldn't deliver chat message as webhook because the bot lacks the \"Manage Webhooks\" permission.");
-                return;
-            }
-
-            WebhookUtil.deliverMessage(destinationChannel, player, processedMessage);
         }
     }
 
@@ -1941,9 +1977,9 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        TextChannel textChannel = getOptionalTextChannel("join");
-        if (textChannel == null) {
-            DiscordSRV.debug("Not sending join message, text channel is null");
+        List<TextChannel> textChannels = getOptionalTextChannels("join");
+        if (textChannels.isEmpty()) {
+            DiscordSRV.debug("Not sending join message, text channel is null or empty");
             return;
         }
 
@@ -1952,36 +1988,39 @@ public class DiscordSRV extends JavaPlugin {
         final String name = player.getName();
         final String avatarUrl = getAvatarUrl(player);
         final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-        String botName = getMainGuild() != null ? getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
-        BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
-            if (content == null) return null;
-            content = content
-                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
-                    .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name)
-                    .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
-                    .replace("%usernamenoescapes%", name)
-                    .replace("%displaynamenoescapes%", displayName)
-                    .replace("%embedavatarurl%", avatarUrl)
-                    .replace("%botavatarurl%", botAvatarUrl)
-                    .replace("%botname%", botName);
-            content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
-            content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
-            return content;
-        };
+        for (TextChannel textChannel : textChannels) {
+            String botName = textChannel.getGuild().getSelfMember().getEffectiveName();
 
-        Message discordMessage = translateMessage(messageFormat, translator);
-        if (discordMessage == null) return;
+            BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
+                if (content == null) return null;
+                content = content
+                        .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                        .replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
+                        .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name)
+                        .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
+                        .replace("%usernamenoescapes%", name)
+                        .replace("%displaynamenoescapes%", displayName)
+                        .replace("%embedavatarurl%", avatarUrl)
+                        .replace("%botavatarurl%", botAvatarUrl)
+                        .replace("%botname%", botName);
+                content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+                content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
+                return content;
+            };
 
-        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
-        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
+            Message discordMessage = translateMessage(messageFormat, translator);
+            if (discordMessage == null) continue;
 
-        if (messageFormat.isUseWebhooks()) {
-            WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
-                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
-        } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage, true);
+            String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
+
+            if (messageFormat.isUseWebhooks()) {
+                WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
+                        discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+            } else {
+                DiscordUtil.queueMessage(textChannel, discordMessage, true);
+            }
         }
     }
 
@@ -2001,9 +2040,9 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        TextChannel textChannel = getOptionalTextChannel("leave");
-        if (textChannel == null) {
-            DiscordSRV.debug("Not sending quit message, text channel is null");
+        List<TextChannel> textChannels = getOptionalTextChannels("leave");
+        if (textChannels.isEmpty()) {
+            DiscordSRV.debug("Not sending quit message, text channel is null or empty");
             return;
         }
 
@@ -2013,36 +2052,39 @@ public class DiscordSRV extends JavaPlugin {
 
         String avatarUrl = getAvatarUrl(player);
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-        String botName = getMainGuild() != null ? getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
-        BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
-            if (content == null) return null;
-            content = content
-                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
-                    .replace("%username%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
-                    .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
-                    .replace("%usernamenoescapes%", name)
-                    .replace("%displaynamenoescapes%", displayName)
-                    .replace("%embedavatarurl%", avatarUrl)
-                    .replace("%botavatarurl%", botAvatarUrl)
-                    .replace("%botname%", botName);
-            content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
-            content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
-            return content;
-        };
+        for (TextChannel textChannel : textChannels) {
+            String botName = textChannel.getGuild().getSelfMember().getEffectiveName();
 
-        Message discordMessage = translateMessage(messageFormat, translator);
-        if (discordMessage == null) return;
+            BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
+                if (content == null) return null;
+                content = content
+                        .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                        .replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
+                        .replace("%username%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
+                        .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
+                        .replace("%usernamenoescapes%", name)
+                        .replace("%displaynamenoescapes%", displayName)
+                        .replace("%embedavatarurl%", avatarUrl)
+                        .replace("%botavatarurl%", botAvatarUrl)
+                        .replace("%botname%", botName);
+                content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+                content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
+                return content;
+            };
 
-        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
-        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
+            Message discordMessage = translateMessage(messageFormat, translator);
+            if (discordMessage == null) continue;
 
-        if (messageFormat.isUseWebhooks()) {
-            WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
-                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
-        } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage, true);
+            String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
+
+            if (messageFormat.isUseWebhooks()) {
+                WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
+                        discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+            } else {
+                DiscordUtil.queueMessage(textChannel, discordMessage, true);
+            }
         }
     }
 
@@ -2298,6 +2340,9 @@ public class DiscordSRV extends JavaPlugin {
         return getChannels().containsKey(name)
                 ? name
                 : getMainChatChannel();
+    }
+    public List<TextChannel> getOptionalTextChannels(String gameChannel) {
+        return getDestinationTextChannelsForGameChannelName(getOptionalChannel(gameChannel));
     }
     public TextChannel getOptionalTextChannel(String gameChannel) {
         return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));

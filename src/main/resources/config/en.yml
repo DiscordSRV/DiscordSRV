@@ -29,6 +29,65 @@ BotToken: "BOTTOKEN"
 # Run "/discord reload" after changing this option to apply
 Channels: {"global": "000000000000000000"}
 
+# Connecting multiple Discord servers (multi-server / multi-guild support)
+# ---------------------------------------------------------------------------
+# DiscordSRV can bridge one Minecraft server to as many Discord servers as you
+# want. To do that, map the same in-game channel name to several Discord
+# channel IDs at once.
+#
+# STEP 1 - Invite the bot to every Discord server you want to connect.
+#   In each Discord server: Settings -> Apps -> DiscordSRV -> Invite
+#   The bot needs the same permissions in every server, at least:
+#     - View Channel, Send Messages, Send Messages in Threads
+#     - Read Message History
+#     - Manage Webhooks (only if you use Experiment_WebhookChatMessageDelivery)
+#
+# STEP 2 - Turn on the Message Content intent (required for chat bridging).
+#   In the Discord Developer Portal -> your application -> Bot -> Privileged
+#   Gateway Intents -> enable "MESSAGE CONTENT INTENT", then restart the bot.
+#
+# STEP 3 - Copy the channel ID of the chat channel in each Discord server.
+#   Enable Developer Mode in Discord (User Settings -> Advanced -> Developer
+#   Mode), then right click the channel -> "Copy Channel ID".
+#
+# STEP 4 - Put all of those IDs in the Channels option below, using a list
+#   (recommended) or a comma separated string. Both formats are supported:
+#
+#   List format:
+#     Channels: {"global": ["111111111111111111", "222222222222222222", "333333333333333333"]}
+#
+#   Comma separated format:
+#     Channels: {"global": "111111111111111111, 222222222222222222, 333333333333333333"}
+#
+#   Adding a fourth Discord server works exactly the same way, just add one
+#   more ID to the list. You can also do this for the other message types,
+#   for example deaths, join, leave, awards or link:
+#     Channels: {
+#       "global": ["111111111111111111", "222222222222222222"],
+#       "deaths": ["333333333333333333", "444444444444444444"],
+#       "link":   ["555555555555555555", "666666666666666666"]
+#     }
+#
+# STEP 5 - Run "/discord reload" and make sure the bot shows up online with no
+#   errors in the console.
+#
+# How the messages travel once configured:
+#   - Minecraft -> Discord: player chat, deaths, joins, leaves, advancements
+#     and so on are sent to EVERY channel ID listed for that message type.
+#   - Discord -> Minecraft: a message sent in any of the listed channels is
+#     shown in game, no matter which Discord server it came from.
+#   - Discord -> Discord: when DiscordCrossGuildRelay is enabled (see below),
+#     a message typed in one of your Discord servers is mirrored into the
+#     other linked Discord servers.
+#
+# Notes:
+#   - All listed channels must be text channels the bot can actually see.
+#   - Do NOT put a channel ID in two different message types, otherwise the
+#     same channel would be treated both as chat and as something else.
+#   - The first channel ID of a message type is the one used as the "main"
+#     guild for a few legacy features (for example @mention translation).
+# ---------------------------------------------------------------------------
+
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
 DiscordConsoleChannelId: "000000000000000000"
 
@@ -149,6 +208,28 @@ DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", 
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+
+# Cross-Guild Chat Relay
+# When a game channel is mapped to multiple Discord servers/channels,
+# whether to relay messages typed in one Discord server to the other Discord server(s)
+#
+# DiscordCrossGuildRelay: whether messages typed in one linked Discord server
+#   should be mirrored into the other linked Discord server(s). Set this to
+#   false if the Discord servers should only feed into Minecraft and never
+#   talk to each other.
+# DiscordCrossGuildRelayFormat: the format used when a message is mirrored to
+#   another Discord server using the bot (used when webhook delivery is off
+#   or the bot lacks the Manage Webhooks permission in the target server).
+#   Available placeholders:
+#     %guild%:    name of the Discord server the message originally came from
+#     %name%:     display name of the person who sent the message
+#     %username%: username of the person who sent the message
+#     %message%:  the message itself
+#
+# Mirrored messages never bounce back and forth: DiscordSRV ignores its own
+# bot messages and its own webhooks, so a message is relayed at most once.
+DiscordCrossGuildRelay: true
+DiscordCrossGuildRelayFormat: "[%guild%] %name%: %message%"
 
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands
