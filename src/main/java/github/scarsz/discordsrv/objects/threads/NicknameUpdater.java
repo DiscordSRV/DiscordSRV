@@ -102,6 +102,11 @@ public class NicknameUpdater extends Thread {
                             nonMembers.add(linkedUser.getId());
                             continue;
                         }
+                        if (DiscordUtil.isTransientRestFailure(e)) {
+                            // the next nickname update will try again
+                            DiscordSRV.debug(Debug.NICKNAME_SYNC, "Couldn't retrieve " + linkedUser.getName() + "'s member, skipping: " + e.getMessage());
+                            continue;
+                        }
                         throw e;
                     }
                     if (member == null) {

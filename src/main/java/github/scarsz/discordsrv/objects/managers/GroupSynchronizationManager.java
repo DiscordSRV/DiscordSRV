@@ -230,6 +230,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in (Discord response)");
                     continue;
                 }
+                if (DiscordUtil.isTransientRestFailure(e)) {
+                    // skip this resync entirely, the next one will try again
+                    DiscordSRV.warning("Group synchronization (#" + id + ") for " + player.getName() + " skipped, couldn't retrieve their Discord member (" + e.getMessage() + ")");
+                    DiscordSRV.debug(Debug.GROUP_SYNC, ExceptionUtils.getStackTrace(e));
+                    return;
+                }
                 DiscordSRV.error(e);
                 continue;
             }

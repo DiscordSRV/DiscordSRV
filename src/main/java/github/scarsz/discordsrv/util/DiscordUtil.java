@@ -31,6 +31,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
@@ -40,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -868,6 +870,22 @@ public class DiscordUtil {
         } catch (Exception ignored) {
             return null;
         }
+    }
+
+    /**
+     * Whether the given exception is a transient REST failure (timeout, I/O error or a Discord 5xx response)
+     * that is expected to go away by itself, so it's worth a short warning instead of a stacktrace
+     */
+    public static boolean isTransientRestFailure(Throwable throwable) {
+        Throwable cause = throwable;
+        for (int depth = 0; cause != null && depth < 10; depth++, cause = cause.getCause()) {
+            if (cause instanceof ErrorResponseException) {
+                ErrorResponseException e = (ErrorResponseException) cause;
+                if (e.getErrorCode() == -1 || e.isServerError()) return true;
+            }
+            if (cause instanceof IOException) return true;
+        }
+        return false;
     }
 
 }

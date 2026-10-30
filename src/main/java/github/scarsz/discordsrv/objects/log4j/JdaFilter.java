@@ -30,6 +30,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
 
+import java.io.IOException;
+
 public class JdaFilter implements Filter {
 
     public Result check(String loggerName, Level level, String message, Throwable throwable) {
@@ -57,6 +59,13 @@ public class JdaFilter implements Filter {
                 if (message.contains("There was an I/O error while executing a REST request: null") && DiscordSRV.shuttingDown) {
                     // Error executing request while shutting down (interrupted exceptions)
                     return Result.DENY;
+                }
+
+                // timeouts and connection resets are transient, the caller of the failed request handles it
+                if (message.contains("There was an I/O error while executing a REST request") && throwable instanceof IOException) {
+                    DiscordSRV.warning("[JDA] " + message + ". This is either a issue on Discord's end (https://discordstatus.com) or with your server's connection");
+                    DiscordSRV.debug(ExceptionUtils.getStackTrace(throwable));
+                    break;
                 }
 
                 if (throwable != null) {
