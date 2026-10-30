@@ -336,9 +336,18 @@ public class AlertListener implements Listener, EventListener {
             return;
         }
 
+        String eventName = getEventName(event);
+        String commandBase = null;
+        if (command) {
+            String transformed = getCommand(event);
+            if (StringUtils.isNotBlank(transformed)) commandBase = transformed.toLowerCase().split("\\s+|$", 2)[0];
+        }
+
         for (int i = 0; i < alerts.size(); i++) {
             Dynamic alert = alerts.get(i);
             Set<String> triggers = getTriggers(alert);
+            // skip alerts that can't match before scheduling anything or reading their message config
+            if (!matchesAnyTrigger(triggers, eventClassName, eventName, commandBase)) continue;
             boolean async = true;
 
             Dynamic asyncDynamic = alert.get("Async");
@@ -363,6 +372,37 @@ public class AlertListener implements Listener, EventListener {
                 process(event, alert, triggers, i);
             }
         }
+    }
+
+    private boolean matchesAnyTrigger(Set<String> triggers, String eventClassName, String eventName, String commandBase) {
+        for (String trigger : triggers) {
+            if (trigger == null) continue;
+            if (trigger.startsWith("/")) {
+                if (commandBase != null && commandBase.equals(trigger.substring(1))) return true;
+            } else if (eventClassName.equals(trigger) || eventName.equalsIgnoreCase(trigger)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return the command of a command event with any "plugin:" prefix removed from its base, or null
+     */
+    private String getCommand(Object event) {
+        String command = null;
+        if (event instanceof PlayerCommandPreprocessEvent) {
+            command = ((PlayerCommandPreprocessEvent) event).getMessage().substring(1);
+        } else if (event instanceof ServerCommandEvent) {
+            command = ((ServerCommandEvent) event).getCommand();
+        }
+        if (StringUtils.isBlank(command)) return command;
+
+        String[] split = command.split(" ", 2);
+        String commandBase = split[0];
+        // transform "discordsrv:discord" to just "discord" for example
+        if (commandBase.contains(":")) commandBase = commandBase.substring(commandBase.lastIndexOf(":") + 1);
+        return commandBase + (split.length == 2 ? (" " + split[1]) : "");
     }
 
     private Set<String> getTriggers(Dynamic alert) {
@@ -444,8 +484,6 @@ public class AlertListener implements Listener, EventListener {
             command = commandBase + (split.length == 2 ? (" " + split[1]) : "");
         }
 
-        MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + alertIndex);
-
         String eventClassName = getEventClassName(event);
         String eventName = getEventName(event);
         for (String trigger : triggers) {
@@ -455,6 +493,9 @@ public class AlertListener implements Listener, EventListener {
                 // make sure the called event matches what this alert is supposed to trigger on
                 if (!eventClassName.equals(trigger) && !eventName.equalsIgnoreCase(trigger)) continue;
             }
+
+            // only read the message config once the alert actually matches
+            MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + alertIndex);
 
             // make sure alert should run even if event is cancelled
             if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
