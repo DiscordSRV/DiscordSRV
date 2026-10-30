@@ -30,6 +30,7 @@ import net.dv8tion.jda.internal.utils.BufferedRequestBody;
 import okhttp3.*;
 import okio.Okio;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -433,10 +434,18 @@ public class WebhookUtil {
 
             // Check if we have permission guild-wide
             List<Webhook> result;
-            if (guild.getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
-                result = guild.retrieveWebhooks().complete();
-            } else {
-                result = channel.retrieveWebhooks().complete();
+            try {
+                if (guild.getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                    result = guild.retrieveWebhooks().complete();
+                } else {
+                    result = channel.retrieveWebhooks().complete();
+                }
+            } catch (RuntimeException e) {
+                if (!DiscordUtil.isTransientRestFailure(e)) throw e;
+                // returning null keeps the channel out of the cache, so the next message tries again
+                DiscordSRV.warning("Couldn't retrieve webhooks for #" + channel.getName() + " (" + e.getMessage() + "), dropping this message. This is either a issue on Discord's end or with your server's connection");
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, ExceptionUtils.getStackTrace(e));
+                return null;
             }
 
             result.stream()
