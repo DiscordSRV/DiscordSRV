@@ -52,7 +52,9 @@ public abstract class NamedValueFormatter {
         StringBuffer result = new StringBuffer();
         while (matcher.find()) {
             String key = matcher.group(2);
-            matcher.appendReplacement(result, key != null ? Objects.toString(replacer.apply(key)) : matcher.group(1));
+            String replacement = key != null ? Objects.toString(replacer.apply(key)) : matcher.group(1);
+            // values can contain \ or $ (e.g. player input), which appendReplacement would treat as special characters
+            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
         }
         matcher.appendTail(result);
         return result.toString();
